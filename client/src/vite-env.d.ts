@@ -1,0 +1,17 @@
+/// <reference types="vite/client" />
+/// <reference types="vite-plugin-pwa/client" />
+
+interface ImportMetaEnv {
+  /** Optional. Set when the built SPA is served from a different origin than the Express API (e.g. static host + API on Railway). No trailing slash. */
+  readonly VITE_API_BASE_URL?: string;
+  /** Supabase project URL (Auth). Optional; legacy magic link is used if unset. */
+  readonly VITE_SUPABASE_URL?: string;
+  /** Supabase anon public key. */
+  readonly VITE_SUPABASE_ANON_KEY?: string;
+  readonly VITE_AMAZON_ASSOCIATE_TAG?: string;
+  /** Dev server only: set to "true" to unlock Pro features without PayPal. Ignored in production builds. */
+  readonly VITE_DEV_PRO?: string;
+  /** Optional shared secret; must match server ANALYZE_SECRET so /api/analyze requests are accepted. */
+  readonly VITE_ANALYZE_SECRET?: string;
+}
+

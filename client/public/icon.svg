@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="StackWise">
+  <rect width="512" height="512" rx="96" fill="#0F1F3D"/>
+  <path fill="#A8E63D" d="M128 320V192h64v128h96V192h64v256h-64v-64h-96v64h-64V320z"/>
+  <circle cx="384" cy="160" r="40" fill="#A8E63D"/>
+</svg>
