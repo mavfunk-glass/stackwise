@@ -22,7 +22,7 @@ export default function UnsubscribePage() {
         await ensureApiSession();
         const res = await fetch('/api/account/unsubscribe', {
           method: 'POST',
-          headers: apiAuthHeaders(),
+          headers: await apiAuthHeaders(),
           body: JSON.stringify({ token }),
         });
         if (res.ok) {
