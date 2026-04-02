@@ -599,7 +599,13 @@ export default function QuizPage() {
       { value: '🛡️ Longevity & Immunity', icon: '🛡️', label: 'Longevity & Immunity', description: 'Build the foundation for a longer, stronger, healthier life.' },
       { value: '💇 Hair Growth', icon: '💇', label: 'Hair Growth', description: "Feed your follicles what they're missing and stop the shedding." },
       { value: '✨ Skin Health & Glow', icon: '✨', label: 'Skin & Glow', description: "Glow from the inside out: the supplements your skincare can't replace." },
-      { value: '🪞 LooksMaxxing', icon: '🪞', label: 'LooksMaxxing', description: 'Target every physical attractiveness marker: skin tone, face definition, symmetry.' },
+      {
+        value: '🪞 LooksMaxxing',
+        icon: '🪞',
+        label: 'LooksMaxxing',
+        description:
+          'Focus on skin tone and face definition, including model-like coloring support. Evidence-backed carotenoids like astaxanthin, lycopene, and beta-carotene can improve skin tone and perceived inner glow over time for some people.',
+      },
       {
         value: '💖 Sexual Health & Vitality',
         icon: '💖',
