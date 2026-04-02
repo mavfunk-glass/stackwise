@@ -202,6 +202,11 @@ export default function ProtocolLibraryPage() {
             <div>
               <h1 className="font-serif font-light" style={{ fontSize: 30, color: '#1C3A2E', letterSpacing: '-0.01em' }}>Guidance Library</h1>
               <p className="text-sm mt-1" style={{ color: '#9C8E84' }}>Advanced supplement education for serious users.</p>
+              <div className="mt-3 rounded-xl px-4 py-3" style={{ background: '#FDF6EE', border: '1px solid #F0D9BE' }}>
+                <p className="text-xs leading-relaxed" style={{ color: '#8A5C2E', lineHeight: 1.6 }}>
+                  <strong>Educational content only.</strong> Peptides and advanced compounds described here are research chemicals not approved by the FDA for the uses discussed. Nothing on this page constitutes medical advice, diagnosis, or treatment. Always consult a licensed physician before starting any peptide or advanced supplement protocol. StackWise is not liable for health outcomes resulting from use of this information.
+                </p>
+              </div>
             </div>
           </div>
         </div>

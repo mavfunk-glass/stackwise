@@ -13,6 +13,8 @@ import DashboardPage from './pages/DashboardPage';
 import ProtocolLibraryPage from './pages/ProtocolLibraryPage';
 import IntroPage from './pages/IntroPage';
 import MagicVerifyPage from './pages/MagicVerifyPage';
+import UnsubscribePage from './pages/UnsubscribePage';
+import CookieConsent from './components/CookieConsent';
 import AuthCallbackPage from './pages/AuthCallbackPage';
 import CoachHubPage from './pages/CoachHubPage';
 import { ensureApiSession, fetchBillingStatus } from './api/session';
@@ -86,8 +88,10 @@ export default function App() {
         <Route path="/faq" element={<FaqPage />} />
         <Route path="/auth/verify" element={<MagicVerifyPage />} />
         <Route path="/auth/callback" element={<AuthCallbackPage />} />
+        <Route path="/unsubscribe" element={<UnsubscribePage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <CookieConsent />
     </PayPalScriptProvider>
   );
 }

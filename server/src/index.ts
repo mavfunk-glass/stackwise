@@ -17,6 +17,60 @@ const __dirname = path.dirname(__filename);
 // Load the root .env (workspace root) even when the server is started from /server.
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
+function validateProductionEnv() {
+  if (process.env.NODE_ENV !== 'production') return;
+
+  const missing: string[] = [];
+  const invalid: string[] = [];
+  const warnings: string[] = [];
+  const forceApiAuth = process.env.STACKWISE_REQUIRE_API_AUTH === 'true';
+
+  if (!process.env.GEMINI_API_KEY?.trim()) missing.push('GEMINI_API_KEY');
+
+  const jwt = process.env.JWT_SECRET?.trim() ?? '';
+  const supaJwt = process.env.SUPABASE_JWT_SECRET?.trim() ?? '';
+  const hasJwt = jwt.length >= 32;
+  const hasSupaJwt = supaJwt.length > 0;
+
+  if (forceApiAuth) {
+    if (!hasJwt && !hasSupaJwt) {
+      invalid.push(
+        'STACKWISE_REQUIRE_API_AUTH=true requires JWT_SECRET (>=32 chars) or SUPABASE_JWT_SECRET',
+      );
+    }
+  } else if (!hasJwt && !hasSupaJwt) {
+    warnings.push(
+      'API auth will run in open mode because JWT_SECRET and SUPABASE_JWT_SECRET are both missing.',
+    );
+  } else if (jwt.length > 0 && jwt.length < 32) {
+    warnings.push('JWT_SECRET is set but shorter than 32 chars, API auth will rely on SUPABASE_JWT_SECRET if present.');
+  }
+
+  if (!process.env.APP_URL?.trim()) {
+    warnings.push('APP_URL is not set (email links may point to localhost fallback).');
+  }
+  if (!process.env.CLIENT_URL?.trim()) {
+    warnings.push('CLIENT_URL is not set (CORS may be broader than intended).');
+  }
+
+  if (missing.length || invalid.length) {
+    const parts = [
+      '[startup] Invalid production environment configuration.',
+      missing.length ? `Missing: ${missing.join(', ')}` : '',
+      invalid.length ? `Invalid: ${invalid.join('; ')}` : '',
+      warnings.length ? `Warnings: ${warnings.join(' ')}` : '',
+      'Set required env vars and redeploy.',
+    ].filter(Boolean);
+    throw new Error(parts.join(' '));
+  }
+
+  if (warnings.length) {
+    // eslint-disable-next-line no-console
+    console.warn(`[startup] ${warnings.join(' ')}`);
+  }
+}
+
+validateProductionEnv();
 getDb();
 
 const app = express();

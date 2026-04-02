@@ -1599,6 +1599,21 @@ export default function QuizPage() {
               >
                 Skip for now
               </button>
+
+              <p
+                className="quiz-intro-rise quiz-intro-d7"
+                style={{ marginTop: 16, fontSize: 11, color: '#C4B9AC', lineHeight: 1.5, textAlign: 'center' }}
+              >
+                By continuing you agree to our{' '}
+                <a href="/terms" target="_blank" rel="noopener noreferrer" style={{ color: '#9C8E84', textDecoration: 'underline' }}>
+                  Terms of Service
+                </a>
+                {' '}and{' '}
+                <a href="/privacy" target="_blank" rel="noopener noreferrer" style={{ color: '#9C8E84', textDecoration: 'underline' }}>
+                  Privacy Policy
+                </a>
+                . StackWise is not medical advice.
+              </p>
             </div>
           </div>
         )}
@@ -1931,8 +1946,8 @@ export default function QuizPage() {
             >
               <span style={{ color: '#4A7C59', fontSize: 16, flexShrink: 0 }}>🔒</span>
               <p className="text-xs leading-relaxed" style={{ color: '#4A7C59' }}>
-                <strong>Your privacy is protected.</strong> This quiz is completely anonymous.
-                Your answers never leave your device unless you choose to save your stack.
+                <strong>Your privacy is protected.</strong> Your answers are used only to generate your supplement guidance. No data is sold. If you save your stack to an account, your inputs are stored securely on our servers - see our{' '}
+                <a href="/privacy" target="_blank" rel="noopener noreferrer" style={{ color: '#4A7C59', textDecoration: 'underline' }}>Privacy Policy</a>.
               </p>
             </div>
 

@@ -409,7 +409,10 @@ function SupplementCard({
             </span>
           </div>
           <div className="mt-1 rounded-xl border border-stone/90 bg-gradient-to-b from-white to-[#F7F4EF] p-3 shadow-[0_1px_3px_rgba(28,58,46,0.06)]">
-            <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-warm-mid mb-2.5">Shop</div>
+            <div className="flex items-center justify-between mb-2.5">
+              <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-warm-mid">Shop</div>
+              <div className="text-[9px]" style={{ color: '#C4B9AC' }}>Affiliate links - we may earn a commission</div>
+            </div>
             <div className="flex flex-col sm:flex-row gap-2.5">
               <a
                 href={amazonPrimary}
@@ -1157,6 +1160,10 @@ export default function ResultsPage() {
           </div>
 
           <p className="text-[11px] leading-relaxed text-warm-light px-1">{result.disclaimer}</p>
+
+          <p className="text-[11px] leading-relaxed px-1" style={{ color: '#C4B9AC', marginTop: -4 }}>
+            These statements have not been evaluated by the Food and Drug Administration. Supplement recommendations are not intended to diagnose, treat, cure, or prevent any disease. Always consult a qualified healthcare professional before starting or changing any supplement regimen, particularly if you take prescription medications or have a medical condition.
+          </p>
 
           <div className="space-y-4 pb-4">
             <div className="rounded-2xl border-2 border-moss/35 bg-white px-4 py-5 shadow-sm">

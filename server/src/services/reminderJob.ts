@@ -3,6 +3,7 @@ import {
   getActiveReminderTimezones,
   getUsersDueForReminder,
   createCheckinToken,
+  createMagicToken,
   cleanExpiredTokens,
 } from '../db/index.js';
 import { sendEmail, buildReminderEmail } from './emailService.js';
@@ -84,7 +85,9 @@ async function processRemindersForTimezone(timezone: string): Promise<void> {
       const checkinToken = createCheckinToken(user.id, today);
       const checkinUrl = `${appUrl}/api/account/checkin?token=${encodeURIComponent(checkinToken)}`;
 
-      // Use display_name from user row, fall back to parsed name from stack
+      const unsubscribeToken = createMagicToken(user.id);
+      const unsubscribeUrl = `${appUrl}/api/account/unsubscribe?token=${encodeURIComponent(unsubscribeToken)}`;
+
       const nameToUse = user.display_name ?? displayName;
 
       const html = buildReminderEmail({
@@ -93,6 +96,7 @@ async function processRemindersForTimezone(timezone: string): Promise<void> {
         afternoonItems: afternoon,
         eveningItems: evening,
         checkinUrl,
+        unsubscribeUrl,
         appUrl,
         streak: 0, // streak is stored client-side; server doesn't track it yet
       });

@@ -9,7 +9,11 @@
     "start": "node dist/index.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "diagnose:personalization": "tsx src/scripts/diagnosePersonalization.ts",
-    "reset:free-tier": "tsx src/scripts/resetFreeTierLocal.ts"
+    "reset:free-tier": "tsx src/scripts/resetFreeTierLocal.ts",
+    "create-paypal-plans": "tsx src/scripts/createPaypalPlans.ts",
+    "railway:env-paste": "tsx src/scripts/writeRailwayEnvPaste.ts",
+    "paypal:register-webhook": "tsx src/scripts/registerPaypalWebhook.ts",
+    "verify:payments": "tsx src/scripts/verifyPaymentReadiness.ts"
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",

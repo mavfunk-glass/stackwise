@@ -630,6 +630,11 @@ export default function LandingPageRebuild() {
             </div>
           ))}
         </div>
+
+        <p className="text-center text-xs mt-6" style={{ color: '#C4B9AC', lineHeight: 1.6 }}>
+          Individual results vary. These experiences reflect personal outcomes and are not guaranteed.<br />
+          StackWise provides educational supplement guidance only - not medical advice.
+        </p>
       </section>
 
       {/* ─── PRICING PREVIEW ───────────────────────────────────────── */}
@@ -752,7 +757,7 @@ export default function LandingPageRebuild() {
             <div>
               <div className="font-semibold text-sm mb-1" style={{ color: '#F9F6F1' }}>30-day money-back guarantee</div>
               <p className="text-xs leading-relaxed" style={{ color: 'rgba(249,246,241,0.5)' }}>
-                If StackWise does not help you feel clearer and more confident in your supplement decisions within 30 days, we will refund you.
+                If StackWise does not help you feel clearer and more confident in your supplement decisions within 30 days, email <a href="mailto:healthpro@stackdsup.com" style={{ color: 'rgba(249,246,241,0.55)', textDecoration: 'underline' }}>healthpro@stackdsup.com</a> for a full refund. No questions asked.
               </p>
             </div>
           </div>
@@ -838,12 +843,18 @@ export default function LandingPageRebuild() {
             <button onClick={() => navigate('/pricing')} className="hover:text-forest transition-colors" type="button">
               Pricing
             </button>
+            <button onClick={() => navigate('/faq')} className="hover:text-forest transition-colors" type="button">
+              FAQ
+            </button>
             <button onClick={() => navigate('/privacy')} className="hover:text-forest transition-colors" type="button">
               Privacy
             </button>
             <button onClick={() => navigate('/terms')} className="hover:text-forest transition-colors" type="button">
               Terms
             </button>
+            <a href="mailto:healthpro@stackdsup.com" className="hover:text-forest transition-colors">
+              Support
+            </a>
           </div>
           <div className="text-xs" style={{ color: '#C4B9AC' }}>
             © {new Date().getFullYear()} StackWise · For educational purposes only

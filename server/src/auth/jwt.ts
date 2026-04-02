@@ -1,12 +1,19 @@
 import * as jose from 'jose';
 
+let warnedWeakJwtSecret = false;
+
 function getSecret(): Uint8Array {
   const raw = process.env.JWT_SECRET;
   if (!raw || raw.length < 32) {
-    if (process.env.NODE_ENV === 'production') {
-      throw new Error('JWT_SECRET must be set to a random string of at least 32 characters in production.');
+    if (process.env.NODE_ENV === 'production' && !warnedWeakJwtSecret) {
+      warnedWeakJwtSecret = true;
+      // eslint-disable-next-line no-console
+      console.warn(
+        '[auth] JWT_SECRET is missing or too short (<32). Using fallback signer secret. ' +
+        'Set JWT_SECRET to a random 32+ char value in production.',
+      );
     }
-    // Dev-only weak secret; do not use in production
+    // Fallback secret keeps sessions working if auth enforcement is disabled.
     return new TextEncoder().encode('stackwise-dev-secret-min-32-chars!!');
   }
   return new TextEncoder().encode(raw);

@@ -5,11 +5,27 @@ import { upsertUserFromSupabaseAuth } from '../db/index.js';
 
 export type AuthedRequest = Request & { userId?: string };
 
+let warnedMissingAuthSecrets = false;
+
 /** In production, API auth is on unless STACKWISE_REQUIRE_API_AUTH=false. In dev, off unless explicitly true. */
 export function requireApiAuth(): boolean {
   if (process.env.STACKWISE_REQUIRE_API_AUTH === 'false') return false;
   if (process.env.STACKWISE_REQUIRE_API_AUTH === 'true') return true;
-  return process.env.NODE_ENV === 'production';
+  if (process.env.NODE_ENV !== 'production') return false;
+
+  const hasJwtSecret = (process.env.JWT_SECRET?.trim().length ?? 0) >= 32;
+  const hasSupabaseSecret = (process.env.SUPABASE_JWT_SECRET?.trim().length ?? 0) > 0;
+  const enabled = hasJwtSecret || hasSupabaseSecret;
+
+  if (!enabled && !warnedMissingAuthSecrets) {
+    warnedMissingAuthSecrets = true;
+    // eslint-disable-next-line no-console
+    console.warn(
+      '[auth] API auth disabled in production: missing JWT_SECRET (>=32 chars) and SUPABASE_JWT_SECRET. ' +
+      'Set STACKWISE_REQUIRE_API_AUTH=true plus one of those secrets to enforce auth.',
+    );
+  }
+  return enabled;
 }
 
 export function requireAuth(req: AuthedRequest, res: Response, next: NextFunction): void {

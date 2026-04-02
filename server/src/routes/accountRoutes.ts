@@ -176,4 +176,45 @@ router.get('/me', requireAuth, (req: AuthedRequest, res: Response) => {
   }
 });
 
+/**
+ * POST /api/account/unsubscribe
+ * One-click unsubscribe from reminder emails via token in email link.
+ * Body: { token: string }
+ */
+router.post('/unsubscribe', async (req, res) => {
+  try {
+    const body = req.body as { token?: unknown };
+    const token = typeof body.token === 'string' ? body.token.trim() : '';
+    if (!token) {
+      return res.status(400).json({ error: 'Missing token.' });
+    }
+    const { verifyAndConsumeMagicToken, setUserReminder, getUser } = await import('../db/index.js');
+    const userId = verifyAndConsumeMagicToken(token);
+    if (!userId) {
+      return res.status(400).json({ error: 'This unsubscribe link has expired or already been used.' });
+    }
+    const user = getUser(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+    if (user.reminder_time && user.reminder_timezone && user.reminder_stack_json) {
+      setUserReminder(userId, user.reminder_time, user.reminder_timezone, user.reminder_stack_json, false);
+    }
+    return res.status(200).json({ ok: true });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    return res.status(500).json({ error: message });
+  }
+});
+
+/**
+ * GET /api/account/unsubscribe?token=xxx
+ * Redirects to the client unsubscribe page (handles prefetch-safe GET).
+ */
+router.get('/unsubscribe', (req, res) => {
+  const token = typeof req.query.token === 'string' ? req.query.token.trim() : '';
+  const appUrl = process.env.APP_URL ?? 'http://localhost:5173';
+  return res.redirect(`${appUrl}/unsubscribe?token=${encodeURIComponent(token)}`);
+});
+
 export default router;

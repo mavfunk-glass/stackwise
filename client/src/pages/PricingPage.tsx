@@ -213,7 +213,7 @@ export default function PricingPage() {
             <div className="mt-4 flex items-start gap-2.5 rounded-xl px-3 py-2.5" style={{ background: 'rgba(255,255,255,0.06)' }}>
               <span className="text-on-dark-muted" style={{ fontSize: 14, flexShrink: 0 }}>🛡</span>
               <p className="text-xs leading-relaxed text-on-dark-muted">
-                30-day money-back guarantee. If StackWise does not help you feel clearer and more confident in your supplement decisions within 30 days, we will refund you.
+                30-day money-back guarantee. If StackWise doesn&apos;t help you feel clearer and more confident in your supplement decisions within 30 days, email <a href="mailto:healthpro@stackdsup.com" style={{ color: 'rgba(249,246,241,0.7)', textDecoration: 'underline' }}>healthpro@stackdsup.com</a> for a full refund. No questions asked.
               </p>
             </div>
 

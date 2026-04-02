@@ -127,7 +127,8 @@ router.post('/magic-link', async (req, res) => {
             </div>
             <p style="color: #C4B9AC; font-size: 12px; text-align: center; line-height: 1.5;">
               If you didn't request this, you can safely ignore it. No account changes will be made.<br/>
-              This link can only be used once and expires in 15 minutes.
+              This link can only be used once and expires in 15 minutes.<br/>
+              StackWise · 3101 Borgata Way · El Dorado Hills, CA 95762
             </p>
           </div>
         `,

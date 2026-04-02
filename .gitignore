@@ -2,6 +2,26 @@ node_modules
 dist
 client/dist
 server/dist
+
+# Environment files - never commit real secrets
+.env
+.env.local
+.env.production
+.env.staging
+client/.env
+client/.env.local
+client/.env.production
+server/.env
+server/.env.local
+server/.env.production
+
+*.log
+.DS_Store
+coverage
+node_modules
+dist
+client/dist
+server/dist
 .env
 !.env.example
 !**/.env.example
@@ -16,4 +36,7 @@ server/data/*.db-*
 
 # Ad-hoc exports
 *.zip
+
+# Local Railway bulk-paste (contains secrets)
+railway-paste.env
 

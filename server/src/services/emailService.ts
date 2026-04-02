@@ -57,6 +57,7 @@ interface ReminderEmailData {
   afternoonItems: string[];
   eveningItems: string[];
   checkinUrl: string;
+  unsubscribeUrl: string;
   appUrl: string;
   streak: number;
 }
@@ -163,11 +164,18 @@ export function buildReminderEmail(data: ReminderEmailData): string {
            style="font-size:12px;color:#C4B9AC;text-decoration:underline;">
           Change or turn off reminders
         </a>
+        &nbsp;&nbsp;·&nbsp;&nbsp;
+        <a href="${data.unsubscribeUrl}"
+           style="font-size:12px;color:#C4B9AC;text-decoration:underline;">
+          Unsubscribe
+        </a>
       </div>
     </div>
 
-    <p style="text-align:center;font-size:11px;color:#C4B9AC;margin-top:16px;">
-      StackWise · supplement guidance, not medical advice
+    <p style="text-align:center;font-size:11px;color:#C4B9AC;margin-top:16px;line-height:1.6;">
+      StackWise · supplement guidance, not medical advice<br/>
+      StackWise · 3101 Borgata Way · El Dorado Hills, CA 95762<br/>
+      You are receiving this because you set a daily reminder in StackWise.
     </p>
   </div>
 </body>

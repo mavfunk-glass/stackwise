@@ -102,6 +102,21 @@ export default function FaqPage() {
             </article>
           ))}
         </section>
+        <section className="rounded-2xl p-5 mb-10" style={{ background: '#1C3A2E' }}>
+          <div className="font-serif font-light text-lg mb-1" style={{ color: '#F9F6F1', fontStyle: 'italic' }}>
+            Still have a question?
+          </div>
+          <p className="text-sm mb-4" style={{ color: 'rgba(249,246,241,0.7)' }}>
+            Billing, refund requests, data deletion, or anything else - email us directly.
+          </p>
+          <a
+            href="mailto:healthpro@stackdsup.com"
+            className="inline-block rounded-full font-semibold text-sm px-5 py-2.5 transition-opacity hover:opacity-90"
+            style={{ background: '#F9F6F1', color: '#1C3A2E' }}
+          >
+            healthpro@stackdsup.com
+          </a>
+        </section>
       </main>
     </div>
   );
