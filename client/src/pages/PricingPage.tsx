@@ -82,8 +82,8 @@ function SuccessModal({ tier, onContinue }: { tier: SubscriptionTier; onContinue
         </h2>
         <p className="text-sm leading-relaxed mb-6" style={{ color: '#6B5B4E' }}>
           {tier === 'pro'
-            ? 'Your plan is live. Build with clarity, ask follow-ups, check fit before you buy, and adjust your stack as goals evolve.'
-            : 'Your stack is saved. Daily check-ins, reminders, and unlimited stack generations are now active.'}
+            ? 'Your plan is live. Peptide Optimization is unlocked in your quiz, plus ongoing guidance, follow-ups, and stack updates as goals evolve.'
+            : 'Your stack is saved. LooksMaxxing is unlocked in your quiz, with daily check-ins, reminders, and unlimited stack generations.'}
         </p>
         <button onClick={onContinue} className="btn-primary w-full" style={{ height: 50 }}>
           {tier === 'pro' ? 'Meet My Stack Guide →' : 'Continue →'}
@@ -174,6 +174,26 @@ export default function PricingPage() {
           ))}
         </div>
 
+        <div
+          className="rounded-2xl px-4 py-3.5 mb-8 text-left"
+          style={{ background: '#FDFCFA', border: '1px solid #E8E0D5' }}
+        >
+          <div className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: '#9C8E84', letterSpacing: '0.08em' }}>
+            Quiz goal unlocks
+          </div>
+          <ul className="text-xs leading-relaxed space-y-1.5" style={{ color: '#6B5B4E' }}>
+            <li>
+              <strong style={{ color: '#1C3A2E' }}>Free</strong> — core health goals only. LooksMaxxing and Peptide Optimization stay locked.
+            </li>
+            <li>
+              <strong style={{ color: '#1C3A2E' }}>Basic</strong> — unlocks <strong style={{ color: '#1C3A2E' }}>LooksMaxxing</strong> in the quiz (advanced appearance goals). Peptide Optimization remains Pro-only.
+            </li>
+            <li>
+              <strong style={{ color: '#1C3A2E' }}>Pro</strong> — everything in Basic, plus <strong style={{ color: '#1C3A2E' }}>Peptide Optimization</strong> in the quiz and peptide education in your guide when relevant.
+            </li>
+          </ul>
+        </div>
+
         {/* PRO card */}
         <div className="rounded-2xl overflow-hidden mb-4" style={{ background: '#1C3A2E' }}>
           <div className="px-5 pt-5 pb-4">
@@ -195,7 +215,7 @@ export default function PricingPage() {
                 ['🗂️', 'Name and organize your stacks in Stack Hub'],
                 ['🔍', 'Evaluate new supplements before you buy: fit, overlap, timing'],
                 ['📈', 'Ongoing support for smarter decisions as life changes'],
-                ['🧬', 'Optional peptide education when relevant to your goals'],
+                ['🧬', 'Unlock Peptide Optimization in the quiz + peptide guidance when relevant (Pro only — not on Basic)'],
                 ['⚕️', 'Nudges to check with a professional when something is medical or uncertain'],
                 ['📧', 'Education that stays relevant to your goals and current stack'],
                 ['✓', 'Everything in Basic'],
@@ -238,6 +258,7 @@ export default function PricingPage() {
             <p className="text-sm mb-4" style={{ color: '#6B5B4E' }}>A personalized stack and a practical routine you can actually use.</p>
             <div className="space-y-2 mb-5">
               {[
+                ['🪞', 'Unlocks LooksMaxxing in your quiz (appearance and symmetry goals — not on Free)'],
                 ['✓', 'Unlimited stack generations: rebuild anytime your goals change'],
                 ['✓', 'Full plan: exact forms, dosing, and timing for every supplement'],
                 ['✓', 'Daily check-in with mood tracking and streak counter'],
@@ -251,7 +272,9 @@ export default function PricingPage() {
               ))}
             </div>
             <PayPalWrapper planId={BASIC_PLAN_ID} tier="basic" onSuccess={() => setSuccessTier('basic')} />
-            <p className="text-xs text-center mt-2" style={{ color: '#C4B9AC' }}>Cancel anytime</p>
+            <p className="text-xs text-center mt-2 leading-relaxed px-1" style={{ color: '#C4B9AC' }}>
+              Cancel anytime. Peptide Optimization stays on Pro.
+            </p>
           </div>
         </div>
 

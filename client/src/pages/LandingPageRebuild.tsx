@@ -597,6 +597,10 @@ export default function LandingPageRebuild() {
               );
             })}
           </div>
+
+          <p className="text-center text-xs mt-6 max-w-xl mx-auto leading-relaxed" style={{ color: '#9C8E84' }}>
+            <strong style={{ color: '#6B5B4E' }}>Quiz unlocks:</strong> Basic adds LooksMaxxing. Pro adds Peptide Optimization and full peptide education — not included on Basic.
+          </p>
         </div>
       </section>
 
@@ -658,7 +662,12 @@ export default function LandingPageRebuild() {
                 name: 'Free',
                 price: '$0',
                 sub: 'forever',
-                features: ['Starter clarity and first recommendations', 'Full detail on first supplements', 'A few free support questions with Stacky'],
+                features: [
+                  'Starter clarity and first recommendations',
+                  'Full detail on first supplements',
+                  'A few free support questions with Stacky',
+                  'Core quiz goals only — LooksMaxxing unlocks on Basic; Peptide Optimization on Pro',
+                ],
                 cta: 'Start Free',
                 action: () => navigate('/quiz'),
                 style: { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' },
@@ -668,7 +677,13 @@ export default function LandingPageRebuild() {
                 name: 'Basic',
                 price: '$9',
                 sub: '/month',
-                features: ['Personalized stack and practical routine', 'Unlimited rebuilds as goals change', 'Daily check-ins and reminders', 'Spend with more intention over time'],
+                features: [
+                  'Unlocks LooksMaxxing in the quiz (Pro adds Peptide Optimization)',
+                  'Personalized stack and practical routine',
+                  'Unlimited rebuilds as goals change',
+                  'Daily check-ins and reminders',
+                  'Spend with more intention over time',
+                ],
                 cta: 'Get Basic',
                 action: () => navigate('/pricing'),
                 style: { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' },
@@ -681,13 +696,13 @@ export default function LandingPageRebuild() {
                 badge: 'Best value',
                 features: [
                   'Everything in Basic',
+                  'Unlocks Peptide Optimization in the quiz + peptide guidance when relevant',
                   'Unlimited guidance for ongoing decisions',
                   'Understand why each recommendation fits',
                   'Name and organize stacks in Stack Hub',
                   'Evaluate new additions before you buy',
                   'Adjust your stack as goals change',
                   'Keep your routine clear as life changes',
-                  'Optional peptide education when relevant',
                 ],
                 cta: 'Start Pro',
                 action: () => navigate('/pricing'),

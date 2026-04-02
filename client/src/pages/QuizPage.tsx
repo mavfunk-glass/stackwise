@@ -31,7 +31,10 @@ import { GOAL_THEME, splitPrimaryGoal } from '../utils/goalTheme';
 
 /** Free tier only: max primary goals in the quiz. Basic and Pro can select unlimited. */
 const FREE_MAX_PRIMARY_GOALS = 4;
+/** Free users cannot select these; Basic and Pro can. */
 const PAID_ONLY_PRIMARY_GOALS: PrimaryGoal[] = ['🪞 LooksMaxxing'];
+/** Only Pro may select these (Basic and free are locked). */
+const PRO_ONLY_PRIMARY_GOALS: PrimaryGoal[] = ['🧬 Peptide Optimization'];
 
 /** Step 4 (Improvements): max frustration / “what matters most” picks */
 const MAX_STEP4_IMPROVEMENT_PICKS = 5;
@@ -700,6 +703,16 @@ export default function QuizPage() {
       return { ...d, primaryGoals: next };
     });
   }, [draft.biologicalSex]);
+
+  useEffect(() => {
+    if (isProUser) return;
+    setDraft((d) => {
+      const cur = d.primaryGoals ?? [];
+      const next = cur.filter((g) => !PRO_ONLY_PRIMARY_GOALS.includes(g));
+      if (next.length === cur.length) return d;
+      return { ...d, primaryGoals: next };
+    });
+  }, [isProUser]);
 
   const feelingSections = useMemo(
     () => getFeelingSectionsForGoals(draft.primaryGoals ?? [], goalLabelByValue),
@@ -2072,7 +2085,7 @@ export default function QuizPage() {
                         Basic or Pro
                       </button>{' '}
                       unlocks unlimited goals so you can build a fuller stack for every area you care about. LooksMaxxing is
-                      available on paid plans only.
+                      available on Basic or Pro; Peptide Optimization is Pro only.
                     </p>
                   </div>
                 )}
@@ -2103,8 +2116,10 @@ export default function QuizPage() {
                           const atLimit =
                             isFreeTier && (draft.primaryGoals ?? []).length >= FREE_MAX_PRIMARY_GOALS;
                           const paidOnlyGoal = PAID_ONLY_PRIMARY_GOALS.includes(g.value);
+                          const proOnlyGoal = PRO_ONLY_PRIMARY_GOALS.includes(g.value);
                           const paidOnlyLocked = isFreeTier && paidOnlyGoal && !sel;
-                          const addLocked = (atLimit && !sel) || paidOnlyLocked;
+                          const proOnlyLocked = !isProUser && proOnlyGoal && !sel;
+                          const addLocked = (atLimit && !sel) || paidOnlyLocked || proOnlyLocked;
                           return (
                             <button
                               key={g.value}
@@ -2146,7 +2161,7 @@ export default function QuizPage() {
                                         animationDelay: '180ms',
                                       }}
                                     >
-                                      {paidOnlyGoal ? 'Basic/Pro' : 'Pro'}
+                                      {proOnlyGoal ? 'Pro' : paidOnlyGoal ? 'Basic/Pro' : 'Limit'}
                                     </span>
                                   )}
                                 </div>
