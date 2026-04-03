@@ -1562,24 +1562,92 @@ function validateSafetyConflicts(payload: IntakePayload, result: GeminiResult) {
   });
 }
 
+/**
+ * When there is no Super Focus target, the model must not attach extra rows.
+ * When there is a target, only cap list length: strict minimum counts caused frequent
+ * rejections when the model folded add-ons into the base stack or returned fewer rows.
+ */
 function validateSuperFocusBudgetShape(payload: IntakePayload, result: GeminiResult) {
   const hasSpecificGoal = Boolean(payload.specificGoal?.trim());
   const count = result.superFocusSupplements?.length ?? 0;
-  if (!hasSpecificGoal) return count === 0;
+  if (!hasSpecificGoal) {
+    if (result.superFocusSupplements === undefined) return true;
+    return count === 0;
+  }
   switch (payload.monthlyBudget) {
     case 'Under $30':
-      return count >= 0 && count <= 1;
+      return count <= 1;
     case '$30-$60':
-      return count >= 1 && count <= 1;
+      return count <= 1;
     case '$60-$100':
-      return count >= 1 && count <= 2;
+      return count <= 2;
     case '$100+':
-      return count >= 2 && count <= 3;
+      return count <= 3;
     case '$150+':
-      return count >= 3 && count <= 4;
+      return count <= 4;
     default:
       return false;
   }
+}
+
+const EVIDENCE_STRENGTH_VALUES = new Set(['Strong', 'Moderate', 'Emerging']);
+
+function normalizeEvidenceStrength(raw: string): 'Strong' | 'Moderate' | 'Emerging' {
+  const t = typeof raw === 'string' ? raw.trim() : '';
+  if (EVIDENCE_STRENGTH_VALUES.has(t)) return t as 'Strong' | 'Moderate' | 'Emerging';
+  const low = t.toLowerCase();
+  if (low.includes('strong')) return 'Strong';
+  if (low.includes('emerging') || low.includes('limited') || low.includes('preliminary')) return 'Emerging';
+  if (low.includes('moderate')) return 'Moderate';
+  return 'Moderate';
+}
+
+function normalizeEvidenceOnStack(result: GeminiResult): GeminiResult {
+  const mapOne = (s: Supplement) => ({
+    ...s,
+    evidenceStrength: normalizeEvidenceStrength(
+      typeof s.evidenceStrength === 'string' ? s.evidenceStrength : '',
+    ),
+  });
+  return {
+    ...result,
+    supplements: result.supplements.map(mapOne),
+    superFocusSupplements: result.superFocusSupplements?.map(mapOne),
+  };
+}
+
+function scheduleLinesMentionSupplement(lines: string[], s: Supplement): boolean {
+  const lowerLines = lines.map((l) => l.toLowerCase());
+  const n = s.name.toLowerCase();
+  if (lowerLines.some((l) => l.includes(n))) return true;
+  const base = n.split(/\s*\+\s*/)[0]?.trim() ?? '';
+  if (base.length >= 5 && lowerLines.some((l) => l.includes(base))) return true;
+  return false;
+}
+
+function inferScheduleBucketFromTiming(timing: string): 'morning' | 'afternoon' | 'evening' {
+  const t = timing.toLowerCase();
+  if (/\b(before bed|bedtime|at night|nighttime|for sleep|with dinner late)\b/.test(t)) return 'evening';
+  if (/\b(morning|breakfast|upon waking|early day|pre-workout)\b/.test(t)) return 'morning';
+  return 'afternoon';
+}
+
+/** Ensures each base-stack supplement appears in the daily rhythm so UI badges and gating stay consistent. */
+function ensureDailyScheduleCoversSupplements(result: GeminiResult): GeminiResult {
+  const ds = {
+    morning: [...result.dailySchedule.morning],
+    afternoon: [...result.dailySchedule.afternoon],
+    evening: [...result.dailySchedule.evening],
+  };
+  const allLines = [...ds.morning, ...ds.afternoon, ...ds.evening];
+  for (const s of result.supplements) {
+    if (scheduleLinesMentionSupplement(allLines, s)) continue;
+    const bucket = inferScheduleBucketFromTiming(s.timing);
+    const line = `${s.name}, ${s.dosage}`.replace(/\s+,/g, ',').trim();
+    ds[bucket].push(line);
+    allLines.push(line);
+  }
+  return { ...result, dailySchedule: ds };
 }
 
 function validateRecommendationQuality(payload: IntakePayload, result: GeminiResult) {
@@ -1653,8 +1721,12 @@ export async function analyzeWithGemini(payload: IntakePayload): Promise<GeminiR
       if (!validateGeminiResult(parsed)) {
         throw new Error('Gemini response did not match the required JSON structure.');
       }
-      const enriched = ensureAbsorptionTimingOnStack(
-        enrichSupplementGoalTags(enforceVitaminD3WithK2(parsed as GeminiResult), payload),
+      const enriched = normalizeEvidenceOnStack(
+        ensureDailyScheduleCoversSupplements(
+          ensureAbsorptionTimingOnStack(
+            enrichSupplementGoalTags(enforceVitaminD3WithK2(parsed as GeminiResult), payload),
+          ),
+        ),
       );
       validateRecommendationQuality(payload, enriched);
       return enriched;

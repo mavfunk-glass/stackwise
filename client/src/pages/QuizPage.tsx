@@ -1332,7 +1332,7 @@ export default function QuizPage() {
           }
           return true;
         }
-        return true;
+        return (draft.biggestFrustrations ?? []).length > 0;
       case 5:
         return true;
       case 6:
@@ -1350,6 +1350,7 @@ export default function QuizPage() {
     }
     setIsAnalyzing(true);
     setError(null);
+    // Persist immediately so a failed or interrupted build never forces users to re-enter the quiz.
     saveQuiz(payload);
     try {
       await ensureApiSession();
@@ -3437,7 +3438,9 @@ export default function QuizPage() {
                     ? 'Pick at least one goal area'
                     : step === 4 && step4SubSlide === 'background'
                       ? 'Complete each health topic first'
-                      : 'Select an option to continue'}
+                      : step === 4 && step4SubSlide === 'frustrations'
+                        ? 'Pick at least one improvement priority'
+                        : 'Select an option to continue'}
               </button>
             ) : (
               <button
@@ -3464,6 +3467,9 @@ export default function QuizPage() {
           >
             <div className="font-semibold text-sm" style={{ color: '#991B1B' }}>Something went wrong</div>
             <div className="mt-1 text-xs leading-relaxed" style={{ color: '#B91C1C' }}>{error}</div>
+            <p className="mt-2 text-[11px] leading-relaxed" style={{ color: '#7F1D1D' }}>
+              Your quiz answers are already saved on this device. Tap Try again to resend the same answers—you do not need to redo the quiz.
+            </p>
             <button
               type="button"
               className="btn-primary mt-3"
