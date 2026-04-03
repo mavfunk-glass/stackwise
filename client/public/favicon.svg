@@ -1,6 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="6" fill="#0F1F3D"/>
-  <rect x="8" y="10" width="4" height="12" fill="#A8E63D"/>
-  <rect x="14" y="10" width="4" height="12" fill="#A8E63D"/>
-  <rect x="20" y="10" width="4" height="6" fill="#A8E63D"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="5 5 116 96" fill="none">
+  <!-- left ear -->
+  <path d="M26 52 Q14 34 12 24 Q16 14 28 22 Q40 30 48 42 Q42 52 32 52 Q28 54 26 52Z"
+        fill="#1E1E1E" stroke="#0D0D0D" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M28 48 Q22 32 20 26 Q24 22 32 28 Q38 36 42 42Z" fill="#FFB09A" opacity="0.95"/>
+  <!-- right ear -->
+  <path d="M100 52 Q112 34 114 24 Q110 14 98 22 Q86 30 78 42 Q84 52 94 52 Q98 54 100 52Z"
+        fill="#1E1E1E" stroke="#0D0D0D" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M98 48 Q104 32 106 26 Q102 22 94 28 Q88 36 84 42Z" fill="#FFB09A" opacity="0.95"/>
+  <!-- head -->
+  <ellipse cx="63" cy="50" rx="44" ry="42" fill="#1E1E1E" stroke="#0D0D0D" stroke-width="5"/>
+  <!-- muzzle -->
+  <path d="M48 60 Q63 56 78 60 Q84 63 82 68 Q80 73 63 75 Q46 73 44 68 Q42 63 48 60Z" fill="#EEF0EE"/>
+  <!-- cheeks -->
+  <ellipse cx="22" cy="62" rx="18" ry="13" fill="rgba(220,70,40,0.22)"/>
+  <ellipse cx="104" cy="62" rx="18" ry="13" fill="rgba(220,70,40,0.22)"/>
+  <!-- eyes (happy closed crescents) -->
+  <path d="M36 54 Q46 40 56 54" stroke="#1A0A00" stroke-width="3.8" stroke-linecap="round" fill="none"/>
+  <path d="M71 54 Q80 40 89 54" stroke="#1A0A00" stroke-width="3.8" stroke-linecap="round" fill="none"/>
+  <!-- nose -->
+  <path d="M59 66 L63 62 L67 66 Q63 71 59 66Z" fill="#C87060"/>
+  <!-- mouth -->
+  <path d="M55 72 Q63 83 71 72" stroke="#1A0A00" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  <!-- whiskers -->
+  <line x1="6" y1="63" x2="42" y2="65" stroke="#D0C0A8" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="6" y1="70" x2="42" y2="70" stroke="#D0C0A8" stroke-width="1" stroke-linecap="round"/>
+  <line x1="84" y1="65" x2="120" y2="63" stroke="#D0C0A8" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="84" y1="70" x2="120" y2="70" stroke="#D0C0A8" stroke-width="1" stroke-linecap="round"/>
 </svg>

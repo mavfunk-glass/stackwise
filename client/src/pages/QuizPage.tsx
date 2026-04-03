@@ -39,8 +39,11 @@ const PRO_ONLY_PRIMARY_GOALS: PrimaryGoal[] = ['🧬 Peptide Optimization'];
 /** Step 4 (Improvements): max frustration / “what matters most” picks */
 const MAX_STEP4_IMPROVEMENT_PICKS = 5;
 
-/** Free-text fields on step 4 (medication detail + optional frustrations note) */
+/** Free-text on step 4 health background (e.g. prescription “other”) */
 const MAX_STEP4_TEXT_CHARS = 500;
+
+/** Step 4 Improvements only: optional “More detail?” textarea */
+const MAX_STEP4_IMPROVEMENT_OPTIONAL_DETAIL_CHARS = 50;
 
 /** Super Focus: free-text beyond normal goal picks */
 const MAX_SUPER_FOCUS_CHARS = 200;
@@ -274,15 +277,15 @@ const FEELINGS_BY_GOAL: Record<PrimaryGoal, { emoji: string; label: string }[]> 
   '✨ Skin Health & Glow': [
     { emoji: '🌫️', label: 'Dull or tired-looking skin' },
     { emoji: '🔴', label: 'Breakouts or reactive skin' },
-    { emoji: '🎨', label: 'Uneven tone or texture' },
+    { emoji: '🎨', label: 'Uneven tone, rough texture, or visible pores' },
     { emoji: '〰️', label: 'Fine lines or loss of elasticity' },
+    { emoji: '💧', label: 'Dry, tight, or easily irritated skin' },
   ],
   '🪞 LooksMaxxing': [
-    { emoji: '🫧', label: 'I want to debloat my face' },
-    { emoji: '🪞', label: 'I want to make my face look sharper' },
-    { emoji: '✨', label: 'Skin texture or tone not where I want it' },
-    { emoji: '📐', label: 'Jawline or definition not where I want it' },
-    { emoji: '💇', label: 'Hair quality not matching the look I want' },
+    { emoji: '🫧', label: 'Face looks puffy or bloated, especially in the morning or photos' },
+    { emoji: '✨', label: 'I want a healthy radiance people notice, not just a clear routine' },
+    { emoji: '📸', label: 'My face reads softer or puffier in photos than I want' },
+    { emoji: '💇', label: 'Hair density or quality not matching the look I want' },
   ],
   '💖 Sexual Health & Vitality': [
     { emoji: '💕', label: 'Lower libido or desire than I want' },
@@ -314,15 +317,12 @@ const FRUSTRATIONS_BY_GOAL: Record<PrimaryGoal, string[]> = {
     "My weight won't move no matter what I do",
     "I hit a wall every afternoon and can't push through",
     "I'm running on caffeine just to feel normal",
-    "I feel like I'm falling further behind on my goals",
-    'My confidence in how I look or feel has taken a hit',
     'I want weight loss to feel more natural instead of like a constant fight',
   ],
   '💪 Muscle & Strength': [
     'I feel weaker than I should, like my strength is gone',
     "I've stopped working out or can't recover the way I used to",
     "I wake up exhausted no matter how much I sleep",
-    "I feel like I'm falling further behind on my goals",
     'I want stronger pumps in the gym and better workout performance',
     'I want to recover faster so I can progress between sessions',
   ],
@@ -330,7 +330,6 @@ const FRUSTRATIONS_BY_GOAL: Record<PrimaryGoal, string[]> = {
     'I feel bloated or uncomfortable after eating',
     'My body feels inflamed, stiff, or puffy',
     "I wake up exhausted no matter how much I sleep",
-    'My confidence in how I look or feel has taken a hit',
     'I want meals to feel light and comfortable instead of heavy or bloated',
   ],
   '⚡ Energy & Focus': [
@@ -361,7 +360,6 @@ const FRUSTRATIONS_BY_GOAL: Record<PrimaryGoal, string[]> = {
     'My hormones feel out of control: mood swings, PMS, crashes',
     "I'm irritable or short-tempered and I hate it",
     'I feel low, flat, or disconnected from life',
-    'My confidence in how I look or feel has taken a hit',
     'I want my hormones to feel stable so my mood and energy are predictable',
   ],
   '🌸 Menopause Support': [
@@ -380,41 +378,32 @@ const FRUSTRATIONS_BY_GOAL: Record<PrimaryGoal, string[]> = {
   ],
   '💇 Hair Growth': [
     'My hair is thinning or not growing like it used to',
-    'My confidence in how I look or feel has taken a hit',
     'I feel older than I am, like something shifted',
     'I want my hair to feel thicker, stronger, and healthier again',
   ],
   '✨ Skin Health & Glow': [
     'My skin looks dull, tired, or broken out',
-    'My body feels inflamed, stiff, or puffy',
-    'My confidence in how I look or feel has taken a hit',
+    'Texture, pores, or tone bother me more than I want',
+    'I want fewer breakouts and calmer, more even-looking skin',
     'I want finer lines and better elasticity when I look in the mirror',
-    'I want my skin to look clearer and more even day-to-day',
   ],
   '🪞 LooksMaxxing': [
-    'I want to debloat my face',
-    'I want my jawline to look more defined',
-    'I want my face to look tighter and less puffy in photos',
-    'I want clearer skin texture and a more even tone',
-    'I want my under-eye area to look fresher and less tired',
-    'I want my hairline and overall hair density to look stronger',
-    'I want a sharper side profile and better facial structure',
-    'I want better definition, symmetry, and overall “look” when I see myself',
-    'I want my face and body to reflect the work I put in',
+    'My face looks puffy or bloated, especially in photos or the morning',
+    'I want that inner glow. The kind that looks like health, not filters',
+    'Water retention or puff changes how my face looks day to day',
+    'My hairline or hair density is affecting the overall look I am going for',
   ],
   '💖 Sexual Health & Vitality': [
     'My drive and motivation feel completely gone',
     'My sexual performance feels weaker than I want',
     'I feel low, flat, or disconnected from life',
     'My hormones feel out of control: mood swings, PMS, crashes',
-    'I feel disconnected from who I used to be',
     'I want stronger desire, confidence, and performance in intimacy',
   ],
   '🧬 Peptide Optimization': [
     "I've stopped working out or can't recover the way I used to",
     'My body feels inflamed, stiff, or puffy',
     'I feel weaker than I should, like my strength is gone',
-    "I feel like I'm falling further behind on my goals",
     'I want to use more advanced tools (like peptides) to recover faster and push progress safely',
   ],
 };
@@ -598,13 +587,19 @@ export default function QuizPage() {
       { value: '🌸 Menopause Support', icon: '🌸', label: 'Menopause Support', description: 'Navigate this transition with your energy, mood, and body intact.' },
       { value: '🛡️ Longevity & Immunity', icon: '🛡️', label: 'Longevity & Immunity', description: 'Build the foundation for a longer, stronger, healthier life.' },
       { value: '💇 Hair Growth', icon: '💇', label: 'Hair Growth', description: "Feed your follicles what they're missing and stop the shedding." },
-      { value: '✨ Skin Health & Glow', icon: '✨', label: 'Skin & Glow', description: "Glow from the inside out: the supplements your skincare can't replace." },
+      {
+        value: '✨ Skin Health & Glow',
+        icon: '✨',
+        label: 'Skin & Glow',
+        description:
+          'Clearer, smoother, stronger skin: nutrients for texture, breakouts, and elasticity alongside your skincare.',
+      },
       {
         value: '🪞 LooksMaxxing',
         icon: '🪞',
         label: 'LooksMaxxing',
         description:
-          'Focus on skin tone and face definition, including model-like coloring support. Evidence-backed carotenoids like astaxanthin, lycopene, and beta-carotene can improve skin tone and perceived inner glow over time for some people.',
+          'Debloat your face, build a real skin glow, and optimize the health markers that let you reach your maximum biological attractiveness.',
       },
       {
         value: '💖 Sexual Health & Vitality',
@@ -1273,7 +1268,7 @@ export default function QuizPage() {
         ? payload.prescriptionMedicationOther?.trim().slice(0, MAX_STEP4_TEXT_CHARS) || undefined
         : undefined;
     const frustrationOther =
-      payload.frustrationOther?.trim().slice(0, MAX_STEP4_TEXT_CHARS) || undefined;
+      payload.frustrationOther?.trim().slice(0, MAX_STEP4_IMPROVEMENT_OPTIONAL_DETAIL_CHARS) || undefined;
     if (!isValidBodyMetrics(payload.heightCm, payload.weightKg)) return null;
     const dietaryPreferences =
       payload.dietaryPreferences?.length
@@ -2042,18 +2037,6 @@ export default function QuizPage() {
                     }}
                   >
                     <span>Super Focus</span>
-                    {!isProUser && (
-                      <span
-                        className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-md"
-                        style={{
-                          background: step2SubSlide === 'superFocus' ? 'rgba(249,246,241,0.2)' : 'linear-gradient(135deg, #C4A574, #8B6914)',
-                          color: step2SubSlide === 'superFocus' ? '#F9F6F1' : '#FDFCFA',
-                          border: step2SubSlide === 'superFocus' ? '1px solid rgba(249,246,241,0.35)' : '1px solid rgba(139,105,20,0.35)',
-                        }}
-                      >
-                        Pro
-                      </span>
-                    )}
                   </button>
                 </div>
               </div>
@@ -2329,38 +2312,57 @@ export default function QuizPage() {
                     return (
                       <details
                         key={section.sectionKey}
-                        className="rounded-2xl overflow-hidden border open:shadow-sm"
+                        className="group rounded-2xl overflow-hidden border open:shadow-sm"
                         style={{ borderColor: theme.pillBorder, background: '#FFFFFF' }}
                       >
                         <summary
-                          className="flex items-center gap-2 px-3 py-3 list-none cursor-pointer select-none [&::-webkit-details-marker]:hidden"
+                          className="flex w-full items-center justify-between gap-2 px-3 py-3 list-none cursor-pointer select-none [&::-webkit-details-marker]:hidden"
                           style={{
                             background: theme.pillBg,
                             borderLeft: `4px solid ${theme.text}`,
                           }}
                         >
-                          <span className="text-lg leading-none" aria-hidden>
-                            {goalEmoji}
-                          </span>
-                          <span
-                            className="flex-1 text-left text-sm font-bold tracking-tight"
-                            style={{ color: theme.text }}
-                          >
-                            {section.goalLabel}
-                          </span>
-                          <span
-                            className="text-[11px] font-semibold tabular-nums shrink-0 px-1.5 py-0.5 rounded-md"
-                            style={{ background: 'rgba(255,255,255,0.65)', color: theme.text }}
-                          >
-                            {pickedHere}/{section.items.length}
-                          </span>
-                          <span
-                            className="text-[10px] shrink-0 opacity-80"
-                            style={{ color: theme.text }}
-                            aria-hidden
-                          >
-                            ▼
-                          </span>
+                          <div className="flex items-center gap-2 min-w-0 flex-1">
+                            <span
+                              className="font-bold text-xs w-4 shrink-0 text-center"
+                              style={{ color: theme.text }}
+                              aria-hidden
+                            >
+                              <span className="group-open:hidden">▶</span>
+                              <span className="hidden group-open:inline">▼</span>
+                            </span>
+                            <span className="text-lg leading-none shrink-0" aria-hidden>
+                              {goalEmoji}
+                            </span>
+                            <span className="min-w-0">
+                              <span
+                                className="font-semibold text-sm block leading-tight"
+                                style={{ color: theme.text }}
+                              >
+                                {section.goalLabel}
+                              </span>
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span
+                              className="text-[10px] font-semibold whitespace-nowrap group-open:hidden"
+                              style={{ color: theme.text, opacity: 0.82 }}
+                            >
+                              Tap to expand
+                            </span>
+                            <span
+                              className="text-[10px] font-semibold whitespace-nowrap hidden group-open:inline"
+                              style={{ color: theme.text, opacity: 0.82 }}
+                            >
+                              Tap to close
+                            </span>
+                            <span
+                              className="text-[11px] font-semibold tabular-nums px-1.5 py-0.5 rounded-md"
+                              style={{ background: 'rgba(255,255,255,0.65)', color: theme.text }}
+                            >
+                              {pickedHere}/{section.items.length}
+                            </span>
+                          </div>
                         </summary>
                         <div
                           className="p-2 pt-1 space-y-1.5 border-t"
@@ -2674,16 +2676,14 @@ export default function QuizPage() {
                             <span style={{ fontSize: 16 }} aria-hidden>
                               {cat.icon}
                             </span>
-                            <span className="min-w-0">
-                              <span className="font-semibold text-sm block leading-tight" style={{ color: '#1C3A2E' }}>
-                                {cat.category}
-                              </span>
-                              <span className="text-[10px] font-semibold mt-0.5 block leading-tight" style={{ color: '#4A7C59' }}>
-                                {isOpen ? 'Tap to close' : 'Tap to expand'}
-                              </span>
+                            <span className="min-w-0 font-semibold text-sm leading-tight" style={{ color: '#1C3A2E' }}>
+                              {cat.category}
                             </span>
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
+                            <span className="text-[10px] font-semibold whitespace-nowrap" style={{ color: '#4A7C59' }}>
+                              {isOpen ? 'Tap to close' : 'Tap to expand'}
+                            </span>
                             {selCount > 0 && (
                               <span
                                 className="text-xs font-bold rounded-full min-w-[1.5rem] h-6 px-1.5 flex items-center justify-center"
@@ -2894,39 +2894,55 @@ export default function QuizPage() {
                         return (
                           <details
                             key={goal}
-                            className="rounded-2xl overflow-hidden border open:shadow-sm"
+                            className="group rounded-2xl overflow-hidden border open:shadow-sm"
                             style={{ borderColor: theme.pillBorder, background: '#FFFFFF' }}
                           >
                             <summary
-                              className="flex items-center gap-2 px-2.5 py-2 list-none cursor-pointer select-none [&::-webkit-details-marker]:hidden"
+                              className="flex w-full items-center justify-between gap-2 px-2.5 py-2 list-none cursor-pointer select-none [&::-webkit-details-marker]:hidden"
                               style={{
                                 background: theme.pillBg,
                                 borderLeft: `3px solid ${theme.text}`,
                               }}
                             >
-                              <span className="text-moss font-bold text-[10px] w-3.5 shrink-0" aria-hidden>
-                                ▶
-                              </span>
-                              <span className="text-base leading-none" aria-hidden>
-                                {emoji}
-                              </span>
-                              <span className="flex-1 text-left min-w-0">
+                              <div className="flex items-center gap-2 min-w-0 flex-1">
                                 <span
-                                  className="block text-sm font-bold tracking-tight leading-tight"
+                                  className="font-bold text-[10px] w-3.5 shrink-0 text-center"
+                                  style={{ color: theme.text }}
+                                  aria-hidden
+                                >
+                                  <span className="group-open:hidden">▶</span>
+                                  <span className="hidden group-open:inline">▼</span>
+                                </span>
+                                <span className="text-base leading-none shrink-0" aria-hidden>
+                                  {emoji}
+                                </span>
+                                <span
+                                  className="text-sm font-bold tracking-tight leading-tight min-w-0 text-left"
                                   style={{ color: theme.text }}
                                 >
                                   {label}
                                 </span>
-                                <span className="block text-[10px] font-semibold mt-0.5 leading-tight" style={{ color: theme.text, opacity: 0.85 }}>
+                              </div>
+                              <div className="flex items-center gap-2 shrink-0">
+                                <span
+                                  className="text-[10px] font-semibold whitespace-nowrap group-open:hidden"
+                                  style={{ color: theme.text, opacity: 0.82 }}
+                                >
                                   Tap to expand
                                 </span>
-                              </span>
-                              <span
-                                className="text-[11px] font-semibold tabular-nums shrink-0 px-1.5 py-0.5 rounded-md"
-                                style={{ background: 'rgba(255,255,255,0.65)', color: theme.text }}
-                              >
-                                {pickedInSection}/{options.length}
-                              </span>
+                                <span
+                                  className="text-[10px] font-semibold whitespace-nowrap hidden group-open:inline"
+                                  style={{ color: theme.text, opacity: 0.82 }}
+                                >
+                                  Tap to close
+                                </span>
+                                <span
+                                  className="text-[11px] font-semibold tabular-nums px-1.5 py-0.5 rounded-md"
+                                  style={{ background: 'rgba(255,255,255,0.65)', color: theme.text }}
+                                >
+                                  {pickedInSection}/{options.length}
+                                </span>
+                              </div>
                             </summary>
                             <div
                               className="p-2 pt-1 space-y-1.5 border-t"
@@ -3038,11 +3054,11 @@ export default function QuizPage() {
                         outline: 'none',
                       }}
                       value={draft.frustrationOther ?? ''}
-                      maxLength={MAX_STEP4_TEXT_CHARS}
+                      maxLength={MAX_STEP4_IMPROVEMENT_OPTIONAL_DETAIL_CHARS}
                       onChange={(e) =>
                         setDraft((d) => ({
                           ...d,
-                          frustrationOther: e.target.value.slice(0, MAX_STEP4_TEXT_CHARS),
+                          frustrationOther: e.target.value.slice(0, MAX_STEP4_IMPROVEMENT_OPTIONAL_DETAIL_CHARS),
                         }))
                       }
                       placeholder="If something important is missing."
@@ -3054,7 +3070,7 @@ export default function QuizPage() {
                       }}
                     />
                     <p className="text-[11px] mt-1 text-right tabular-nums font-medium" style={{ color: '#9C8E84' }}>
-                      {(draft.frustrationOther ?? '').length}/{MAX_STEP4_TEXT_CHARS}
+                      {(draft.frustrationOther ?? '').length}/{MAX_STEP4_IMPROVEMENT_OPTIONAL_DETAIL_CHARS}
                     </p>
                   </div>
 

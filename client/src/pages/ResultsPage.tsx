@@ -341,9 +341,16 @@ function SupplementCard({
             {expanded ? '\u25BC' : '\u25B6'}
           </span>
           <div className="flex-1 min-w-0">
-            <div className="font-semibold text-base text-forest">{s.name}</div>
-            <div className="text-[11px] font-semibold text-moss mt-1 uppercase tracking-wide">
-              {expanded ? 'Tap to collapse' : 'Tap to expand, dose, timing, and why it fits'}
+            <div className="flex items-center justify-between gap-2">
+              <div className="font-semibold text-base text-forest">{s.name}</div>
+              {!expanded && (
+                <span
+                  className="shrink-0 inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-full"
+                  style={{ background: 'transparent', color: '#B0A89E', border: '1px solid #E0D8D0' }}
+                >
+                  tap to expand ▾
+                </span>
+              )}
             </div>
             <div className="text-xs text-warm-mid mt-1">{taglineDisplay}</div>
             {goalTags.length > 0 && (
@@ -402,7 +409,22 @@ function SupplementCard({
             </div>
           </div>
           <div className="flex flex-wrap gap-2 text-xs text-warm-light">
-            <span className="px-2 py-0.5 rounded-full bg-moss-light/50 text-forest font-medium">{s.evidenceStrength} evidence</span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="inline-flex items-center gap-0.5">
+                {[1, 2, 3].map((i) => (
+                  <span
+                    key={i}
+                    style={{
+                      fontSize: 7,
+                      color: i <= ({ Strong: 3, Moderate: 2, Emerging: 1 } as Record<string, number>)[s.evidenceStrength]
+                        ? '#4A7C59'
+                        : '#DDD5CB',
+                    }}
+                  >●</span>
+                ))}
+              </span>
+              <span>{{ Strong: 'Well studied', Moderate: 'Supported', Emerging: 'Promising' }[s.evidenceStrength] ?? s.evidenceStrength}</span>
+            </span>
             <span className="px-2 py-0.5 rounded-full bg-cream-dark/40 text-warm-mid">~{s.timeToEffect}</span>
             <span className="px-2 py-0.5 rounded-full bg-cream-dark/40 text-warm-mid">
               {formatPerSupplementMonthly(s.estimatedMonthlyCostLow, s.estimatedMonthlyCostHigh)}
@@ -933,7 +955,7 @@ export default function ResultsPage() {
                   <span>Unlock full stack, from $9/mo.</span>
                 </button>
                 <p className="text-xs mt-3" style={{ color: 'rgba(249,246,241,0.4)' }}>
-                  Cancel anytime. 30-day money-back guarantee.
+                  Cancel anytime · 7-day fit guarantee
                 </p>
               </div>
             )}

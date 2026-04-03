@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ExampleStackPreview from '../components/ExampleStackPreview';
 import StackyCat from '../components/StackyCat';
 import {
   ensureCurrentStackFromProfile,
@@ -366,8 +367,35 @@ export default function LandingPageRebuild() {
           </h1>
 
           <p className="text-base leading-relaxed mb-8 text-warm-mid max-w-xl mx-auto">
-            StackWise is a supplement clarity platform that helps people build a personalized stack, understand why it fits, and get ongoing support as their routine evolves.
+            StackWise builds your personalized supplement stack, shows you exactly why each pick fits your goals, and stays with you through Stacky as your routine changes.
           </p>
+
+          <div className="max-w-md mx-auto mb-3 text-left">
+            <ExampleStackPreview />
+          </div>
+          <div
+            className="max-w-md mx-auto mb-8 rounded-xl px-3.5 py-3 text-left"
+            style={{ background: '#F0F5F2', border: '1px solid #D4E8DA' }}
+          >
+            <p className="text-xs leading-relaxed" style={{ color: '#1C3A2E' }}>
+              StackWise builds a stack around <strong>your unique goals and preferences</strong>. Each recommendation is carefully selected to <strong>fit into your routine</strong>, not general supplement trends.
+            </p>
+          </div>
+
+          <div className="max-w-md mx-auto mb-8 space-y-3 text-left">
+            <div className="flex items-start gap-2.5 text-sm" style={{ color: '#3D2E22' }}>
+              <span style={{ color: '#4A7C59', fontWeight: 700, flexShrink: 0 }}>+</span>
+              <span>Built around your goals and real life, not whatever ads and influencers pushed last week.</span>
+            </div>
+            <div className="flex items-start gap-2.5 text-sm" style={{ color: '#3D2E22' }}>
+              <span style={{ color: '#4A7C59', fontWeight: 700, flexShrink: 0 }}>+</span>
+              <span>Clear reasoning for every recommendation, so you understand what you&apos;re taking and why.</span>
+            </div>
+            <div className="flex items-start gap-2.5 text-sm" style={{ color: '#3D2E22' }}>
+              <span style={{ color: '#4A7C59', fontWeight: 700, flexShrink: 0 }}>+</span>
+              <span>Stacky stays in your corner as your goals and routine change, so the plan can grow with you.</span>
+            </div>
+          </div>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button
@@ -599,7 +627,7 @@ export default function LandingPageRebuild() {
           </div>
 
           <p className="text-center text-xs mt-6 max-w-xl mx-auto leading-relaxed" style={{ color: '#9C8E84' }}>
-            <strong style={{ color: '#6B5B4E' }}>Quiz unlocks:</strong> Basic adds LooksMaxxing. Pro adds Peptide Optimization and full peptide education — not included on Basic.
+            <strong style={{ color: '#6B5B4E' }}>Quiz unlocks:</strong> Basic adds LooksMaxxing. Pro adds Peptide Optimization and full peptide education, not included on Basic.
           </p>
         </div>
       </section>
@@ -666,7 +694,7 @@ export default function LandingPageRebuild() {
                   'Starter clarity and first recommendations',
                   'Full detail on first supplements',
                   'A few free support questions with Stacky',
-                  'Core quiz goals only — LooksMaxxing unlocks on Basic; Peptide Optimization on Pro',
+                  'Core quiz goals only. LooksMaxxing unlocks on Basic; Peptide Optimization on Pro',
                 ],
                 cta: 'Start Free',
                 action: () => navigate('/quiz'),
@@ -770,9 +798,11 @@ export default function LandingPageRebuild() {
           >
             <span style={{ fontSize: 18, flexShrink: 0 }}>🛡</span>
             <div>
-              <div className="font-semibold text-sm mb-1" style={{ color: '#F9F6F1' }}>30-day money-back guarantee</div>
+              <div className="font-semibold text-sm mb-1" style={{ color: '#F9F6F1' }}>7-day fit guarantee</div>
               <p className="text-xs leading-relaxed" style={{ color: 'rgba(249,246,241,0.5)' }}>
-                If StackWise does not help you feel clearer and more confident in your supplement decisions within 30 days, email <a href="mailto:healthpro@stackdsup.com" style={{ color: 'rgba(249,246,241,0.55)', textDecoration: 'underline' }}>healthpro@stackdsup.com</a> for a full refund. No questions asked.
+                If StackWise isn&apos;t the right fit within your first 7 days, email{' '}
+                <a href="mailto:MAVFunk@gmail.com" style={{ color: 'rgba(249,246,241,0.55)', textDecoration: 'underline' }}>MAVFunk@gmail.com</a>{' '}
+                for a full refund.
               </p>
             </div>
           </div>
@@ -867,7 +897,7 @@ export default function LandingPageRebuild() {
             <button onClick={() => navigate('/terms')} className="hover:text-forest transition-colors" type="button">
               Terms
             </button>
-            <a href="mailto:healthpro@stackdsup.com" className="hover:text-forest transition-colors">
+            <a href="mailto:MAVFunk@gmail.com" className="hover:text-forest transition-colors">
               Support
             </a>
           </div>

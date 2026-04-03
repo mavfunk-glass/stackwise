@@ -9,6 +9,7 @@
     "start": "node dist/index.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "diagnose:personalization": "tsx src/scripts/diagnosePersonalization.ts",
+    "diagnose:stack": "tsx src/scripts/diagnosePersonalization.ts",
     "reset:free-tier": "tsx src/scripts/resetFreeTierLocal.ts",
     "create-paypal-plans": "tsx src/scripts/createPaypalPlans.ts",
     "railway:env-paste": "tsx src/scripts/writeRailwayEnvPaste.ts",

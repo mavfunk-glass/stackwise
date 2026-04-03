@@ -86,6 +86,30 @@ const scenarios: Scenario[] = [
       monthlyBudget: '$60-$100',
     },
   },
+  {
+    id: 'looksmaxxing-debloat-glow',
+    payload: {
+      ageRange: '26-35',
+      biologicalSex: 'Male',
+      heightCm: 178,
+      weightKg: 82,
+      mindset: 'Intermediate: I want to improve my health and consistency',
+      specificGoal: 'less facial puff in photos and a healthier-looking glow',
+      primaryGoals: ['🪞 LooksMaxxing'],
+      currentFeelings: [
+        'Face looks puffy or bloated, especially in the morning or photos',
+        'I want a healthy radiance people notice, not just a clear routine',
+      ],
+      healthBackground: ['None of the above'],
+      symptomDuration: '3-6 months',
+      biggestFrustrations: [
+        'My face looks puffy or bloated, especially in photos or the morning',
+        'I want that inner glow. The kind that looks like health, not filters',
+      ],
+      dietaryPreferences: ['No major restrictions'],
+      monthlyBudget: '$60-$100',
+    },
+  },
 ];
 
 async function run() {

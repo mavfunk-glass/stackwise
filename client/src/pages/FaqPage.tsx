@@ -16,7 +16,11 @@ export default function FaqPage() {
     },
     {
       q: 'Can I cancel anytime?',
-      a: 'Yes. You can cancel directly from your PayPal account. You keep access until the end of your billing period. No fees and no hoops.',
+      a: 'Yes. Cancel directly from your PayPal account: Settings > Payments > Manage pre-approved payments > StackWise > Cancel. You keep access until the end of your current billing period. No fees, no penalties.',
+    },
+    {
+      q: 'What is the 7-day fit guarantee?',
+      a: "If StackWise isn't the right fit within your first 7 days (the plan doesn't make sense, the guidance isn't useful), email MAVFunk@gmail.com for a full refund. This covers fit and clarity, not supplement outcomes (those depend on the supplements and take weeks).",
     },
     {
       q: 'What makes Stacky different from ChatGPT?',
@@ -110,11 +114,11 @@ export default function FaqPage() {
             Billing, refund requests, data deletion, or anything else - email us directly.
           </p>
           <a
-            href="mailto:healthpro@stackdsup.com"
+            href="mailto:MAVFunk@gmail.com"
             className="inline-block rounded-full font-semibold text-sm px-5 py-2.5 transition-opacity hover:opacity-90"
             style={{ background: '#F9F6F1', color: '#1C3A2E' }}
           >
-            healthpro@stackdsup.com
+            MAVFunk@gmail.com
           </a>
         </section>
       </main>

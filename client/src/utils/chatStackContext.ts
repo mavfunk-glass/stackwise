@@ -55,7 +55,7 @@ export function buildChatStackContext({
     (s, i) => `${i + 1}. ${s.name} | ${s.dosage} | ${s.timing} | benefit: ${s.keyBenefit}`,
   );
 
-  const frustrationNote = quiz?.frustrationOther?.trim() ? sanitizeContextText(quiz.frustrationOther, 500) : '';
+  const frustrationNote = quiz?.frustrationOther?.trim() ? sanitizeContextText(quiz.frustrationOther, 50) : '';
   const rxOther = quiz?.prescriptionMedicationOther?.trim()
     ? sanitizeContextText(quiz.prescriptionMedicationOther, 500)
     : '';

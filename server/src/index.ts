@@ -7,6 +7,7 @@ import billingRoutes from './routes/billingRoutes.js';
 import accountRoutes from './routes/accountRoutes.js';
 import { startReminderJob } from './services/reminderJob.js';
 import paypalWebhookHandler from './routes/paypalWebhookHandler.js';
+import analyticsRoutes from './routes/analyticsRoutes.js';
 import { getDb } from './db/index.js';
 import dotenv from 'dotenv';
 import path from 'path';
@@ -87,6 +88,8 @@ app.use(
 
 app.post('/api/webhooks/paypal', express.raw({ type: 'application/json' }), paypalWebhookHandler);
 app.use(express.json({ limit: '1mb' }));
+
+app.use('/api/analytics', analyticsRoutes);
 
 app.get('/health', (_req, res) => {
   res.status(200).json({ ok: true });

@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { activateSubscriptionOnServer, fetchBillingStatus } from '../api/session';
 import { REBUILD_SAVINGS_BODY } from '../copy/rebuildStackUpsell';
 import { NavIcon } from '../copy/navWayfinding';
 import { saveSubscription } from '../types/storage';
+import { trackEvent } from '../analytics/track';
 
 const BASIC_PLAN_ID = import.meta.env.VITE_PAYPAL_BASIC_PLAN_ID as string;
 const PRO_PLAN_ID = import.meta.env.VITE_PAYPAL_PRO_PLAN_ID as string;
@@ -20,7 +21,11 @@ function PayPalWrapper({ planId, tier, onSuccess }: { planId: string; tier: Subs
       <div className="w-full rounded-xl overflow-hidden" style={{ maxWidth: '100%' }}>
         <PayPalButtons
           style={{ layout: 'vertical', color: 'black', shape: 'pill', label: 'subscribe', height: 50 }}
-          createSubscription={(_d, actions) => { setErr(null); return actions.subscription.create({ plan_id: planId }); }}
+          createSubscription={(_d, actions) => {
+            trackEvent('paypal_subscribe_click', { tier });
+            setErr(null);
+            return actions.subscription.create({ plan_id: planId });
+          }}
           onApprove={async (data) => {
             const subscriptionId = (data.subscriptionID ?? '').trim();
             if (!subscriptionId) {
@@ -38,6 +43,7 @@ function PayPalWrapper({ planId, tier, onSuccess }: { planId: string; tier: Subs
                   subscriptionId,
                   activatedAt: new Date().toISOString(),
                 });
+                trackEvent('subscription_activated', { tier, dev_bypass: true });
                 onSuccess();
                 return;
               }
@@ -58,10 +64,14 @@ function PayPalWrapper({ planId, tier, onSuccess }: { planId: string; tier: Subs
                 activatedAt: new Date().toISOString(),
               });
             }
+            trackEvent('subscription_activated', { tier });
             onSuccess();
           }}
           onError={() => setErr('Something went wrong. Please try again.')}
-          onCancel={() => setErr('Payment cancelled.')}
+          onCancel={() => {
+            trackEvent('paypal_checkout_cancelled', { tier });
+            setErr('Payment cancelled.');
+          }}
         />
       </div>
     </div>
@@ -98,6 +108,10 @@ export default function PricingPage() {
   const location = useLocation();
   const rebuildIntent = (location.state as { intent?: string } | null)?.intent === 'rebuild';
   const [successTier, setSuccessTier] = useState<SubscriptionTier | null>(null);
+
+  useEffect(() => {
+    trackEvent('pricing_view', { rebuild_intent: rebuildIntent });
+  }, [rebuildIntent]);
 
   return (
     <div className="min-h-screen pb-16" style={{ background: '#F9F6F1' }}>
@@ -183,13 +197,13 @@ export default function PricingPage() {
           </div>
           <ul className="text-xs leading-relaxed space-y-1.5" style={{ color: '#6B5B4E' }}>
             <li>
-              <strong style={{ color: '#1C3A2E' }}>Free</strong> — core health goals only. LooksMaxxing and Peptide Optimization stay locked.
+              <strong style={{ color: '#1C3A2E' }}>Free</strong>: core health goals only. LooksMaxxing and Peptide Optimization stay locked.
             </li>
             <li>
-              <strong style={{ color: '#1C3A2E' }}>Basic</strong> — unlocks <strong style={{ color: '#1C3A2E' }}>LooksMaxxing</strong> in the quiz (advanced appearance goals). Peptide Optimization remains Pro-only.
+              <strong style={{ color: '#1C3A2E' }}>Basic</strong>: unlocks <strong style={{ color: '#1C3A2E' }}>LooksMaxxing</strong> in the quiz (advanced appearance goals). Peptide Optimization remains Pro-only.
             </li>
             <li>
-              <strong style={{ color: '#1C3A2E' }}>Pro</strong> — everything in Basic, plus <strong style={{ color: '#1C3A2E' }}>Peptide Optimization</strong> in the quiz and peptide education in your guide when relevant.
+              <strong style={{ color: '#1C3A2E' }}>Pro</strong>: everything in Basic, plus <strong style={{ color: '#1C3A2E' }}>Peptide Optimization</strong> in the quiz and peptide education in your guide when relevant.
             </li>
           </ul>
         </div>
@@ -205,7 +219,7 @@ export default function PricingPage() {
               <span className="font-serif" style={{ fontSize: 42, color: '#F5924A', fontWeight: 300 }}>$19</span>
               <span className="text-sm text-on-dark-muted">/month</span>
             </div>
-            <p className="text-sm mb-5 text-on-dark-muted">Cancel anytime. 30-day money-back guarantee.</p>
+            <p className="text-sm mb-5 text-on-dark-muted">Cancel anytime. 7-day fit guarantee on your first charge.</p>
 
             <div className="space-y-2.5 mb-5">
               {[
@@ -215,7 +229,7 @@ export default function PricingPage() {
                 ['🗂️', 'Name and organize your stacks in Stack Hub'],
                 ['🔍', 'Evaluate new supplements before you buy: fit, overlap, timing'],
                 ['📈', 'Ongoing support for smarter decisions as life changes'],
-                ['🧬', 'Unlock Peptide Optimization in the quiz + peptide guidance when relevant (Pro only — not on Basic)'],
+                ['🧬', 'Unlock Peptide Optimization in the quiz + peptide guidance when relevant (Pro only, not on Basic)'],
                 ['⚕️', 'Nudges to check with a professional when something is medical or uncertain'],
                 ['📧', 'Education that stays relevant to your goals and current stack'],
                 ['✓', 'Everything in Basic'],
@@ -233,7 +247,7 @@ export default function PricingPage() {
             <div className="mt-4 flex items-start gap-2.5 rounded-xl px-3 py-2.5" style={{ background: 'rgba(255,255,255,0.06)' }}>
               <span className="text-on-dark-muted" style={{ fontSize: 14, flexShrink: 0 }}>🛡</span>
               <p className="text-xs leading-relaxed text-on-dark-muted">
-                30-day money-back guarantee. If StackWise doesn&apos;t help you feel clearer and more confident in your supplement decisions within 30 days, email <a href="mailto:healthpro@stackdsup.com" style={{ color: 'rgba(249,246,241,0.7)', textDecoration: 'underline' }}>healthpro@stackdsup.com</a> for a full refund. No questions asked.
+                <strong style={{ color: '#F9F6F1' }}>7-day fit guarantee.</strong> If StackWise isn&apos;t the right fit within your first 7 days, email <a href="mailto:MAVFunk@gmail.com" style={{ color: 'rgba(249,246,241,0.7)', textDecoration: 'underline' }}>MAVFunk@gmail.com</a> for a full refund.
               </p>
             </div>
 
@@ -258,7 +272,7 @@ export default function PricingPage() {
             <p className="text-sm mb-4" style={{ color: '#6B5B4E' }}>A personalized stack and a practical routine you can actually use.</p>
             <div className="space-y-2 mb-5">
               {[
-                ['🪞', 'Unlocks LooksMaxxing in your quiz (appearance and symmetry goals — not on Free)'],
+                ['🪞', 'Unlocks LooksMaxxing in your quiz (appearance and symmetry goals, not on Free)'],
                 ['✓', 'Unlimited stack generations: rebuild anytime your goals change'],
                 ['✓', 'Full plan: exact forms, dosing, and timing for every supplement'],
                 ['✓', 'Daily check-in with mood tracking and streak counter'],

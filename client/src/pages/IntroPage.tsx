@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { requestMagicLink } from '../api/session';
+import ExampleStackPreview from '../components/ExampleStackPreview';
 import StackyCat from '../components/StackyCat';
 import { ensureCurrentStackFromProfile, hasSavedStackAvailable } from '../types/storage';
 
@@ -78,7 +79,7 @@ export default function IntroPage() {
           </div>
 
           <p className="text-sm font-semibold text-center max-w-lg mx-auto mb-5 leading-snug px-1" style={{ color: '#1C3A2E' }}>
-            StackWise is a supplement clarity platform that helps people build a personalized stack, understand why it fits, and get ongoing support as their routine evolves.
+            StackWise builds your personalized supplement stack, shows you exactly why each pick fits your goals, and stays with you through Stacky as your routine changes.
           </p>
 
           <div className="flex justify-center mb-8">
@@ -94,6 +95,18 @@ export default function IntroPage() {
           <p className="text-base leading-relaxed mb-8 max-w-xl mx-auto" style={{ color: '#6B5B4E' }}>
             A short quiz becomes a personalized starting plan: what fits your goals, routine, and budget, with clear reasoning. Stacky stays with you for follow-ups when the shelf gets confusing or your goals change.
           </p>
+
+          <div className="max-w-md mx-auto mb-3 text-left">
+            <ExampleStackPreview variant="compact" />
+          </div>
+          <div
+            className="max-w-md mx-auto mb-8 rounded-xl px-3.5 py-3 text-left"
+            style={{ background: '#F0F5F2', border: '1px solid #D4E8DA' }}
+          >
+            <p className="text-xs leading-relaxed" style={{ color: '#1C3A2E' }}>
+              StackWise builds a stack around <strong>your unique goals and preferences</strong>. Each recommendation is carefully selected to <strong>fit into your routine</strong>, not general supplement trends.
+            </p>
+          </div>
 
           <div className="space-y-3 text-left">
             <div className="flex items-start gap-2.5 text-sm" style={{ color: '#3D2E22' }}>
@@ -230,8 +243,8 @@ export default function IntroPage() {
             </div>
             <div className="mt-2 md:mt-0 text-xs text-warm-mid">
               Questions? Contact us at{' '}
-              <a href="mailto:healthpro@stackdsup.com" className="underline hover:text-forest transition-colors">
-                healthpro@stackdsup.com
+              <a href="mailto:MAVFunk@gmail.com" className="underline hover:text-forest transition-colors">
+                MAVFunk@gmail.com
               </a>
             </div>
           </div>

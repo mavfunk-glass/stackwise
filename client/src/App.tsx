@@ -19,6 +19,7 @@ import AuthCallbackPage from './pages/AuthCallbackPage';
 import CoachHubPage from './pages/CoachHubPage';
 import { ensureApiSession, fetchBillingStatus } from './api/session';
 import { getSubscription, saveSubscription } from './types/storage';
+import { trackEvent } from './analytics/track';
 
 const PAYPAL_CLIENT_ID = import.meta.env.VITE_PAYPAL_CLIENT_ID as string;
 
@@ -27,6 +28,10 @@ export default function App() {
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [pathname]);
+
+  useEffect(() => {
+    trackEvent('page_view', { route: pathname });
   }, [pathname]);
 
   // One-click check-in redirect from email reminder (server → /dashboard?checkin=done&date=)

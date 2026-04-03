@@ -72,11 +72,11 @@ export const GOAL_THEME: Record<PrimaryGoal, GoalTheme> = {
     pillBorderDark: 'rgba(190, 24, 93, 0.47)',
   },
   '🛡️ Longevity & Immunity': {
-    text: '#00695C',
-    pillBg: 'rgba(0, 105, 92, 0.12)',
-    pillBorder: 'rgba(0, 105, 92, 0.34)',
-    pillBgDark: 'rgba(0, 105, 92, 0.22)',
-    pillBorderDark: 'rgba(0, 105, 92, 0.47)',
+    text: '#A16207',
+    pillBg: 'rgba(161, 98, 7, 0.12)',
+    pillBorder: 'rgba(161, 98, 7, 0.34)',
+    pillBgDark: 'rgba(161, 98, 7, 0.22)',
+    pillBorderDark: 'rgba(161, 98, 7, 0.47)',
   },
   '💇 Hair Growth': {
     text: '#8D6E00',

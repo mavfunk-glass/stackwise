@@ -12,6 +12,7 @@ import {
   setChatCreditsRemaining,
 } from '../types/storage';
 import type { PrimaryGoal, Supplement } from '../types/stackwise';
+import { trackEvent } from '../analytics/track';
 
 /** Pass when the user has not taken the quiz yet; enables landing-mode Stacky behavior. */
 export const STACKY_LANDING_STACK_CONTEXT =
@@ -274,7 +275,7 @@ function UpgradeWall({ onClose }: { onClose: () => void }) {
         <div className="rounded-xl px-3 py-2.5 mb-3 flex items-start gap-2" style={{ background: '#F0F5F2', border: '1px solid #D4E8DA' }}>
           <span style={{ color: '#4A7C59', fontSize: 13, flexShrink: 0 }}>🛡</span>
           <p className="text-xs leading-relaxed" style={{ color: '#4A7C59' }}>
-            <strong>30-day money-back guarantee.</strong> If StackWise does not help you feel clearer and more confident in your supplement decisions within 30 days, we will refund you.
+            <strong>7-day fit guarantee.</strong> Doesn&apos;t click? Full refund within 7 days. No hoops.
           </p>
         </div>
 
@@ -336,6 +337,14 @@ export default function ChatWidget({
     const t = window.setTimeout(() => textareaRef.current?.focus(), 50);
     return () => window.clearTimeout(t);
   }, [isExpanded]);
+
+  useEffect(() => {
+    if (!isExpanded) return;
+    trackEvent('chat_opened', {
+      surface: isLandingCoach ? 'landing' : 'stack',
+      pro: isPro(),
+    });
+  }, [isExpanded, isLandingCoach]);
 
   const prevOpenSignal = useRef(0);
   useEffect(() => {
@@ -781,7 +790,7 @@ export default function ChatWidget({
                     {collapsedLabel}
                   </div>
                   {!isPro() && creditsLeft === 0 && (
-                    <div className="text-[10px] text-amber-600 mt-0.5">30-day money-back guarantee. Cancel anytime.</div>
+                    <div className="text-[10px] text-amber-600 mt-0.5">7-day fit guarantee · Cancel anytime</div>
                   )}
                   {!isPro() && creditsLeft > 0 && (
                     <div className="text-[10px] text-warm-light mt-0.5">Knows your full stack · Answers in seconds</div>

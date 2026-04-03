@@ -60,8 +60,7 @@ export default function CookieConsent() {
           <span style={{ fontSize: 20, flexShrink: 0, marginTop: 1 }}>🐱</span>
           <div>
             <p style={{ fontSize: 13, color: '#F9F6F1', lineHeight: 1.5, margin: 0 }}>
-              <strong>StackWise uses localStorage</strong> - not tracking cookies - to store your session and
-              preferences. Our payment provider (PayPal) may set cookies when you check out.{` `}
+              <strong>StackWise uses localStorage</strong> - not tracking cookies - to store your session and preferences. We also collect anonymous usage events (no health data, no personal info) to improve the app. PayPal may set cookies at checkout.{` `}
               <a href="/privacy" style={{ color: 'rgba(249,246,241,0.65)', textDecoration: 'underline', fontSize: 12 }}>
                 Privacy policy
               </a>

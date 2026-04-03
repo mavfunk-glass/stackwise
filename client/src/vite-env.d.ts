@@ -13,5 +13,7 @@ interface ImportMetaEnv {
   readonly VITE_DEV_PRO?: string;
   /** Optional shared secret; must match server ANALYZE_SECRET so /api/analyze requests are accepted. */
   readonly VITE_ANALYZE_SECRET?: string;
+  /** Optional; must match server ANALYTICS_INGEST_KEY when that is set (protects POST /api/analytics/event). */
+  readonly VITE_ANALYTICS_INGEST_KEY?: string;
 }
 

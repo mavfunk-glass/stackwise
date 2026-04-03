@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 
-const LAST_UPDATED = 'April 2025';
-const CONTACT_EMAIL = 'healthpro@stackdsup.com'; // <- replace with your support email
+const LAST_UPDATED = 'April 2026';
+const CONTACT_EMAIL = 'MAVFunk@gmail.com';
 
 export default function PrivacyPage() {
   const navigate = useNavigate();
@@ -70,6 +70,7 @@ export default function PrivacyPage() {
                 'Browser timezone - collected when you set a reminder, used only to send your email at the correct local time.',
                 'Saved stack data - if you create an account, a copy of your stack is stored on our servers.',
                 "Check-in history - stored in your browser's localStorage only.",
+                'Anonymous product analytics - see section below.',
               ].map((item) => (
                 <li key={item} className="flex items-start gap-2 text-sm" style={{ color: '#6B5B4E' }}>
                   <span className="text-moss font-bold flex-shrink-0 mt-0.5">·</span>
@@ -79,7 +80,7 @@ export default function PrivacyPage() {
             </ul>
             <div className="rounded-xl px-4 py-3" style={{ background: '#F0F5F2', border: '1px solid #D4E8DA' }}>
               <p className="text-xs leading-relaxed" style={{ color: '#4A7C59' }}>
-                <strong>Health data:</strong> Your quiz answers may include health background information. We use this only to generate your supplement guidance. We do not sell, share, or use it for advertising.
+                <strong>Health data:</strong> Your quiz answers may include health background information, including medications and health conditions. We use this only to generate your supplement guidance. This information is never used in analytics, never sold, and never shared for advertising.
               </p>
             </div>
           </div>
@@ -95,6 +96,7 @@ export default function PrivacyPage() {
                 'Maintain your account - email, display name, and saved stack stored so you can access your plan across devices.',
                 'Verify subscription entitlements - we record your subscription status, verified through PayPal.',
                 'Protect the service - session tokens and rate limiting prevent abuse.',
+                'Understand how the product is used - anonymous product analytics (see section below). No health data is used for this purpose.',
               ].map((item) => (
                 <li key={item} className="flex items-start gap-2 text-sm" style={{ color: '#6B5B4E' }}>
                   <span className="text-moss font-bold flex-shrink-0 mt-0.5">·</span>
@@ -166,6 +168,35 @@ export default function PrivacyPage() {
 
           <div className="rounded-2xl p-5" style={{ background: '#FFFFFF', border: '1px solid #E8E0D5' }}>
             <div className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: '#9C8E84' }}>08</div>
+            <h2 className="font-serif font-light mb-3" style={{ fontSize: 20, color: '#1C3A2E' }}>Product analytics</h2>
+            <p className="text-sm leading-relaxed mb-3" style={{ color: '#6B5B4E' }}>
+              We collect anonymous product usage events to understand how the app is used and how to improve it. These events are tied to a randomly generated ID stored in your browser (not your email, name, or any account). They are never linked to your identity.
+            </p>
+            <p className="text-sm font-semibold mb-2 text-forest">What we do track (anonymously)</p>
+            <ul className="space-y-1.5 mb-4">
+              {[
+                'Page views and navigation (which pages are visited).',
+                'Quiz funnel progression (which step you are on, not your answers).',
+                'Whether a stack was generated, and your subscription tier at that point.',
+                'Pricing page visits and subscription flow events (clicks, completions, cancellations).',
+                'Whether the Stacky chat was opened, and whether you are on a paid plan.',
+                'Cancel-offer interactions (opened, kept plan, proceeded to PayPal).',
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-2 text-sm" style={{ color: '#6B5B4E' }}>
+                  <span className="text-moss font-bold flex-shrink-0 mt-0.5">·</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="rounded-xl px-4 py-3" style={{ background: '#F0F5F2', border: '1px solid #D4E8DA' }}>
+              <p className="text-xs leading-relaxed" style={{ color: '#4A7C59' }}>
+                <strong>We never track health data analytically.</strong> Your medications, health conditions, health background answers, quiz free-text responses, supplement choices, and chat messages are never included in analytics events.
+              </p>
+            </div>
+          </div>
+
+          <div className="rounded-2xl p-5" style={{ background: '#FFFFFF', border: '1px solid #E8E0D5' }}>
+            <div className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: '#9C8E84' }}>10</div>
             <h2 className="font-serif font-light mb-3" style={{ fontSize: 20, color: '#1C3A2E' }}>Children's privacy</h2>
             <p className="text-sm leading-relaxed" style={{ color: '#6B5B4E' }}>
               StackWise is intended for users 18 and older. We do not knowingly collect data from anyone under 18. Contact us at <a href={`mailto:${CONTACT_EMAIL}`} className="text-moss underline">{CONTACT_EMAIL}</a> if you believe we have done so.
@@ -173,7 +204,7 @@ export default function PrivacyPage() {
           </div>
 
           <div className="rounded-2xl p-5" style={{ background: '#FFFFFF', border: '1px solid #E8E0D5' }}>
-            <div className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: '#9C8E84' }}>09</div>
+            <div className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: '#9C8E84' }}>11</div>
             <h2 className="font-serif font-light mb-3" style={{ fontSize: 20, color: '#1C3A2E' }}>Changes to this policy</h2>
             <p className="text-sm leading-relaxed" style={{ color: '#6B5B4E' }}>
               We may update this policy from time to time. When we do, we will update the date at the top. For significant changes, we will notify users with accounts via email.
@@ -181,7 +212,7 @@ export default function PrivacyPage() {
           </div>
 
           <div className="rounded-2xl p-5" style={{ background: '#1C3A2E' }}>
-            <div className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: 'rgba(249,246,241,0.45)' }}>10</div>
+            <div className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: 'rgba(249,246,241,0.45)' }}>12</div>
             <h2 className="font-serif font-light mb-2" style={{ fontSize: 20, color: '#F9F6F1' }}>Contact us</h2>
             <p className="text-sm leading-relaxed mb-3" style={{ color: 'rgba(249,246,241,0.75)' }}>Questions, data requests, or privacy concerns?</p>
             <a

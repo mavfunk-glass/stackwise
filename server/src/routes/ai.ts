@@ -10,6 +10,8 @@ import { analyzeWithGemini } from '../services/gemini.js';
 const ANALYZE_MAX_PER_HOUR = Number(process.env.ANALYZE_MAX_PER_HOUR ?? 30);
 const analyzeHits = new Map<string, number[]>();
 const SUPER_FOCUS_MAX_CHARS = 200;
+/** Quiz step 4 Improvements: optional “More detail?” field only */
+const FRUSTRATION_OTHER_MAX_CHARS = 50;
 
 function getClientIp(req: Request): string {
   const xf = req.headers['x-forwarded-for'];
@@ -36,6 +38,16 @@ function sanitizeSuperFocusText(raw: string): string {
     .replace(/on\w+\s*=/gi, '')
     .trim()
     .slice(0, SUPER_FOCUS_MAX_CHARS);
+}
+
+function sanitizeFrustrationOtherText(raw: string): string {
+  return raw
+    .replace(/[\u0000-\u001F\u007F]/g, '')
+    .replace(/<\s*\/?\s*script/gi, '')
+    .replace(/javascript:/gi, '')
+    .replace(/on\w+\s*=/gi, '')
+    .trim()
+    .slice(0, FRUSTRATION_OTHER_MAX_CHARS);
 }
 
 /** Align with client: short messages only; strip control chars and obvious injection patterns */
@@ -208,6 +220,10 @@ router.post('/analyze', requireAuth, async (req: AuthedRequest, res) => {
       specificGoal:
         typeof payload.specificGoal === 'string'
           ? sanitizeSuperFocusText(payload.specificGoal) || undefined
+          : undefined,
+      frustrationOther:
+        typeof payload.frustrationOther === 'string'
+          ? sanitizeFrustrationOtherText(payload.frustrationOther) || undefined
           : undefined,
     } as IntakePayload;
 

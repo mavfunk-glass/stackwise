@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 
 const LAST_UPDATED = 'April 2025';
-const CONTACT_EMAIL = 'healthpro@stackdsup.com'; // <- replace with your support email
+const CONTACT_EMAIL = 'MAVFunk@gmail.com';
 const JURISDICTION = 'California, United States'; // <- replace with your jurisdiction
 
 export default function TermsPage() {
@@ -103,7 +103,7 @@ export default function TermsPage() {
               {[
                 'Subscriptions renew automatically each month until cancelled.',
                 'Cancel any time through your PayPal account. Access continues until end of billing period.',
-                'No partial refunds for unused time, except under the 30-day guarantee below.',
+                'No partial refunds are issued for unused time in a billing period, except as described in our 7-day fit guarantee below.',
                 'We reserve the right to modify pricing with reasonable advance notice.',
               ].map((item) => (
                 <li key={item} className="flex items-start gap-2 text-sm" style={{ color: '#6B5B4E' }}>
@@ -119,14 +119,15 @@ export default function TermsPage() {
 
           <div className="rounded-2xl p-5" style={{ background: '#FFFFFF', border: '1px solid #E8E0D5' }}>
             <div className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: '#9C8E84' }}>06</div>
-            <h2 className="font-serif font-light mb-3" style={{ fontSize: 20, color: '#1C3A2E' }}>30-day money-back guarantee</h2>
+            <h2 className="font-serif font-light mb-3" style={{ fontSize: 20, color: '#1C3A2E' }}>7-day fit guarantee</h2>
             <p className="text-sm leading-relaxed mb-3" style={{ color: '#6B5B4E' }}>
-              If you are not satisfied within the first 30 days of your initial purchase, email{' '}
-              <a href={`mailto:${CONTACT_EMAIL}`} className="text-moss underline">{CONTACT_EMAIL}</a>{' '}
-              with subject "Refund request" and your PayPal email. We will process your refund within 5 business days.
+              If StackWise is not the right fit within the first 7 days of your initial charge, you may request a full refund of that charge. This guarantee covers fit and clarity: whether the plan makes sense for your goals and whether the guidance is useful. It does not guarantee specific supplement outcomes, as those depend on the supplements themselves and individual biology.
+            </p>
+            <p className="text-sm leading-relaxed mb-3" style={{ color: '#6B5B4E' }}>
+              To request a refund, email <a href={`mailto:${CONTACT_EMAIL}`} className="text-moss underline">{CONTACT_EMAIL}</a> within 7 days of your initial charge with the subject line &quot;Refund request&quot; and your PayPal email address. We will process your refund within 5 business days.
             </p>
             <p className="text-sm leading-relaxed" style={{ color: '#6B5B4E' }}>
-              This applies to first-time subscribers only. One refund per user.
+              This guarantee applies to your first subscription charge only. Refunds are not available for renewal charges. One refund per customer.
             </p>
           </div>
 
@@ -136,8 +137,11 @@ export default function TermsPage() {
             <p className="text-sm leading-relaxed mb-3" style={{ color: '#6B5B4E' }}>
               You are responsible for maintaining the security of your account access. Notify us immediately if you believe your account has been compromised.
             </p>
-            <p className="text-sm leading-relaxed" style={{ color: '#6B5B4E' }}>
+            <p className="text-sm leading-relaxed mb-3" style={{ color: '#6B5B4E' }}>
               If you request data deletion, we will remove your server-side data within 30 days. Browser data can be deleted by clearing your browser's local storage.
+            </p>
+            <p className="text-sm leading-relaxed" style={{ color: '#6B5B4E' }}>
+              By using StackWise, you agree to the collection of anonymous product usage events as described in our <a href="/privacy" className="text-moss underline">Privacy Policy</a>. These events contain no personally identifiable information, no health data, and no quiz content. They are used solely to understand and improve the product.
             </p>
           </div>
 
