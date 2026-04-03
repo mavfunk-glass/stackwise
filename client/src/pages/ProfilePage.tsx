@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StackyCat from '../components/StackyCat';
+import ThemeToggle from '../theme/ThemeToggle';
 import {
   getSubscription,
   getSubscriptionTier,
@@ -56,21 +57,21 @@ function CancelOfferModal({
       }}
     >
       <div
-        className="w-full max-w-sm rounded-t-3xl sm:rounded-3xl overflow-hidden"
-        style={{ background: '#F9F6F1', maxHeight: '92dvh', overflowY: 'auto' }}
+        className="w-full max-w-sm rounded-t-3xl sm:rounded-3xl overflow-hidden bg-sw-bg text-warm"
+        style={{ maxHeight: '92dvh', overflowY: 'auto' }}
       >
         {/* Header — dark, sad Stacky */}
-        <div className="px-6 pt-7 pb-5 text-center" style={{ background: '#1C3A2E' }}>
+        <div className="px-6 pt-7 pb-5 text-center bg-forest">
           <div className="flex justify-center mb-3">
             <StackyCat mood="sad" size={80} />
           </div>
           <div
-            className="font-serif font-light mb-1"
-            style={{ fontSize: 22, color: '#F9F6F1', fontStyle: 'italic', lineHeight: 1.25 }}
+            className="font-serif font-light mb-1 text-on-dark-primary italic"
+            style={{ fontSize: 22, lineHeight: 1.25 }}
           >
             Before you go…
           </div>
-          <p className="text-xs leading-relaxed" style={{ color: 'rgba(249,246,241,0.55)' }}>
+          <p className="text-xs leading-relaxed text-on-dark-subtle">
             Here&apos;s what cancelling removes from your account.
           </p>
         </div>
@@ -80,42 +81,26 @@ function CancelOfferModal({
           <div className="space-y-2 mb-4">
             {valueItems.map((item) => (
               <div key={item} className="flex items-start gap-2.5">
-                <span
-                  className="text-xs font-bold flex-shrink-0 mt-0.5"
-                  style={{ color: '#4A7C59' }}
-                >
-                  ✓
-                </span>
-                <span className="text-sm leading-snug" style={{ color: '#3D2E22' }}>
-                  {item}
-                </span>
+                <span className="text-xs font-bold flex-shrink-0 mt-0.5 text-moss">✓</span>
+                <span className="text-sm leading-snug text-warm">{item}</span>
               </div>
             ))}
           </div>
 
-          <p
-            className="text-xs text-center font-semibold mb-4"
-            style={{ color: '#9C8E84' }}
-          >
+          <p className="text-xs text-center font-semibold mb-4 text-warm-light">
             All of this for {price}, less than a single supplement bottle.
           </p>
 
           {/* Basic users: offer to try Pro instead */}
           {!isProTier && (
-            <div
-              className="rounded-xl px-4 py-3 mb-4"
-              style={{ background: '#F0F5F2', border: '1px solid #D4E8DA' }}
-            >
-              <p className="text-xs font-semibold mb-1" style={{ color: '#1C3A2E' }}>
+            <div className="rounded-xl px-4 py-3 mb-4 bg-emerald-50/90 border border-emerald-200/80 dark:bg-emerald-950/30 dark:border-emerald-800/50">
+              <p className="text-xs font-semibold mb-1 text-ink">
                 Thinking about leaving because of the question limit?
               </p>
-              <p className="text-xs leading-relaxed" style={{ color: '#4A7C59' }}>
+              <p className="text-xs leading-relaxed text-emerald-800 dark:text-emerald-100">
                 Pro gives you unlimited Stacky questions for $10 more. Email{' '}
-                <a
-                  href="mailto:MAVFunk@gmail.com"
-                  style={{ color: '#1C3A2E', textDecoration: 'underline' }}
-                >
-                  MAVFunk@gmail.com
+                <a href="mailto:stacky@stack-wise.org" className="text-ink underline dark:text-moss">
+                  stacky@stack-wise.org
                 </a>{' '}
                 and we&apos;ll upgrade you for the rest of this billing period at no extra charge.
               </p>
@@ -126,8 +111,8 @@ function CancelOfferModal({
           <button
             type="button"
             onClick={onStay}
-            className="w-full rounded-full font-semibold text-sm mb-2 transition-all active:scale-[0.98]"
-            style={{ background: '#1C3A2E', color: '#F9F6F1', height: 52 }}
+            className="w-full rounded-full font-semibold text-sm mb-2 transition-all active:scale-[0.98] bg-forest text-on-dark-primary hover:bg-forest-light"
+            style={{ height: 52 }}
           >
             Keep my {isProTier ? 'Pro' : 'Basic'} plan →
           </button>
@@ -136,16 +121,12 @@ function CancelOfferModal({
           <button
             type="button"
             onClick={onCancel}
-            className="w-full text-center text-xs py-2.5 transition-all"
-            style={{ color: '#C4B9AC' }}
+            className="w-full text-center text-xs py-2.5 transition-all text-warm-light hover:text-warm-mid"
           >
             I still want to cancel. Take me to PayPal
           </button>
 
-          <p
-            className="text-center text-[10px] mt-2"
-            style={{ color: '#E8E0D5' }}
-          >
+          <p className="text-center text-[10px] mt-2 text-stone dark:text-warm-light">
             Access continues until the end of your current billing period.
           </p>
         </div>
@@ -182,7 +163,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-cream text-warm max-w-lg mx-auto pb-24">
+    <div className="min-h-screen bg-sw-bg text-warm max-w-lg mx-auto pb-24">
       {showCancelOffer && paid && (
         <CancelOfferModal
           tier={pro ? 'pro' : 'basic'}
@@ -192,11 +173,8 @@ export default function ProfilePage() {
       )}
 
       <nav
-        className="sticky top-0 z-40 px-5 border-b border-stone"
+        className="sticky top-0 z-40 px-5 border-b border-stone sw-sticky-nav"
         style={{
-          background: 'rgba(249,246,241,0.95)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
           paddingTop: 'max(14px, env(safe-area-inset-top, 14px))',
           paddingBottom: 14,
         }}
@@ -205,16 +183,16 @@ export default function ProfilePage() {
           <button
             type="button"
             onClick={() => navigate('/landing')}
-            className="inline-flex items-center gap-1.5 font-serif font-light tracking-widest text-sm text-forest"
+            className="inline-flex items-center gap-1.5 font-serif font-light tracking-widest text-sm text-ink"
             style={{ letterSpacing: '0.15em' }}
           >
-            <NavIcon kind="home" size={17} className="text-forest opacity-90" />
+            <NavIcon kind="home" size={17} className="text-ink opacity-90" />
             <span>STACKWISE</span>
           </button>
           <button
             type="button"
             onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-1 text-sm font-medium text-warm-light hover:text-forest transition-colors"
+            className="inline-flex items-center gap-1 text-sm font-medium text-warm-light hover:text-ink transition-colors"
           >
             <span aria-hidden>←</span>
             <span>Back</span>
@@ -223,7 +201,10 @@ export default function ProfilePage() {
       </nav>
 
       <div className="p-6 pt-8">
-        <h1 className="font-display text-2xl text-forest mb-6">Profile</h1>
+        <h1 className="font-display text-2xl text-ink mb-4">Profile</h1>
+        <div className="mb-6">
+          <ThemeToggle />
+        </div>
 
         {/* Plan card */}
         <div className="rounded-2xl border border-stone bg-white p-5 mb-6">
@@ -235,7 +216,7 @@ export default function ProfilePage() {
           </div>
           <div className="flex items-center justify-between mb-1">
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-lg capitalize text-forest">{tier}</span>
+              <span className="font-semibold text-lg capitalize text-ink">{tier}</span>
               {paid && (
                 <span
                   className="text-xs px-2 py-0.5 rounded-full font-semibold"
@@ -309,7 +290,7 @@ export default function ProfilePage() {
                       key={a.id}
                       className="rounded-xl border border-stone/80 bg-cream/40 px-3 py-2 text-xs text-warm-mid"
                     >
-                      <div className="font-semibold text-forest">{a.label}</div>
+                      <div className="font-semibold text-ink">{a.label}</div>
                       <div className="mt-0.5 line-clamp-2">{goals}</div>
                       <div className="text-[10px] text-warm-light mt-1 tabular-nums">
                         {a.savedAt.slice(0, 10)}
@@ -335,7 +316,7 @@ export default function ProfilePage() {
               <div className="flex justify-center sm:justify-start flex-shrink-0">
                 <StackyCat mood="wave" size={112} />
               </div>
-              <p className="text-sm font-medium text-forest">Always on in Pro.</p>
+              <p className="text-sm font-medium text-ink">Always on in Pro.</p>
             </div>
             <p className="text-xs text-warm-light mt-3">
               Visible in quiz steps, chat, results, and all other Stacky appearances.
@@ -352,7 +333,7 @@ export default function ProfilePage() {
               <button
                 type="button"
                 onClick={() => navigate('/pricing')}
-                className="font-semibold underline underline-offset-2 text-forest hover:text-forest-light"
+                className="font-semibold underline underline-offset-2 text-ink hover:text-forest-light"
               >
                 View Pro →
               </button>

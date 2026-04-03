@@ -44,11 +44,8 @@ export default function MagicVerifyPage() {
   }, [params, navigate]);
 
   return (
-    <div
-      className="min-h-screen flex flex-col items-center justify-center px-6"
-      style={{ background: '#F9F6F1' }}
-    >
-      <div style={{ textAlign: 'center', maxWidth: 340 }}>
+    <div className="min-h-screen flex flex-col items-center justify-center px-6 bg-sw-bg text-warm">
+      <div className="text-center max-w-[340px]">
         <StackyCat
           mood={status === 'error' ? 'sad' : status === 'done' ? 'celebrate' : 'think'}
           outfit={status === 'done' ? 'party' : 'labCoat'}
@@ -56,10 +53,7 @@ export default function MagicVerifyPage() {
           animate={status !== 'error'}
         />
 
-        <div
-          className="font-serif font-light mt-6 mb-2"
-          style={{ fontSize: 26, color: '#1C3A2E', letterSpacing: '-0.01em', fontStyle: 'italic' }}
-        >
+        <div className="font-serif font-light mt-6 mb-2 text-[26px] text-ink tracking-tight italic">
           {status === 'verifying' && 'Verifying your link…'}
           {status === 'restoring' && 'Restoring your stack…'}
           {status === 'done' && "You're in! Taking you there now."}
@@ -68,7 +62,7 @@ export default function MagicVerifyPage() {
 
         {status === 'error' && (
           <>
-            <p className="text-sm mb-6" style={{ color: '#9C8E84', lineHeight: 1.6 }}>
+            <p className="text-sm mb-6 text-warm-light leading-relaxed">
               {error}
             </p>
             <button
@@ -83,7 +77,7 @@ export default function MagicVerifyPage() {
         )}
 
         {(status === 'verifying' || status === 'restoring') && (
-          <p className="text-sm mt-2" style={{ color: '#9C8E84' }}>
+          <p className="text-sm mt-2 text-warm-light">
             {status === 'verifying' ? 'One moment…' : 'Getting your plan…'}
           </p>
         )}

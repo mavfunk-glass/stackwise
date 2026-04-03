@@ -43,22 +43,21 @@ export default function UnsubscribePage() {
   }, [params]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-6" style={{ background: '#F9F6F1' }}>
-      <div style={{ textAlign: 'center', maxWidth: 340 }}>
+    <div className="min-h-screen flex flex-col items-center justify-center px-6 bg-sw-bg text-warm">
+      <div className="text-center max-w-[340px]">
         <StackyCat
           mood={status === 'error' ? 'sad' : status === 'done' ? 'wave' : 'think'}
           size={90}
           animate={status === 'loading'}
         />
         <div
-          className="font-serif font-light mt-5 mb-3"
-          style={{ fontSize: 24, color: '#1C3A2E', fontStyle: 'italic', letterSpacing: '-0.01em' }}
+          className="font-serif font-light mt-5 mb-3 text-2xl text-ink italic tracking-tight"
         >
           {status === 'loading' && 'One moment...'}
           {status === 'done' && 'Unsubscribed.'}
           {status === 'error' && 'Link expired.'}
         </div>
-        <p className="text-sm leading-relaxed mb-6" style={{ color: '#9C8E84' }}>
+        <p className="text-sm leading-relaxed mb-6 text-warm-light">
           {status === 'loading' ? 'Removing your reminder...' : message}
         </p>
         {status !== 'loading' && (
@@ -74,8 +73,7 @@ export default function UnsubscribePage() {
             <button
               type="button"
               onClick={() => navigate('/')}
-              className="text-xs"
-              style={{ color: '#C4B9AC' }}
+              className="text-xs text-stone dark:text-warm-light"
             >
               Back to home
             </button>

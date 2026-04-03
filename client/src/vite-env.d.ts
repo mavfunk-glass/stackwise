@@ -15,5 +15,7 @@ interface ImportMetaEnv {
   readonly VITE_ANALYZE_SECRET?: string;
   /** Optional; must match server ANALYTICS_INGEST_KEY when that is set (protects POST /api/analytics/event). */
   readonly VITE_ANALYTICS_INGEST_KEY?: string;
+  /** Injected at build from client/package.json or STACKWISE_APP_VERSION_OVERRIDE (see vite.config.ts). */
+  readonly VITE_APP_VERSION: string;
 }
 

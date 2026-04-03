@@ -61,10 +61,7 @@ function StackyDemo() {
   }, [visibleMessages]);
 
   return (
-    <div
-      className="rounded-2xl overflow-hidden flex flex-col"
-      style={{ border: '1px solid #E8E0D5', background: '#FFFFFF', maxHeight: 420 }}
-    >
+    <div className="rounded-2xl overflow-hidden flex flex-col border border-stone bg-white max-h-[420px]">
       {/* Chat header, matches live ChatWidget (forest gradient + Stacky mascot) */}
       <div
         className="flex items-center gap-3 px-4 py-3 flex-shrink-0 bg-gradient-to-r from-forest to-forest-light border-b border-white/10"
@@ -95,12 +92,11 @@ function StackyDemo() {
               </div>
             )}
             <div
-              className="max-w-[85%] rounded-2xl px-3.5 py-2.5 text-xs leading-relaxed whitespace-pre-line border border-stone/80"
-              style={
+              className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-xs leading-relaxed whitespace-pre-line border ${
                 msg.role === 'user'
-                  ? { background: 'linear-gradient(135deg, #1C3A2E, #2D5242)', color: '#F9F6F1', borderBottomRightRadius: 4, borderColor: 'transparent' }
-                  : { background: '#FDFCFA', color: '#3D2E22', borderBottomLeftRadius: 4 }
-              }
+                  ? 'bg-gradient-to-br from-forest to-forest-light text-on-dark-primary border-transparent rounded-br-sm'
+                  : 'bg-cream-dark text-warm border-stone/80 rounded-bl-sm'
+              }`}
             >
               {msg.text}
             </div>
@@ -130,7 +126,7 @@ function StackyDemo() {
         <div className="flex-1 rounded-xl px-3 py-2 text-xs bg-cream/70 text-warm-light border border-cream-dark/60">
           Ask Stacky about your stack… 🐾
         </div>
-        <div className="w-8 h-8 rounded-xl flex items-center justify-center bg-forest text-cream text-sm font-semibold">
+        <div className="w-8 h-8 rounded-xl flex items-center justify-center bg-forest text-on-dark-primary text-sm font-semibold">
           →
         </div>
       </div>
@@ -217,42 +213,42 @@ export default function LandingPageRebuild() {
 
   const HOW_STEPS = [
     {
-      n: '01',
+      n: '1',
       title: 'Tell us about you',
       body: 'Share your goals, routine, preferences, and budget. Add health context if relevant. Takes under 90 seconds.',
     },
     {
-      n: '02',
+      n: '2',
       title: 'Stacky builds your plan',
       body: 'Get a personalized starting stack with clear reasoning: what fits, why it fits, and how it fits your day.',
     },
     {
-      n: '03',
+      n: '3',
       title: 'Buy with one tap',
       body: 'Use direct Amazon and iHerb links. Skip random buying and keep spending aligned with your budget.',
     },
     {
-      n: '04',
+      n: '4',
       title: 'Stacky stays with you',
       body: 'Ask when labels blur or a new ad sounds too good. Adjust your plan as goals change: clearer guidance, not pressure to buy more.',
     },
   ];
 
   return (
-    <div className="min-h-screen font-sans bg-cream text-warm">
+    <div className="min-h-screen font-sans bg-sw-bg text-warm">
       {/* ─── NAV ─────────────────────────────────────────────────────── */}
       <nav
-        className="sticky top-0 z-50 px-5 border-b border-stone"
+        className="sticky top-0 z-50 px-5 border-b border-stone sw-sticky-nav"
         style={{
-          background: 'rgba(249,246,241,0.92)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
           paddingTop: 'calc(env(safe-area-inset-top, 0px) + 6px)',
           paddingBottom: 6,
         }}
       >
         <div className="max-w-5xl mx-auto flex items-center justify-between min-h-[36px]">
-          <span className="font-serif font-light tracking-widest text-sm" style={{ color: '#1C3A2E', letterSpacing: '0.15em' }}>
+          <span
+            className="font-serif font-light tracking-widest text-sm text-ink dark:text-warm dark:[text-shadow:0_0_24px_rgba(0,0,0,0.5)]"
+            style={{ letterSpacing: '0.15em' }}
+          >
             STACKWISE
           </span>
 
@@ -260,33 +256,36 @@ export default function LandingPageRebuild() {
             {canSkipToStack && (
               <button
                 onClick={goCoachFromLanding}
-                className="text-sm font-semibold transition-colors"
-                style={{ color: '#1C3A2E' }}
+                className="text-sm font-semibold transition-colors text-ink dark:text-warm dark:hover:text-moss hover:opacity-95 dark:[text-shadow:0_0_20px_rgba(0,0,0,0.45)]"
                 type="button"
               >
                 Skip quiz · Stacky
               </button>
             )}
-            <button onClick={() => navigate('/pricing')} className="text-sm font-medium transition-colors" style={{ color: '#6B5B4E' }} type="button">
+            <button
+              onClick={() => navigate('/pricing')}
+              className="text-sm font-medium transition-colors text-warm-mid hover:text-ink dark:text-warm-mid dark:hover:text-warm"
+              type="button"
+            >
               Pricing
             </button>
             {canSkipToStack && (
-              <button onClick={goResults} className="text-sm font-medium" style={{ color: '#6B5B4E' }} type="button">
+              <button
+                onClick={goResults}
+                className="text-sm font-medium text-warm-mid hover:text-ink dark:text-warm-mid dark:hover:text-warm"
+                type="button"
+              >
                 My Stack
               </button>
             )}
             {tier !== 'free' && (
-              <span
-                className="text-xs font-semibold px-2.5 py-1 rounded-full"
-                style={{ background: '#F0F5F2', color: '#1C3A2E', border: '1px solid #D4E8DA' }}
-              >
+              <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#F0F5F2] text-[#1C3A2E] border border-[#D4E8DA] dark:bg-surface-elevated dark:text-warm dark:border-stone/80 dark:shadow-[inset_0_1px_0_rgba(120,200,160,0.12)]">
                 {tier.toUpperCase()} Active
               </span>
             )}
             <button
               onClick={() => navigate('/quiz')}
-              className="rounded-full font-semibold text-sm px-4 h-9 transition-transform active:scale-95"
-              style={{ background: '#1C3A2E', color: '#F9F6F1' }}
+              className="rounded-full font-semibold text-sm px-4 h-9 transition-transform active:scale-95 bg-forest text-on-dark-primary hover:bg-forest-light"
               type="button"
             >
               Build my stack
@@ -297,8 +296,7 @@ export default function LandingPageRebuild() {
             {canSkipToStack && (
               <button
                 onClick={goCoachFromLanding}
-                className="rounded-full font-semibold text-xs px-3 h-8 border"
-                style={{ borderColor: '#E8E0D5', color: '#1C3A2E', background: '#fff' }}
+                className="rounded-full font-semibold text-xs px-3 h-8 border border-stone bg-surface-elevated text-ink hover:bg-cream-dark dark:text-warm dark:border-stone/80"
                 type="button"
               >
                 Stacky
@@ -306,8 +304,7 @@ export default function LandingPageRebuild() {
             )}
             <button
               onClick={() => navigate('/quiz')}
-              className="rounded-full font-semibold text-xs px-3.5 h-8"
-              style={{ background: '#1C3A2E', color: '#F9F6F1' }}
+              className="rounded-full font-semibold text-xs px-3.5 h-8 bg-forest text-on-dark-primary hover:bg-forest-light"
               type="button"
             >
               Start Free
@@ -319,80 +316,55 @@ export default function LandingPageRebuild() {
       {/* ─── HERO ───────────────────────────────────────────────────── */}
       <section className="max-w-5xl mx-auto px-5 pt-12 pb-10">
         <div className="max-w-2xl mx-auto text-center">
-          <div
-            className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-left sm:text-center mb-5 px-4 py-2.5 rounded-2xl shadow-sm max-w-full"
-            style={{
-              background: '#FFFFFF',
-              border: '2px solid #1C3A2E',
-              color: '#1C3A2E',
-              boxShadow: '0 4px 14px rgba(28, 58, 46, 0.12)',
-            }}
-          >
-            <span
-              className="w-2 h-2 rounded-full shrink-0 animate-pulse"
-              style={{ background: '#4A7C59' }}
-              aria-hidden
-            />
-            <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wide leading-snug" style={{ letterSpacing: '0.08em' }}>
-              <span style={{ color: '#1C3A2E' }}>StackWise</span>
-              <span style={{ color: '#6B5B4E', fontWeight: 600 }}> · </span>
-              <span style={{ color: '#2D5242' }}>supplement clarity · personalized support</span>
+          <div className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-left sm:text-center mb-5 px-4 py-2.5 rounded-2xl shadow-sm max-w-full bg-surface-elevated border-2 border-forest text-ink shadow-[0_4px_14px_rgba(28,58,46,0.12)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.35)] dark:border-moss/40">
+            <span className="w-2 h-2 rounded-full shrink-0 animate-pulse bg-moss" aria-hidden />
+            <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wide leading-snug tracking-wide">
+              <span className="text-ink">StackWise</span>
+              <span className="text-warm-mid font-semibold"> · </span>
+              <span className="text-forest dark:text-moss">supplement clarity · personalized support</span>
             </span>
           </div>
 
           <div className="flex flex-col items-center justify-center mb-7">
             <StackyCat mood="wave" size={120} />
-            <span
-              className="mt-1 text-[11px] font-bold uppercase tracking-widest"
-              style={{ color: '#1C3A2E', letterSpacing: '0.18em' }}
-            >
+            <span className="mt-1 text-[11px] font-bold uppercase tracking-widest text-ink tracking-[0.18em]">
               Stacky
             </span>
           </div>
 
-          <h1
-            className="font-serif font-light mb-5"
-            style={{
-              fontSize: 'clamp(38px, 8vw, 58px)',
-              color: '#1C3A2E',
-              letterSpacing: '-0.02em',
-              lineHeight: 1.1,
-              fontWeight: 300,
-              fontStyle: 'italic',
-            }}
-          >
+          <h1 className="font-serif font-light mb-5 text-[clamp(38px,8vw,58px)] text-ink tracking-tight leading-[1.1] italic">
             Stop guessing with supplements.
             <br />
-            <em style={{ color: '#4A7C59' }}>Build a stack that fits your goals, routine, and budget, then get ongoing guidance as it evolves.</em>
+            <em className="text-lime-600 dark:text-moss not-italic font-normal">
+              Build a stack that fits your goals, routine, and budget, then get ongoing guidance as it evolves.
+            </em>
           </h1>
 
           <p className="text-base leading-relaxed mb-8 text-warm-mid max-w-xl mx-auto">
-            StackWise builds your personalized supplement stack, shows you exactly why each pick fits your goals, and stays with you through Stacky as your routine changes.
+            <strong>Don&apos;t waste money</strong> on overhyped supplements that aren&apos;t for you. Stacky builds simple, personalized stacks for your specific goals that evolve as you do.
           </p>
 
           <div className="max-w-md mx-auto mb-3 text-left">
             <ExampleStackPreview />
           </div>
-          <div
-            className="max-w-md mx-auto mb-8 rounded-xl px-3.5 py-3 text-left"
-            style={{ background: '#F0F5F2', border: '1px solid #D4E8DA' }}
-          >
-            <p className="text-xs leading-relaxed" style={{ color: '#1C3A2E' }}>
-              StackWise builds a stack around <strong>your unique goals and preferences</strong>. Each recommendation is carefully selected to <strong>fit into your routine</strong>, not general supplement trends.
+          <div className="max-w-md mx-auto mb-8 rounded-xl px-3.5 py-3 text-left bg-emerald-50/90 border border-emerald-200/80 dark:bg-emerald-950/25 dark:border-emerald-800/50">
+            <p className="text-xs leading-relaxed text-ink">
+              StackWise builds a stack around <strong>your unique goals and preferences</strong>. Each recommendation is carefully selected to{' '}
+              <strong>fit into your routine</strong>, not general supplement trends.
             </p>
           </div>
 
           <div className="max-w-md mx-auto mb-8 space-y-3 text-left">
-            <div className="flex items-start gap-2.5 text-sm" style={{ color: '#3D2E22' }}>
-              <span style={{ color: '#4A7C59', fontWeight: 700, flexShrink: 0 }}>+</span>
+            <div className="flex items-start gap-2.5 text-sm text-warm">
+              <span className="text-moss font-bold flex-shrink-0">+</span>
               <span>Built around your goals and real life, not whatever ads and influencers pushed last week.</span>
             </div>
-            <div className="flex items-start gap-2.5 text-sm" style={{ color: '#3D2E22' }}>
-              <span style={{ color: '#4A7C59', fontWeight: 700, flexShrink: 0 }}>+</span>
+            <div className="flex items-start gap-2.5 text-sm text-warm">
+              <span className="text-moss font-bold flex-shrink-0">+</span>
               <span>Clear reasoning for every recommendation, so you understand what you&apos;re taking and why.</span>
             </div>
-            <div className="flex items-start gap-2.5 text-sm" style={{ color: '#3D2E22' }}>
-              <span style={{ color: '#4A7C59', fontWeight: 700, flexShrink: 0 }}>+</span>
+            <div className="flex items-start gap-2.5 text-sm text-warm">
+              <span className="text-moss font-bold flex-shrink-0">+</span>
               <span>Stacky stays in your corner as your goals and routine change, so the plan can grow with you.</span>
             </div>
           </div>
@@ -400,15 +372,7 @@ export default function LandingPageRebuild() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button
               onClick={() => navigate('/quiz')}
-              className="rounded-full font-semibold text-base transition-all active:scale-[0.98]"
-              style={{
-                background: '#1C3A2E',
-                color: '#F9F6F1',
-                height: 54,
-                paddingLeft: 28,
-                paddingRight: 28,
-                boxShadow: '0 8px 24px rgba(28,58,46,0.2)',
-              }}
+              className="rounded-full font-semibold text-base transition-all active:scale-[0.98] bg-forest text-on-dark-primary hover:bg-forest-light h-[54px] px-7 shadow-[0_8px_24px_rgba(28,58,46,0.2)] dark:shadow-[0_8px_28px_rgba(0,0,0,0.4)]"
               type="button"
             >
               Build my stack →
@@ -416,8 +380,7 @@ export default function LandingPageRebuild() {
             {canSkipToStack && (
               <button
                 onClick={goCoachFromLanding}
-                className="rounded-full font-semibold text-base transition-all"
-                style={{ height: 54, paddingLeft: 28, paddingRight: 28, border: '1.5px solid #1C3A2E', color: '#1C3A2E', background: 'transparent' }}
+                className="rounded-full font-semibold text-base transition-all h-[54px] px-7 border-[1.5px] border-forest text-ink bg-transparent hover:bg-cream-dark"
                 type="button"
               >
                 Skip quiz · talk to Stacky
@@ -426,22 +389,21 @@ export default function LandingPageRebuild() {
             {canSkipToStack && (
               <button
                 onClick={goResults}
-                className="rounded-full font-semibold text-base transition-all"
-                style={{ height: 54, paddingLeft: 28, paddingRight: 28, border: '1.5px solid #E8E0D5', color: '#6B5B4E', background: 'transparent' }}
+                className="rounded-full font-semibold text-base transition-all h-[54px] px-7 border-[1.5px] border-stone text-warm-mid bg-transparent hover:bg-cream-dark"
                 type="button"
               >
                 View my stack & schedule
               </button>
             )}
           </div>
-          <p className="text-xs mt-4 text-stone-dark">
+          <p className="text-xs mt-4 text-stone-dark dark:text-warm-light">
             Takes about 90 seconds · No account required · Free to start
           </p>
         </div>
       </section>
 
       {/* ─── STATS BAR ───────────────────────────────────────────────── */}
-      <div style={{ borderTop: '1px solid #E8E0D5', borderBottom: '1px solid #E8E0D5', background: '#FFFFFF' }}>
+      <div className="border-y border-stone bg-white">
         <div className="max-w-5xl mx-auto px-5 py-5">
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
             {[
@@ -450,10 +412,8 @@ export default function LandingPageRebuild() {
               { n: 'Ongoing', label: 'Support as things change' },
             ].map(({ n, label }) => (
               <div key={label} className="text-center">
-                <div className="font-serif" style={{ fontSize: 20, color: '#1C3A2E', fontWeight: 300, letterSpacing: '-0.01em' }}>
-                  {n}
-                </div>
-                <div className="text-xs mt-0.5" style={{ color: '#9C8E84' }}>{label}</div>
+                <div className="font-serif text-xl text-ink font-light tracking-tight">{n}</div>
+                <div className="text-xs mt-0.5 text-warm-light">{label}</div>
               </div>
             ))}
           </div>
@@ -464,21 +424,13 @@ export default function LandingPageRebuild() {
       <section className="max-w-5xl mx-auto px-5 py-14">
         <div className="grid lg:grid-cols-2 gap-10 items-center">
           <div>
-            <div className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: '#4A7C59', letterSpacing: '0.1em' }}>
+            <div className="text-xs font-semibold uppercase tracking-widest mb-4 text-moss tracking-widest">
               Guidance, not hype
             </div>
-            <h2
-              className="font-serif font-light mb-4"
-              style={{
-                fontSize: 'clamp(28px, 5vw, 40px)',
-                color: '#1C3A2E',
-                letterSpacing: '-0.01em',
-                lineHeight: 1.15,
-              }}
-            >
+            <h2 className="font-serif font-light mb-4 text-[clamp(28px,5vw,40px)] text-ink tracking-tight leading-snug">
               Clearer supplement decisions, with support that lasts.
             </h2>
-            <p className="text-sm leading-relaxed mb-5" style={{ color: '#6B5B4E' }}>
+            <p className="text-sm leading-relaxed mb-5 text-warm-mid">
               Most people waste money on supplements that do not fit their goals, or overlap what they already take. StackWise helps you build a personalized stack, understand the reasoning, and make clearer decisions over time.
             </p>
 
@@ -493,8 +445,8 @@ export default function LandingPageRebuild() {
                 <div key={title} className="flex items-start gap-3">
                   <span className="text-lg flex-shrink-0 mt-0.5">{icon}</span>
                   <div>
-                    <div className="font-semibold text-sm" style={{ color: '#1C3A2E' }}>{title}</div>
-                    <div className="text-xs leading-snug mt-0.5" style={{ color: '#9C8E84' }}>{sub}</div>
+                    <div className="font-semibold text-sm text-ink">{title}</div>
+                    <div className="text-xs leading-snug mt-0.5 text-warm-light">{sub}</div>
                   </div>
                 </div>
               ))}
@@ -502,8 +454,7 @@ export default function LandingPageRebuild() {
 
             <button
               onClick={() => navigate('/quiz')}
-              className="rounded-full font-semibold text-sm transition-all active:scale-95"
-              style={{ background: '#1C3A2E', color: '#F9F6F1', height: 48, paddingLeft: 24, paddingRight: 24 }}
+              className="rounded-full font-semibold text-sm transition-all active:scale-95 bg-forest text-on-dark-primary hover:bg-forest-light h-12 px-6"
               type="button"
             >
               Build my stack, free →
@@ -512,7 +463,7 @@ export default function LandingPageRebuild() {
 
           <div>
             <StackyDemo />
-            <p className="text-xs text-center mt-3" style={{ color: '#C4B9AC' }}>
+            <p className="text-xs text-center mt-3 text-stone dark:text-warm-light">
               Example guidance conversation, simplified for clarity
             </p>
           </div>
@@ -520,13 +471,13 @@ export default function LandingPageRebuild() {
       </section>
 
       {/* ─── HOW IT WORKS ───────────────────────────────────────────── */}
-      <section style={{ background: '#FFFFFF', borderTop: '1px solid #E8E0D5', borderBottom: '1px solid #E8E0D5' }}>
+      <section className="bg-white border-y border-stone">
         <div className="max-w-5xl mx-auto px-5 py-14">
           <div className="text-center mb-10">
-            <div className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: '#9C8E84', letterSpacing: '0.1em' }}>
+            <div className="text-xs font-semibold uppercase tracking-widest mb-3 text-warm-light tracking-widest">
               How it works
             </div>
-            <h2 className="font-serif font-light" style={{ fontSize: 'clamp(26px, 5vw, 36px)', color: '#1C3A2E', letterSpacing: '-0.01em' }}>
+            <h2 className="font-serif font-light text-[clamp(26px,5vw,36px)] text-ink tracking-tight">
               From first question to your full plan in 90 seconds.
             </h2>
           </div>
@@ -534,11 +485,11 @@ export default function LandingPageRebuild() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {HOW_STEPS.map(({ n, title, body }) => (
               <div key={n} className="relative">
-                <div className="font-serif font-light mb-3" style={{ fontSize: 40, color: '#E8E0D5', lineHeight: 1, letterSpacing: '-0.02em' }}>
+                <div className="font-serif font-light mb-3 text-[40px] text-stone/90 dark:text-warm-mid leading-none tracking-tight">
                   {n}
                 </div>
-                <div className="font-semibold text-sm mb-2" style={{ color: '#1C3A2E' }}>{title}</div>
-                <p className="text-xs leading-relaxed" style={{ color: '#9C8E84' }}>{body}</p>
+                <div className="font-semibold text-sm mb-2 text-ink">{title}</div>
+                <p className="text-xs leading-relaxed text-warm-light">{body}</p>
               </div>
             ))}
           </div>
@@ -548,10 +499,10 @@ export default function LandingPageRebuild() {
       {/* ─── GOALS GRID ────────────────────────────────────────────── */}
       <section className="max-w-5xl mx-auto px-5 py-14">
         <div className="text-center mb-8">
-          <h2 className="font-serif font-light" style={{ fontSize: 'clamp(26px, 5vw, 36px)', color: '#1C3A2E', letterSpacing: '-0.01em' }}>
+          <h2 className="font-serif font-light text-[clamp(26px,5vw,36px)] text-ink tracking-tight">
             Goals vary. Your plan should fit yours.
           </h2>
-          <p className="text-sm mt-2" style={{ color: '#9C8E84' }}>
+          <p className="text-sm mt-2 text-warm-light">
             Pick what you are working toward. StackWise shapes a stack around it.
           </p>
         </div>
@@ -561,64 +512,61 @@ export default function LandingPageRebuild() {
             <button
               key={label}
               onClick={() => navigate('/quiz')}
-              className="rounded-2xl p-3 text-center transition-all active:scale-95"
-              style={{ background: '#FFFFFF', border: '1px solid #E8E0D5', minHeight: 72 }}
-              onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#1C3A2E'; e.currentTarget.style.background = '#F0F5F2'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#E8E0D5'; e.currentTarget.style.background = '#FFFFFF'; }}
+              className="landing-goal-tile rounded-2xl p-3 text-center transition-all active:scale-95 min-h-[72px]"
               type="button"
             >
               <div className="text-2xl mb-1">{icon}</div>
-              <div className="text-xs font-medium leading-tight" style={{ color: '#6B5B4E' }}>{label}</div>
+              <div className="text-xs font-medium leading-tight text-warm-mid">{label}</div>
             </button>
           ))}
         </div>
       </section>
 
       {/* ─── COMPARISON ───────────────────────────────────────────── */}
-      <section style={{ background: '#FFFFFF', borderTop: '1px solid #E8E0D5', borderBottom: '1px solid #E8E0D5' }}>
+      <section className="bg-white border-y border-stone">
         <div className="max-w-5xl mx-auto px-5 py-14">
           <div className="text-center mb-10">
-            <div className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: '#9C8E84', letterSpacing: '0.1em' }}>
+            <div className="text-xs font-semibold uppercase tracking-widest mb-3 text-warm-light tracking-widest">
               The honest comparison
             </div>
-            <h2 className="font-serif font-light" style={{ fontSize: 'clamp(26px, 5vw, 36px)', color: '#1C3A2E', letterSpacing: '-0.01em' }}>
+            <h2 className="font-serif font-light text-[clamp(26px,5vw,36px)] text-ink tracking-tight">
               Less wasted spend. More clarity.
             </h2>
           </div>
 
-          <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid #E8E0D5' }}>
-            <div className="grid grid-cols-4" style={{ background: '#F9F6F1', borderBottom: '1px solid #E8E0D5' }}>
-              <div className="p-4 text-xs font-semibold uppercase tracking-widest" style={{ color: '#9C8E84' }} />
-              <div className="p-4 text-center text-xs font-semibold" style={{ color: '#9C8E84', borderLeft: '1px solid #E8E0D5' }}>
+          <div className="rounded-2xl overflow-hidden border border-stone">
+            <div className="grid grid-cols-4 bg-cream border-b border-stone">
+              <div className="p-4 text-xs font-semibold uppercase tracking-widest text-warm-light" />
+              <div className="p-4 text-center text-xs font-semibold text-warm-light border-l border-stone">
                 Trial and error
               </div>
-              <div className="p-4 text-center text-xs font-semibold" style={{ color: '#9C8E84', borderLeft: '1px solid #E8E0D5' }}>
+              <div className="p-4 text-center text-xs font-semibold text-warm-light border-l border-stone">
                 Google / Reddit
               </div>
-              <div className="p-4 text-center text-xs font-semibold" style={{ color: '#1C3A2E', borderLeft: '1px solid #E8E0D5', background: '#F0F5F2' }}>
+              <div className="p-4 text-center text-xs font-semibold text-ink border-l border-stone bg-emerald-50/80 dark:bg-emerald-950/30">
                 StackWise Pro
               </div>
             </div>
 
             {COMPARISON.map(({ feature, trialError, generic, stackwise }) => {
               const fmt = (v: boolean | string) => {
-                if (v === true) return { text: '✓', color: '#4A7C59', weight: 600 };
-                if (v === false) return { text: '✗', color: '#E8E0D5', weight: 400 };
-                return { text: v as string, color: '#9C8E84', weight: 400 };
+                if (v === true) return { text: '✓', cellClass: 'text-moss font-semibold' };
+                if (v === false) return { text: '✗', cellClass: 'text-stone dark:text-warm-light/60 font-normal' };
+                return { text: v as string, cellClass: 'text-warm-light font-normal' };
               };
               const sw = fmt(stackwise);
               const te = fmt(trialError);
               const gen = fmt(generic);
               return (
-                <div key={feature} className="grid grid-cols-4" style={{ borderTop: '1px solid #F0EBE3' }}>
-                  <div className="p-3.5 text-xs font-medium" style={{ color: '#6B5B4E' }}>{feature}</div>
-                  <div className="p-3.5 text-center text-xs" style={{ color: te.color, fontWeight: te.weight, borderLeft: '1px solid #F0EBE3' }}>
+                <div key={feature} className="grid grid-cols-4 border-t border-stone/80">
+                  <div className="p-3.5 text-xs font-medium text-warm-mid">{feature}</div>
+                  <div className={`p-3.5 text-center text-xs border-l border-stone/80 ${te.cellClass}`}>
                     {te.text}
                   </div>
-                  <div className="p-3.5 text-center text-xs" style={{ color: gen.color, fontWeight: gen.weight, borderLeft: '1px solid #F0EBE3' }}>
+                  <div className={`p-3.5 text-center text-xs border-l border-stone/80 ${gen.cellClass}`}>
                     {gen.text}
                   </div>
-                  <div className="p-3.5 text-center text-xs" style={{ color: sw.color, fontWeight: sw.weight, borderLeft: '1px solid #F0EBE3', background: '#F9FCF9' }}>
+                  <div className={`p-3.5 text-center text-xs border-l border-stone/80 bg-emerald-50/40 dark:bg-emerald-950/20 ${sw.cellClass}`}>
                     {sw.text}
                   </div>
                 </div>
@@ -626,8 +574,8 @@ export default function LandingPageRebuild() {
             })}
           </div>
 
-          <p className="text-center text-xs mt-6 max-w-xl mx-auto leading-relaxed" style={{ color: '#9C8E84' }}>
-            <strong style={{ color: '#6B5B4E' }}>Quiz unlocks:</strong> Basic adds LooksMaxxing. Pro adds Peptide Optimization and full peptide education, not included on Basic.
+          <p className="text-center text-xs mt-6 max-w-xl mx-auto leading-relaxed text-warm-light">
+            <strong className="text-warm-mid">Quiz unlocks:</strong> Basic adds LooksMaxxing. Pro adds Peptide Optimization and full peptide education, not included on Basic.
           </p>
         </div>
       </section>
@@ -635,51 +583,51 @@ export default function LandingPageRebuild() {
       {/* ─── TESTIMONIALS ───────────────────────────────────────────── */}
       <section className="max-w-5xl mx-auto px-5 py-14">
         <div className="text-center mb-10">
-          <div className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: '#9C8E84', letterSpacing: '0.1em' }}>
+          <div className="text-xs font-semibold uppercase tracking-widest mb-3 text-warm-light tracking-widest">
             What people say
           </div>
-          <h2 className="font-serif font-light" style={{ fontSize: 'clamp(26px, 5vw, 36px)', color: '#1C3A2E', letterSpacing: '-0.01em' }}>
+          <h2 className="font-serif font-light text-[clamp(26px,5vw,36px)] text-ink tracking-tight">
             People who stopped guessing.
           </h2>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {TESTIMONIALS.map(({ quote, name, goal, result: res }) => (
-            <div key={name} className="rounded-2xl p-5 flex flex-col" style={{ background: '#FFFFFF', border: '1px solid #E8E0D5' }}>
-              <p className="font-serif font-light text-base leading-relaxed flex-1 mb-4" style={{ color: '#3D2E22', fontSize: 15, fontStyle: 'italic' }}>
+            <div key={name} className="rounded-2xl p-5 flex flex-col bg-white border border-stone">
+              <p className="font-serif font-light text-[15px] leading-relaxed flex-1 mb-4 text-warm italic">
                 &ldquo;{quote}&rdquo;
               </p>
-              <div className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 mb-3 self-start" style={{ background: '#F0F5F2', border: '1px solid #D4E8DA' }}>
-                <span style={{ color: '#4A7C59', fontSize: 10 }}>✓</span>
-                <span className="text-xs font-semibold" style={{ color: '#1C3A2E' }}>{res}</span>
+              <div className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 mb-3 self-start bg-emerald-50/90 border border-emerald-200/80 dark:bg-emerald-950/35 dark:border-emerald-800/50">
+                <span className="text-moss text-[10px]">✓</span>
+                <span className="text-xs font-semibold text-ink">{res}</span>
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="font-semibold text-sm" style={{ color: '#1C3A2E' }}>{name}</div>
-                  <div className="text-xs" style={{ color: '#9C8E84' }}>Goal: {goal}</div>
+                  <div className="font-semibold text-sm text-ink">{name}</div>
+                  <div className="text-xs text-warm-light">Goal: {goal}</div>
                 </div>
               </div>
             </div>
           ))}
         </div>
 
-        <p className="text-center text-xs mt-6" style={{ color: '#C4B9AC', lineHeight: 1.6 }}>
+        <p className="text-center text-xs mt-6 text-stone dark:text-warm-light leading-relaxed">
           Individual results vary. These experiences reflect personal outcomes and are not guaranteed.<br />
           StackWise provides educational supplement guidance only - not medical advice.
         </p>
       </section>
 
       {/* ─── PRICING PREVIEW ───────────────────────────────────────── */}
-      <section style={{ background: '#1C3A2E', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+      <section className="bg-forest border-t border-white/10">
         <div className="max-w-5xl mx-auto px-5 py-14">
           <div className="text-center mb-10">
-            <div className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: 'rgba(249,246,241,0.4)', letterSpacing: '0.1em' }}>
+            <div className="text-xs font-semibold uppercase tracking-widest mb-3 text-on-dark-subtle tracking-widest">
               Simple pricing
             </div>
-            <h2 className="font-serif font-light mb-3" style={{ fontSize: 'clamp(28px, 5vw, 40px)', color: '#F9F6F1', letterSpacing: '-0.01em' }}>
+            <h2 className="font-serif font-light mb-3 text-[clamp(28px,5vw,40px)] text-on-dark-primary tracking-tight">
               Personalized stack clarity, then ongoing support.
             </h2>
-            <p className="text-sm" style={{ color: 'rgba(249,246,241,0.5)' }}>
+            <p className="text-sm text-on-dark-muted">
               Build a stack that fits, keep guidance as your routine evolves.
             </p>
           </div>
@@ -698,8 +646,9 @@ export default function LandingPageRebuild() {
                 ],
                 cta: 'Start Free',
                 action: () => navigate('/quiz'),
-                style: { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' },
-                ctaStyle: { background: 'rgba(255,255,255,0.1)', color: '#F9F6F1', border: '1px solid rgba(255,255,255,0.2)' },
+                cardClass: 'bg-white/5 border border-white/10',
+                ctaClass: 'bg-white/10 text-on-dark-primary border border-white/20 hover:bg-white/15',
+                highlight: false,
               },
               {
                 name: 'Basic',
@@ -714,8 +663,9 @@ export default function LandingPageRebuild() {
                 ],
                 cta: 'Get Basic',
                 action: () => navigate('/pricing'),
-                style: { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' },
-                ctaStyle: { background: 'rgba(255,255,255,0.1)', color: '#F9F6F1', border: '1px solid rgba(255,255,255,0.2)' },
+                cardClass: 'bg-white/5 border border-white/10',
+                ctaClass: 'bg-white/10 text-on-dark-primary border border-white/20 hover:bg-white/15',
+                highlight: false,
               },
               {
                 name: 'Pro',
@@ -734,33 +684,36 @@ export default function LandingPageRebuild() {
                 ],
                 cta: 'Start Pro',
                 action: () => navigate('/pricing'),
-                style: { background: '#F9F6F1', border: 'none' },
-                ctaStyle: { background: '#1C3A2E', color: '#F9F6F1', border: 'none' },
+                cardClass:
+                  'bg-[#F9F6F1] border-none shadow-lg dark:bg-surface-elevated dark:border dark:border-stone/80 dark:shadow-[0_12px_40px_rgba(0,0,0,0.35)]',
+                ctaClass: 'bg-forest text-on-dark-primary border-none hover:bg-forest-light',
                 highlight: true,
               },
             ].map((plan) => (
-              <div key={plan.name} className="rounded-2xl p-5 flex flex-col relative" style={plan.style}>
+              <div key={plan.name} className={`rounded-2xl p-5 flex flex-col relative ${plan.cardClass}`}>
                 {plan.badge && (
-                  <div
-                    className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-semibold px-3 py-1 rounded-full"
-                    style={{ background: '#4A7C59', color: '#F9F6F1', whiteSpace: 'nowrap' }}
-                  >
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-semibold px-3 py-1 rounded-full bg-[#4A7C59] text-[#F9F6F1] whitespace-nowrap shadow-sm">
                     {plan.badge}
                   </div>
                 )}
 
                 <div className="mb-4">
                   <div
-                    className="text-xs font-semibold uppercase tracking-widest mb-1"
-                    style={{ color: plan.highlight ? '#9C8E84' : 'rgba(249,246,241,0.4)', letterSpacing: '0.08em' }}
+                    className={`text-xs font-semibold uppercase tracking-widest mb-1 tracking-wide ${
+                      plan.highlight ? 'text-warm-light' : 'text-on-dark-subtle'
+                    }`}
                   >
                     {plan.name}
                   </div>
                   <div className="flex items-baseline gap-1">
-                    <span className="font-serif font-light" style={{ fontSize: 36, color: plan.highlight ? '#1C3A2E' : '#F9F6F1' }}>
+                    <span
+                      className={`font-serif font-light text-4xl ${
+                        plan.highlight ? 'text-ink' : 'text-on-dark-primary'
+                      }`}
+                    >
                       {plan.price}
                     </span>
-                    <span className="text-xs" style={{ color: plan.highlight ? '#9C8E84' : 'rgba(249,246,241,0.4)' }}>
+                    <span className={`text-xs ${plan.highlight ? 'text-warm-light' : 'text-on-dark-subtle'}`}>
                       {plan.sub}
                     </span>
                   </div>
@@ -769,39 +722,43 @@ export default function LandingPageRebuild() {
                 <ul className="space-y-1.5 flex-1 mb-4">
                   {plan.features.map((f) => (
                     <li key={f} className="flex items-start gap-2 text-xs leading-snug">
-                      <span style={{ color: plan.highlight ? '#4A7C59' : 'rgba(249,246,241,0.4)', flexShrink: 0, marginTop: 1 }}>
+                      <span
+                        className={`flex-shrink-0 mt-px ${plan.highlight ? 'text-moss' : 'text-on-dark-subtle'}`}
+                      >
                         ✓
                       </span>
-                      <span style={{ color: plan.highlight ? '#6B5B4E' : 'rgba(249,246,241,0.65)' }}>{f}</span>
+                      <span className={plan.highlight ? 'text-warm-mid' : 'text-on-dark-muted'}>{f}</span>
                     </li>
                   ))}
                 </ul>
 
                 <button
                   onClick={plan.action}
-                  className="w-full rounded-full font-semibold text-sm transition-all active:scale-[0.98]"
-                  style={{ ...plan.ctaStyle, height: 44 }}
+                  className={`w-full rounded-full font-semibold text-sm transition-all active:scale-[0.98] h-11 ${plan.ctaClass}`}
                   type="button"
                 >
                   {plan.cta}
                 </button>
-                <p className="text-center text-xs mt-2" style={{ color: plan.highlight ? '#C4B9AC' : 'rgba(249,246,241,0.25)' }}>
+                <p
+                  className={`text-center text-xs mt-2 ${
+                    plan.highlight ? 'text-warm-light' : 'text-on-dark-subtle'
+                  }`}
+                >
                   Cancel anytime
                 </p>
               </div>
             ))}
           </div>
 
-          <div
-            className="max-w-md mx-auto mt-8 rounded-2xl px-5 py-4 flex items-start gap-3"
-            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}
-          >
-            <span style={{ fontSize: 18, flexShrink: 0 }}>🛡</span>
+          <div className="max-w-md mx-auto mt-8 rounded-2xl px-5 py-4 flex items-start gap-3 bg-white/5 border border-white/10">
+            <span className="text-lg flex-shrink-0">🛡</span>
             <div>
-              <div className="font-semibold text-sm mb-1" style={{ color: '#F9F6F1' }}>7-day fit guarantee</div>
-              <p className="text-xs leading-relaxed" style={{ color: 'rgba(249,246,241,0.5)' }}>
+              <div className="font-semibold text-sm mb-1 text-on-dark-primary">7-day fit guarantee</div>
+              <p className="text-xs leading-relaxed text-on-dark-muted">
                 If StackWise isn&apos;t the right fit within your first 7 days, email{' '}
-                <a href="mailto:MAVFunk@gmail.com" style={{ color: 'rgba(249,246,241,0.55)', textDecoration: 'underline' }}>MAVFunk@gmail.com</a>{' '}
+                <a href="mailto:stacky@stack-wise.org" className="text-on-dark-primary underline underline-offset-2">
+                  stacky@stack-wise.org
+                </a>{' '}
                 for a full refund.
               </p>
             </div>
@@ -810,19 +767,19 @@ export default function LandingPageRebuild() {
       </section>
 
       {/* ─── FOUNDER ───────────────────────────────────────────────── */}
-      <section className="max-w-5xl mx-auto px-5 py-14 border-t border-stone" style={{ background: '#FDFCFA' }}>
+      <section className="max-w-5xl mx-auto px-5 py-14 border-t border-stone bg-cream-dark/40">
         <div className="max-w-2xl mx-auto text-center sm:text-left">
-          <h2 className="font-serif font-light mb-5" style={{ fontSize: 'clamp(24px, 4vw, 32px)', color: '#1C3A2E', letterSpacing: '-0.02em' }}>
+          <h2 className="font-serif font-light mb-5 text-[clamp(24px,4vw,32px)] text-ink tracking-tight">
             Why I built StackWise
           </h2>
-          <div className="space-y-4 text-sm leading-relaxed" style={{ color: '#6B5B4E' }}>
+          <div className="space-y-4 text-sm leading-relaxed text-warm-mid">
             <p>
               For a long time, I was the person people came to when they wanted help building a supplement stack that
               actually made sense for them. I kept seeing the same pattern: people wanted better sleep, more energy,
               a better mood, and a routine they could actually stick to, but instead they got overwhelmed by too many
               options and too much conflicting advice.
             </p>
-            <p className="font-medium" style={{ color: '#1C3A2E' }}>
+            <p className="font-medium text-ink">
               Too much noise. Too little clarity.
             </p>
             <p>
@@ -832,7 +789,7 @@ export default function LandingPageRebuild() {
             <p>
               It is a product I care deeply about getting right, and one I plan to keep improving over time.
             </p>
-            <p className="pt-1 font-serif font-light italic" style={{ color: '#1C3A2E' }}>
+            <p className="pt-1 font-serif font-light italic text-ink">
               Matthew
             </p>
           </div>
@@ -841,72 +798,53 @@ export default function LandingPageRebuild() {
 
       {/* ─── FINAL CTA ─────────────────────────────────────────────── */}
       <section className="max-w-5xl mx-auto px-5 py-16 text-center">
-        <h2
-          className="font-serif font-light mb-4"
-          style={{ fontSize: 'clamp(30px, 6vw, 46px)', color: '#1C3A2E', letterSpacing: '-0.02em', lineHeight: 1.15 }}
-        >
+        <h2 className="font-serif font-light mb-4 text-[clamp(30px,6vw,46px)] text-ink tracking-tight leading-tight">
           Stop guessing with supplements.
         </h2>
-        <p className="text-base mb-8 max-w-lg mx-auto leading-relaxed" style={{ color: '#6B5B4E' }}>
+        <p className="text-base mb-8 max-w-lg mx-auto leading-relaxed text-warm-mid">
           Get a stack that fits your goals, routine, and budget, and support that evolves with you. About 90 seconds to start. Free. No account required.
         </p>
         <button
           onClick={() => navigate('/quiz')}
-          className="rounded-full font-semibold text-base transition-all active:scale-[0.98] mx-auto block"
-          style={{
-            background: '#1C3A2E',
-            color: '#F9F6F1',
-            height: 56,
-            paddingLeft: 36,
-            paddingRight: 36,
-            boxShadow: '0 8px 24px rgba(28,58,46,0.2)',
-            width: '100%',
-            maxWidth: 300,
-          }}
+          className="rounded-full font-semibold text-base transition-all active:scale-[0.98] mx-auto block bg-forest text-on-dark-primary hover:bg-forest-light h-14 px-9 shadow-[0_8px_24px_rgba(28,58,46,0.2)] dark:shadow-[0_8px_28px_rgba(0,0,0,0.4)] w-full max-w-[300px]"
           type="button"
         >
           Build my stack, free →
         </button>
-        <p className="text-xs mt-4" style={{ color: '#C4B9AC' }}>
+        <p className="text-xs mt-4 text-stone dark:text-warm-light">
           Free · No credit card · No account
         </p>
       </section>
 
       {/* ─── FOOTER ──────────────────────────────────────────────────── */}
-      <footer
-        style={{
-          borderTop: '1px solid #E8E0D5',
-          background: '#FFFFFF',
-          paddingBottom: 'max(24px, env(safe-area-inset-bottom, 24px))',
-        }}
-      >
+      <footer className="border-t border-stone bg-white pb-[max(24px,env(safe-area-inset-bottom,24px))]">
         <div className="max-w-5xl mx-auto px-5 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <span className="font-serif font-light tracking-widest text-sm" style={{ color: '#1C3A2E', letterSpacing: '0.15em' }}>
+          <span className="font-serif font-light tracking-widest text-sm text-ink" style={{ letterSpacing: '0.15em' }}>
             STACKWISE
           </span>
-          <div className="flex items-center gap-5 text-xs" style={{ color: '#9C8E84' }}>
-            <button onClick={() => navigate('/pricing')} className="hover:text-forest transition-colors" type="button">
+          <div className="flex items-center gap-5 text-xs text-warm-light">
+            <button onClick={() => navigate('/pricing')} className="hover:text-ink transition-colors" type="button">
               Pricing
             </button>
-            <button onClick={() => navigate('/faq')} className="hover:text-forest transition-colors" type="button">
+            <button onClick={() => navigate('/faq')} className="hover:text-ink transition-colors" type="button">
               FAQ
             </button>
-            <button onClick={() => navigate('/privacy')} className="hover:text-forest transition-colors" type="button">
+            <button onClick={() => navigate('/privacy')} className="hover:text-ink transition-colors" type="button">
               Privacy
             </button>
-            <button onClick={() => navigate('/terms')} className="hover:text-forest transition-colors" type="button">
+            <button onClick={() => navigate('/terms')} className="hover:text-ink transition-colors" type="button">
               Terms
             </button>
-            <a href="mailto:MAVFunk@gmail.com" className="hover:text-forest transition-colors">
+            <a href="mailto:stacky@stack-wise.org" className="hover:text-ink transition-colors">
               Support
             </a>
           </div>
-          <div className="text-xs" style={{ color: '#C4B9AC' }}>
+          <div className="text-xs text-stone dark:text-warm-light">
             © {new Date().getFullYear()} StackWise · For educational purposes only
           </div>
         </div>
-        <div className="max-w-3xl mx-auto px-5 pb-8 pt-0 text-center border-t" style={{ borderColor: '#EEF0EB' }}>
-          <p className="text-[10px] sm:text-[11px] leading-relaxed mx-auto max-w-[52rem]" style={{ color: '#B8AEA4' }}>
+        <div className="max-w-3xl mx-auto px-5 pb-8 pt-0 text-center border-t border-stone/60">
+          <p className="text-[10px] sm:text-[11px] leading-relaxed mx-auto max-w-[52rem] text-warm-light">
             StackWise helps you compare and choose supplements; it does not replace sleep, movement, balanced eating, or care
             from a qualified professional. Supplements can support a routine but should not be solely relied on for health
             outcomes. Information here is educational only. Consult your healthcare provider before starting or changing

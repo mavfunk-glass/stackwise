@@ -122,32 +122,28 @@ export default function ProtocolLibraryPage() {
   const filtered = PROTOCOLS.filter((p) => filter === 'all' || p.category === filter);
 
   return (
-    <div className="min-h-screen" style={{ background: '#F9F6F1' }}>
+    <div className="min-h-screen bg-sw-bg text-warm">
 
       {/* Nav */}
       <div
-        className="sticky top-0 z-40 px-5"
+        className="sticky top-0 z-40 px-5 border-b border-stone sw-sticky-nav"
         style={{
-          background: 'rgba(249,246,241,0.95)',
-          backdropFilter: 'blur(12px)',
           paddingTop: 'max(14px, env(safe-area-inset-top, 14px))',
           paddingBottom: 14,
-          borderBottom: '1px solid #E8E0D5',
         }}
       >
         <div className="max-w-lg mx-auto flex items-center justify-between gap-2">
           <button
             onClick={() => navigate('/landing')}
-            className="inline-flex items-center gap-1.5 font-serif font-light tracking-widest text-sm"
-            style={{ color: '#1C3A2E', letterSpacing: '0.15em' }}
+            className="inline-flex items-center gap-1.5 font-serif font-light tracking-widest text-sm text-ink"
+            style={{ letterSpacing: '0.15em' }}
           >
-            <NavIcon kind="home" size={17} className="text-forest opacity-90" />
+            <NavIcon kind="home" size={17} className="text-ink opacity-90" />
             <span>STACKWISE</span>
           </button>
           <button
             onClick={() => navigate('/dashboard')}
-            className="inline-flex items-center gap-1 text-xs font-medium"
-            style={{ color: '#9C8E84' }}
+            className="inline-flex items-center gap-1 text-xs font-medium text-warm-light"
           >
             <NavIcon kind="daily" size={15} className="text-warm-mid opacity-90" />
             <span>Daily</span>
@@ -158,30 +154,46 @@ export default function ProtocolLibraryPage() {
       {/* Protocol detail modal */}
       {selected && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-0 sm:px-4" style={{ background: 'rgba(28,58,46,0.5)', backdropFilter: 'blur(4px)' }}>
-          <div className="w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl overflow-hidden" style={{ background: '#F9F6F1', maxHeight: '90vh', overflowY: 'auto' }}>
-            <div className="sticky top-0 flex items-center justify-between px-5 py-4" style={{ background: 'rgba(249,246,241,0.95)', borderBottom: '1px solid #E8E0D5' }}>
+          <div
+            className="w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl overflow-hidden bg-cream border border-stone sm:border"
+            style={{ maxHeight: '90vh', overflowY: 'auto' }}
+          >
+            <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-4 border-b border-stone sw-sticky-nav">
               <div>
-                <div className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#9C8E84' }}>{CATEGORY_LABELS[selected.category]}</div>
-                <div className="font-serif font-light text-xl mt-0.5" style={{ color: '#1C3A2E' }}>{selected.name}</div>
-              </div>
-              <button type="button" onClick={() => setSelected(null)} className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: '#F0EBE3', color: '#6B5B4E', fontSize: 18 }}>✕</button>
-            </div>
-            <div className="px-5 py-5 space-y-5">
-              <p className="text-sm leading-relaxed" style={{ color: '#6B5B4E' }}>{selected.overview}</p>
-              <div className="rounded-2xl p-4" style={{ background: '#1C3A2E' }}>
-                <div className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: 'rgba(249,246,241,0.8)' }}>Plan</div>
-                <pre className="text-sm font-sans leading-relaxed whitespace-pre-wrap" style={{ color: '#F9F6F1', fontFamily: 'Figtree, system-ui, sans-serif' }}>{selected.protocol}</pre>
-              </div>
-              <div className="rounded-2xl p-4" style={{ background: '#FDF6EE', border: '1px solid #F0D9BE' }}>
-                <div className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: '#8A5C2E' }}>⚠ Important cautions</div>
-                <p className="text-xs leading-relaxed" style={{ color: '#8A5C2E' }}>{selected.caution}</p>
+                <div className="text-xs font-semibold uppercase tracking-widest text-warm-light">
+                  {CATEGORY_LABELS[selected.category]}
+                </div>
+                <div className="font-serif font-light text-xl mt-0.5 text-ink">{selected.name}</div>
               </div>
               <button
-                onClick={() => { setSelected(null); navigate('/results'); }}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-full font-semibold text-sm"
-                style={{ background: '#1C3A2E', color: '#F9F6F1', height: 50 }}
+                type="button"
+                onClick={() => setSelected(null)}
+                className="w-9 h-9 rounded-full flex items-center justify-center bg-cream-dark text-warm-mid text-lg hover:bg-stone/80 dark:hover:bg-stone-dark/80"
               >
-                <NavIcon kind="stack" size={17} className="text-cream opacity-95" />
+                ✕
+              </button>
+            </div>
+            <div className="px-5 py-5 space-y-5">
+              <p className="text-sm leading-relaxed text-warm-mid">{selected.overview}</p>
+              <div className="rounded-2xl p-4 bg-forest">
+                <div className="text-xs font-semibold uppercase tracking-widest mb-3 text-on-dark-muted">Plan</div>
+                <pre className="text-sm font-sans leading-relaxed whitespace-pre-wrap text-on-dark-primary font-body">{selected.protocol}</pre>
+              </div>
+              <div className="rounded-2xl p-4 bg-amber-50 border border-amber-200/90 dark:bg-amber-950/35 dark:border-amber-800/60">
+                <div className="text-xs font-semibold uppercase tracking-widest mb-2 text-amber-900 dark:text-amber-100">
+                  ⚠ Important cautions
+                </div>
+                <p className="text-xs leading-relaxed text-amber-900 dark:text-amber-100">{selected.caution}</p>
+              </div>
+              <button
+                onClick={() => {
+                  setSelected(null);
+                  navigate('/results');
+                }}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full font-semibold text-sm bg-forest text-on-dark-primary hover:bg-forest-light"
+                style={{ height: 50 }}
+              >
+                <NavIcon kind="stack" size={17} className="text-on-dark-primary opacity-95" />
                 <span>Ask Stacky about this plan</span>
               </button>
             </div>
@@ -200,10 +212,10 @@ export default function ProtocolLibraryPage() {
               bubblePosition="right"
             />
             <div>
-              <h1 className="font-serif font-light" style={{ fontSize: 30, color: '#1C3A2E', letterSpacing: '-0.01em' }}>Guidance Library</h1>
-              <p className="text-sm mt-1" style={{ color: '#9C8E84' }}>Advanced supplement education for serious users.</p>
-              <div className="mt-3 rounded-xl px-4 py-3" style={{ background: '#FDF6EE', border: '1px solid #F0D9BE' }}>
-                <p className="text-xs leading-relaxed" style={{ color: '#8A5C2E', lineHeight: 1.6 }}>
+              <h1 className="font-serif font-light text-3xl text-ink tracking-tight">Guidance Library</h1>
+              <p className="text-sm mt-1 text-warm-light">Advanced supplement education for serious users.</p>
+              <div className="mt-3 rounded-xl px-4 py-3 bg-amber-50 border border-amber-200/90 dark:bg-amber-950/35 dark:border-amber-800/60">
+                <p className="text-xs leading-relaxed text-amber-900 dark:text-amber-100" style={{ lineHeight: 1.6 }}>
                   <strong>Educational content only.</strong> Peptides and advanced compounds described here are research chemicals not approved by the FDA for the uses discussed. Nothing on this page constitutes medical advice, diagnosis, or treatment. Always consult a licensed physician before starting any peptide or advanced supplement protocol. StackWise is not liable for health outcomes resulting from use of this information.
                 </p>
               </div>
@@ -218,13 +230,11 @@ export default function ProtocolLibraryPage() {
               key={f}
               type="button"
               onClick={() => setFilter(f)}
-              className="flex-shrink-0 px-4 rounded-full text-xs font-semibold transition-all"
-              style={{
-                height: 34,
-                background: filter === f ? '#1C3A2E' : '#F0EBE3',
-                color: filter === f ? '#F9F6F1' : '#6B5B4E',
-                border: 'none',
-              }}
+              className={`flex-shrink-0 px-4 rounded-full text-xs font-semibold transition-all h-[34px] ${
+                filter === f
+                  ? 'bg-forest text-on-dark-primary'
+                  : 'bg-cream-dark text-warm-mid hover:bg-stone/80 dark:hover:bg-stone-dark/80'
+              }`}
             >
               {f === 'all' ? 'All' : CATEGORY_LABELS[f]}
             </button>
@@ -240,25 +250,38 @@ export default function ProtocolLibraryPage() {
                 key={p.id}
                 type="button"
                 onClick={() => locked ? navigate('/pricing') : setSelected(p)}
-                className="w-full text-left rounded-2xl p-4 transition-all active:scale-[0.99]"
-                style={{ background: '#FFFFFF', border: '1px solid #E8E0D5' }}
+                className="w-full text-left rounded-2xl p-4 transition-all active:scale-[0.99] bg-white border border-stone"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: p.category === 'peptide' ? '#F0F5F2' : p.category === 'cycle' ? '#FDF6EE' : '#F0EBE3', color: p.category === 'peptide' ? '#1C3A2E' : p.category === 'cycle' ? '#8A5C2E' : '#6B5B4E' }}>
+                      <span
+                        className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                          p.category === 'peptide'
+                            ? 'bg-emerald-50 text-forest dark:bg-emerald-950/40 dark:text-emerald-100'
+                            : p.category === 'cycle'
+                              ? 'bg-amber-50 text-amber-900 dark:bg-amber-950/40 dark:text-amber-100'
+                              : 'bg-cream-dark text-warm-mid'
+                        }`}
+                      >
                         {CATEGORY_LABELS[p.category]}
                       </span>
                       {locked && (
-                        <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: '#1C3A2E', color: '#F9F6F1' }}>Pro</span>
+                        <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-forest text-on-dark-primary">
+                          Pro
+                        </span>
                       )}
                     </div>
-                    <div className="font-semibold text-sm mb-0.5" style={{ color: '#1C3A2E' }}>{p.name}</div>
-                    <div className="text-xs leading-snug" style={{ color: '#9C8E84' }}>{p.tagline}</div>
-                    <div className="mt-2 text-xs font-medium" style={{ color: '#4A7C59' }}>Goal: {p.goal}</div>
+                    <div className="font-semibold text-sm mb-0.5 text-ink">{p.name}</div>
+                    <div className="text-xs leading-snug text-warm-light">{p.tagline}</div>
+                    <div className="mt-2 text-xs font-medium text-moss">Goal: {p.goal}</div>
                   </div>
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style={{ background: locked ? '#F0EBE3' : '#F0F5F2' }}>
-                    <span style={{ color: locked ? '#C4B9AC' : '#1C3A2E', fontSize: 14 }}>{locked ? '🔒' : '→'}</span>
+                  <div
+                    className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm ${
+                      locked ? 'bg-cream-dark text-warm-light' : 'bg-emerald-50 text-forest dark:bg-emerald-950/40 dark:text-emerald-100'
+                    }`}
+                  >
+                    {locked ? '🔒' : '→'}
                   </div>
                 </div>
               </button>
@@ -268,10 +291,16 @@ export default function ProtocolLibraryPage() {
 
         {/* Pro upsell */}
         {!pro && (
-          <div className="mt-6 rounded-2xl p-5" style={{ background: '#1C3A2E' }}>
-            <div className="font-serif font-light text-xl mb-2" style={{ color: '#F9F6F1' }}>Unlock peptide guidance</div>
-            <p className="text-sm mb-4 leading-relaxed" style={{ color: 'rgba(249,246,241,0.82)' }}>Peptide education, cycling approaches, and advanced supplement guidance, for users who want to go beyond the basics.</p>
-            <button onClick={() => navigate('/pricing')} className="w-full rounded-full font-semibold text-sm" style={{ background: '#F9F6F1', color: '#1C3A2E', height: 48 }}>
+          <div className="mt-6 rounded-2xl p-5 bg-forest">
+            <div className="font-serif font-light text-xl mb-2 text-on-dark-primary">Unlock peptide guidance</div>
+            <p className="text-sm mb-4 leading-relaxed text-on-dark-muted">
+              Peptide education, cycling approaches, and advanced supplement guidance, for users who want to go beyond the basics.
+            </p>
+            <button
+              onClick={() => navigate('/pricing')}
+              className="w-full rounded-full font-semibold text-sm bg-[#F9F6F1] text-[#1C3A2E] dark:bg-surface-elevated dark:text-warm dark:border dark:border-stone/90 hover:opacity-95"
+              style={{ height: 48 }}
+            >
               Upgrade to Pro, $19/mo →
             </button>
           </div>

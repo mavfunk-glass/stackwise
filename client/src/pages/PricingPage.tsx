@@ -14,10 +14,14 @@ type SubscriptionTier = 'basic' | 'pro';
 function PayPalWrapper({ planId, tier, onSuccess }: { planId: string; tier: SubscriptionTier; onSuccess: () => void }) {
   const [{ isPending }] = usePayPalScriptReducer();
   const [err, setErr] = useState<string | null>(null);
-  if (isPending) return <div className="text-center text-xs py-4" style={{ color: '#9C8E84' }}>Loading payment options…</div>;
+  if (isPending) return <div className="text-center text-xs py-4 text-warm-light">Loading payment options…</div>;
   return (
     <div className="min-w-0">
-      {err && <div className="mb-3 text-xs text-center rounded-xl p-2" style={{ background: '#FEF2F2', color: '#B91C1C' }}>{err}</div>}
+      {err && (
+        <div className="mb-3 text-xs text-center rounded-xl p-2 bg-red-50 text-red-700 dark:bg-red-950/50 dark:text-red-200">
+          {err}
+        </div>
+      )}
       <div className="w-full rounded-xl overflow-hidden" style={{ maxWidth: '100%' }}>
         <PayPalButtons
           style={{ layout: 'vertical', color: 'black', shape: 'pill', label: 'subscribe', height: 50 }}
@@ -81,16 +85,16 @@ function PayPalWrapper({ planId, tier, onSuccess }: { planId: string; tier: Subs
 function SuccessModal({ tier, onContinue }: { tier: SubscriptionTier; onContinue: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{ background: 'rgba(28,58,46,0.6)', backdropFilter: 'blur(8px)' }}>
-      <div className="w-full max-w-sm rounded-3xl p-8 text-center" style={{ background: '#F9F6F1' }}>
-        <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5" style={{ background: '#F0F5F2', border: '2px solid #D4E8DA' }}>
-          <svg width="28" height="22" viewBox="0 0 28 22" fill="none">
-            <path d="M2 11L10 19L26 3" stroke="#1C3A2E" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+      <div className="w-full max-w-sm rounded-3xl p-8 text-center bg-cream border border-stone">
+        <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5 bg-emerald-50 border-2 border-emerald-200/80 dark:bg-emerald-950/35 dark:border-emerald-800/50">
+          <svg width="28" height="22" viewBox="0 0 28 22" fill="none" aria-hidden className="text-ink">
+            <path d="M2 11L10 19L26 3" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </div>
-        <h2 className="font-serif font-light mb-2" style={{ fontSize: 28, color: '#1C3A2E' }}>
+        <h2 className="font-serif font-light mb-2 text-3xl text-ink">
           {tier === 'pro' ? 'Welcome to Pro.' : 'Welcome to Basic.'}
         </h2>
-        <p className="text-sm leading-relaxed mb-6" style={{ color: '#6B5B4E' }}>
+        <p className="text-sm leading-relaxed mb-6 text-warm-mid">
           {tier === 'pro'
             ? 'Your plan is live. Peptide Optimization is unlocked in your quiz, plus ongoing guidance, follow-ups, and stack updates as goals evolve.'
             : 'Your stack is saved. LooksMaxxing is unlocked in your quiz, with daily check-ins, reminders, and unlimited stack generations.'}
@@ -114,24 +118,26 @@ export default function PricingPage() {
   }, [rebuildIntent]);
 
   return (
-    <div className="min-h-screen pb-16" style={{ background: '#F9F6F1' }}>
+    <div className="min-h-screen pb-16 bg-sw-bg text-warm">
       {successTier && <SuccessModal tier={successTier} onContinue={() => navigate(successTier === 'pro' ? '/results' : '/quiz')} />}
 
       {/* Nav */}
-      <div className="sticky top-0 z-40 px-5" style={{ background: 'rgba(249,246,241,0.95)', backdropFilter: 'blur(12px)', paddingTop: 'max(14px, env(safe-area-inset-top, 14px))', paddingBottom: 14, borderBottom: '1px solid #E8E0D5' }}>
+      <div
+        className="sticky top-0 z-40 px-5 border-b border-stone sw-sticky-nav"
+        style={{ paddingTop: 'max(14px, env(safe-area-inset-top, 14px))', paddingBottom: 14 }}
+      >
         <div className="max-w-lg mx-auto flex items-center justify-between gap-2">
           <button
             onClick={() => navigate('/landing')}
-            className="inline-flex items-center gap-1.5 font-serif font-light tracking-widest text-sm"
-            style={{ color: '#1C3A2E', letterSpacing: '0.15em' }}
+            className="inline-flex items-center gap-1.5 font-serif font-light tracking-widest text-sm text-ink"
+            style={{ letterSpacing: '0.15em' }}
           >
-            <NavIcon kind="home" size={17} className="text-forest opacity-90" />
+            <NavIcon kind="home" size={17} className="text-ink opacity-90" />
             <span>STACKWISE</span>
           </button>
           <button
             onClick={() => navigate('/results')}
-            className="inline-flex items-center gap-1 text-xs font-medium"
-            style={{ color: '#9C8E84' }}
+            className="inline-flex items-center gap-1 text-xs font-medium text-warm-light"
           >
             <NavIcon kind="stack" size={15} className="text-warm-mid opacity-90" />
             <span>Back to stack</span>
@@ -247,7 +253,7 @@ export default function PricingPage() {
             <div className="mt-4 flex items-start gap-2.5 rounded-xl px-3 py-2.5" style={{ background: 'rgba(255,255,255,0.06)' }}>
               <span className="text-on-dark-muted" style={{ fontSize: 14, flexShrink: 0 }}>🛡</span>
               <p className="text-xs leading-relaxed text-on-dark-muted">
-                <strong style={{ color: '#F9F6F1' }}>7-day fit guarantee.</strong> If StackWise isn&apos;t the right fit within your first 7 days, email <a href="mailto:MAVFunk@gmail.com" style={{ color: 'rgba(249,246,241,0.7)', textDecoration: 'underline' }}>MAVFunk@gmail.com</a> for a full refund.
+                <strong style={{ color: '#F9F6F1' }}>7-day fit guarantee.</strong> If StackWise isn&apos;t the right fit within your first 7 days, email <a href="mailto:stacky@stack-wise.org" style={{ color: 'rgba(249,246,241,0.7)', textDecoration: 'underline' }}>stacky@stack-wise.org</a> for a full refund.
               </p>
             </div>
 

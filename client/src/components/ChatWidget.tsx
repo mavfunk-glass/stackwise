@@ -182,7 +182,7 @@ function MidSessionNudge({ onDismiss }: { onDismiss: () => void }) {
     <div className="mx-3 mb-2 rounded-xl border border-moss/25 bg-moss-light/40 p-3 flex items-start gap-2.5">
       <span className="text-moss text-base flex-shrink-0 mt-0.5">💡</span>
       <div className="flex-1 min-w-0">
-        <div className="text-forest font-bold text-xs">You have 1 free question left</div>
+        <div className="text-ink font-bold text-xs">You have 1 free question left</div>
         <div className="text-warm-mid text-[11px] mt-0.5 leading-relaxed">
           Pro members get unlimited stack guidance, plan rebuilds, and support as their goals evolve, for less than most single supplements.
         </div>
@@ -211,20 +211,19 @@ function UpgradeWall({ onClose }: { onClose: () => void }) {
   const blurredPreview = useRef(getBlurredPreview()).current;
 
   return (
-    <div className="border-t flex flex-col shrink-0 overflow-y-auto" style={{ borderColor: '#E8E0D5', maxHeight: 'min(55dvh, 420px)', background: '#F9F6F1' }}>
-
+    <div className="border-t border-stone flex flex-col shrink-0 overflow-y-auto bg-cream max-h-[min(55dvh,420px)]">
       {/* Blurred preview */}
       <div className="px-4 pt-4 pb-3">
-        <div className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: '#9C8E84', letterSpacing: '0.08em' }}>
+        <div className="text-xs font-semibold uppercase tracking-widest mb-2 text-warm-light tracking-wide">
           Stacky was about to say…
         </div>
-        <div className="rounded-xl overflow-hidden relative" style={{ border: '1px solid #E8E0D5' }}>
-          <div className="p-3 text-sm leading-relaxed" style={{ filter: 'blur(5px)', userSelect: 'none', color: '#3D2E22', background: '#FDFCFA' }}>
+        <div className="rounded-xl overflow-hidden relative border border-stone">
+          <div className="p-3 text-sm leading-relaxed blur-[5px] select-none text-warm bg-surface-elevated">
             {blurredPreview}
           </div>
-          <div className="absolute inset-0 flex flex-col items-center justify-center rounded-xl" style={{ background: 'linear-gradient(to bottom, rgba(249,246,241,0.3), rgba(249,246,241,0.96))' }}>
-            <span style={{ fontSize: 20 }}>🔒</span>
-            <div className="text-xs font-semibold mt-1" style={{ color: '#1C3A2E' }}>Unlock to read the full answer</div>
+          <div className="absolute inset-0 flex flex-col items-center justify-center rounded-xl bg-gradient-to-b from-cream/30 to-cream/95">
+            <span className="text-xl">🔒</span>
+            <div className="text-xs font-semibold mt-1 text-ink">Unlock to read the full answer</div>
           </div>
         </div>
       </div>
@@ -232,32 +231,43 @@ function UpgradeWall({ onClose }: { onClose: () => void }) {
       {/* The reframe */}
       <div className="px-4 pb-4">
         <div className="text-center mb-3">
-          <div className="font-serif font-light" style={{ fontSize: 18, color: '#1C3A2E', lineHeight: 1.3 }}>
+          <div className="font-serif font-light text-lg text-ink leading-snug">
             Smarter supplement decisions, ongoing.
             <br />
-            <span style={{ color: '#4A7C59' }}>$19/month. Built around your goals.</span>
+            <span className="text-moss">$19/month. Built around your goals.</span>
           </div>
         </div>
 
         {/* Cost table */}
-        <div className="rounded-xl overflow-hidden mb-3" style={{ border: '1px solid #E8E0D5' }}>
+        <div className="rounded-xl overflow-hidden mb-3 border border-stone">
           {[
             { label: 'Hours of research + trial and error', cost: 'Your time', per: '+ wasted spending', strike: true },
             { label: 'PT supplement advice', cost: '$80+', per: 'per session', strike: true },
             { label: 'StackWise Pro: personalized plan + ongoing guidance', cost: '$19', per: '/month', highlight: true },
           ].map((row) => (
-            <div key={row.label} className="flex items-center justify-between px-3 py-2" style={{ background: row.highlight ? '#F0F5F2' : '#FDFCFA', borderBottom: '1px solid #F0EBE3' }}>
-              <span className="text-xs font-medium" style={{ color: row.highlight ? '#1C3A2E' : '#9C8E84' }}>{row.label}</span>
+            <div
+              key={row.label}
+              className={`flex items-center justify-between px-3 py-2 border-b border-stone/80 last:border-b-0 ${
+                row.highlight ? 'bg-emerald-50/80 dark:bg-emerald-950/25' : 'bg-surface-elevated'
+              }`}
+            >
+              <span className={`text-xs font-medium ${row.highlight ? 'text-ink' : 'text-warm-light'}`}>{row.label}</span>
               <div className="text-right">
-                <div className="text-xs font-bold" style={{ color: row.highlight ? '#1C3A2E' : '#C4B9AC', textDecoration: row.strike ? 'line-through' : 'none' }}>{row.cost}</div>
-                <div className="text-[10px]" style={{ color: '#C4B9AC' }}>{row.per}</div>
+                <div
+                  className={`text-xs font-bold ${row.highlight ? 'text-ink' : 'text-stone dark:text-warm-light'} ${
+                    row.strike ? 'line-through' : ''
+                  }`}
+                >
+                  {row.cost}
+                </div>
+                <div className="text-[10px] text-stone dark:text-warm-light">{row.per}</div>
               </div>
             </div>
           ))}
         </div>
 
         {/* Pro features */}
-        <div className="rounded-xl p-3 mb-3" style={{ background: '#1C3A2E' }}>
+        <div className="rounded-xl p-3 mb-3 bg-forest">
           <div className="text-xs font-semibold mb-2 text-on-dark-muted" style={{ letterSpacing: '0.06em', textTransform: 'uppercase' }}>Pro unlocks</div>
           {[
             '💬 Unlimited guidance. Ask anything about your plan, anytime',
@@ -272,20 +282,23 @@ function UpgradeWall({ onClose }: { onClose: () => void }) {
         </div>
 
         {/* Guarantee */}
-        <div className="rounded-xl px-3 py-2.5 mb-3 flex items-start gap-2" style={{ background: '#F0F5F2', border: '1px solid #D4E8DA' }}>
-          <span style={{ color: '#4A7C59', fontSize: 13, flexShrink: 0 }}>🛡</span>
-          <p className="text-xs leading-relaxed" style={{ color: '#4A7C59' }}>
+        <div className="rounded-xl px-3 py-2.5 mb-3 flex items-start gap-2 bg-emerald-50/90 border border-emerald-200/80 dark:bg-emerald-950/30 dark:border-emerald-800/50">
+          <span className="text-moss text-[13px] flex-shrink-0">🛡</span>
+          <p className="text-xs leading-relaxed text-emerald-900 dark:text-emerald-100">
             <strong>7-day fit guarantee.</strong> Doesn&apos;t click? Full refund within 7 days. No hoops.
           </p>
         </div>
 
-        <Link to="/pricing" className="block w-full text-center rounded-full font-semibold text-sm py-3 transition-all" style={{ background: '#1C3A2E', color: '#F9F6F1' }}>
+        <Link
+          to="/pricing"
+          className="block w-full text-center rounded-full font-semibold text-sm py-3 transition-all bg-forest text-on-dark-primary hover:bg-forest-light"
+        >
           Start Pro ($19/month) →
         </Link>
 
-        <p className="text-center text-xs mt-2 mb-1" style={{ color: '#C4B9AC' }}>Cancel anytime · No contracts</p>
+        <p className="text-center text-xs mt-2 mb-1 text-stone dark:text-warm-light">Cancel anytime · No contracts</p>
 
-        <button type="button" onClick={onClose} className="w-full text-center text-xs py-1.5 transition-all" style={{ color: '#C4B9AC' }}>
+        <button type="button" onClick={onClose} className="w-full text-center text-xs py-1.5 transition-all text-stone dark:text-warm-light hover:text-warm-mid">
           Not right now
         </button>
       </div>
@@ -543,14 +556,14 @@ export default function ChatWidget({
       >
         <div className="max-w-3xl mx-auto w-full pointer-events-auto flex flex-col gap-2">
           {isExpanded && (
-            <div className="rounded-2xl border border-stone bg-white shadow-[0_-4px_40px_rgba(61,46,34,0.16)] flex flex-col overflow-hidden min-h-[200px]"
+            <div className="rounded-2xl border border-stone bg-surface-elevated shadow-[0_-4px_40px_rgba(61,46,34,0.16)] dark:shadow-[0_-8px_40px_rgba(0,0,0,0.45)] flex flex-col overflow-hidden min-h-[200px]"
               style={{ maxHeight: 'min(58dvh, 520px)' }}>
               <div className="flex items-center justify-between gap-2 px-3 py-2.5 border-b border-cream-dark/60 shrink-0"
                 style={{ background: 'linear-gradient(to right, #1C3A2E, #2D5242)' }}>
                 <div className="flex items-center gap-2.5 min-w-0">
                   <div className="relative flex h-8 w-8 items-center justify-center shrink-0">
                     {isLoading ? (
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-cream border border-cream-dark/60 text-forest text-xs font-bold">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-cream border border-cream-dark/60 text-ink text-xs font-bold">
                         …
                       </div>
                     ) : (
@@ -565,7 +578,7 @@ export default function ChatWidget({
                           }
                           size={30}
                         />
-                        <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-moss-light text-[8px] leading-none flex items-center justify-center text-forest border border-forest/40">
+                        <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-moss-light text-[8px] leading-none flex items-center justify-center text-ink border border-forest/40">
                           {messages.length === 0 ? '🥼' : messages[messages.length - 1]?.role === 'model' ? '💬' : '✍'}
                         </span>
                       </>
@@ -581,7 +594,7 @@ export default function ChatWidget({
                       </div>
                     </div>
                     {isPro() && (
-                      <div className="hidden xs:inline-flex items-center rounded-full bg-moss-light text-forest text-[9px] font-black px-2 py-0.5 border border-sage/40">
+                      <div className="hidden xs:inline-flex items-center rounded-full bg-moss-light text-ink text-[9px] font-black px-2 py-0.5 border border-sage/40">
                         PRO
                       </div>
                     )}
@@ -594,7 +607,7 @@ export default function ChatWidget({
                     </span>
                   ) : (
                     !isPro() && (
-                      <Link to="/pricing" className="rounded-md bg-cream text-forest px-2 py-0.5 text-[10px] font-bold hover:bg-cream-dark transition">
+                      <Link to="/pricing" className="rounded-md bg-cream text-ink px-2 py-0.5 text-[10px] font-bold hover:bg-cream-dark transition">
                       Upgrade →
                       </Link>
                     )
@@ -619,12 +632,8 @@ export default function ChatWidget({
                       {m.role === 'user' ? (
                         <div className="flex justify-end">
                           <div
-                            className="max-w-[88%] rounded-2xl rounded-br-sm px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-wrap stackwise-weight-bubble stackwise-buoyant"
-                            style={{
-                              background: 'linear-gradient(135deg, #1C3A2E, #2D5242)',
-                              color: '#F9F6F1',
-                              animationDelay: `${(i % 3) * 180}ms`,
-                            }}
+                            className="max-w-[88%] rounded-2xl rounded-br-sm px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-wrap stackwise-weight-bubble stackwise-buoyant bg-gradient-to-br from-forest to-forest-light text-on-dark-primary"
+                            style={{ animationDelay: `${(i % 3) * 180}ms` }}
                           >
                             {m.text}
                           </div>
@@ -635,8 +644,8 @@ export default function ChatWidget({
                             <StackyCat mood="happy" size={26} />
                           </div>
                           <div
-                            className="max-w-[88%] rounded-2xl rounded-bl-sm px-3 py-2.5 text-warm leading-relaxed text-sm whitespace-pre-wrap border stackwise-weight-bubble stackwise-buoyant"
-                            style={{ background: '#FDFCFA', borderColor: '#E8E0D5', animationDelay: `${(i % 3) * 160}ms` }}
+                            className="max-w-[88%] rounded-2xl rounded-bl-sm px-3 py-2.5 text-warm leading-relaxed text-sm whitespace-pre-wrap border border-stone bg-surface stackwise-weight-bubble stackwise-buoyant"
+                            style={{ animationDelay: `${(i % 3) * 160}ms` }}
                           >
                             {m.text}
                           </div>
@@ -661,8 +670,7 @@ export default function ChatWidget({
                             key={prompt}
                             type="button"
                             onClick={() => askQuickPrompt(prompt)}
-                            className="rounded-full border px-3 py-1.5 text-[11px] text-warm-mid bg-white hover:border-forest/40 hover:text-forest transition stackwise-weight-bubble stackwise-buoyant"
-                            style={{ borderColor: '#E8E0D5' }}
+                            className="rounded-full border border-stone px-3 py-1.5 text-[11px] text-warm-mid bg-surface hover:border-forest/40 hover:text-ink transition stackwise-weight-bubble stackwise-buoyant"
                           >
                             {prompt}
                           </button>
@@ -681,7 +689,7 @@ export default function ChatWidget({
                   )}
                 </div>
                 {showUpgrade && (
-                  <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent pointer-events-none" />
+                  <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-surface-elevated to-transparent pointer-events-none" />
                 )}
               </div>
 
@@ -692,7 +700,7 @@ export default function ChatWidget({
               {showUpgrade ? (
                 <UpgradeWall onClose={() => setIsExpanded(false)} />
               ) : (
-                <div className="border-t border-cream-dark/70 p-2 bg-white shrink-0">
+                <div className="border-t border-cream-dark/70 p-2 bg-surface-elevated shrink-0">
                   <div className="flex items-end gap-2 rounded-xl border border-cream-dark bg-cream/70 focus-within:border-forest/40 focus-within:ring-1 focus-within:ring-forest/15 px-2 py-1.5">
                     <textarea
                       ref={textareaRef}
@@ -718,8 +726,7 @@ export default function ChatWidget({
                       type="button"
                       onClick={() => void sendMessage()}
                       disabled={isLoading || !input.trim() || (!isPro() && creditsLeft <= 0)}
-                      className="mb-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-forest disabled:opacity-35 hover:bg-forest/90 transition"
-                      style={{ color: '#F9F6F1' }}
+                      className="mb-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-forest text-on-dark-primary disabled:opacity-35 hover:bg-forest/90 transition"
                       aria-label="Send"
                     >
                       {isLoading ? (
@@ -760,7 +767,7 @@ export default function ChatWidget({
                   'w-full rounded-2xl border px-4 flex items-center gap-3 text-left transition-all active:scale-[0.99]',
                   creditsLeft === 0 && !isPro()
                     ? 'border-amber-200 bg-amber-50/90 shadow-[0_8px_30px_rgba(251,191,36,0.15)] hover:border-amber-300'
-                    : 'border-cream-dark bg-white/95 backdrop-blur-md shadow-[0_8px_30px_rgba(61,46,34,0.14)] hover:border-forest/25 hover:shadow-lg',
+                    : 'border-cream-dark bg-surface-elevated/95 backdrop-blur-md shadow-[0_8px_30px_rgba(61,46,34,0.14)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:border-forest/25 hover:shadow-lg',
                 ].join(' ')}
               >
                 <span
@@ -777,7 +784,7 @@ export default function ChatWidget({
                     <StackyCat mood="wave" size={34} />
                   )}
                   {creditsLeft > 0 && (
-                    <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-moss-light text-[8px] leading-none flex items-center justify-center text-forest border border-forest/40 animate-stackwise-idle-glow">
+                    <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-moss-light text-[8px] leading-none flex items-center justify-center text-ink border border-forest/40 animate-stackwise-idle-glow">
                       💬
                     </span>
                   )}
@@ -805,11 +812,11 @@ export default function ChatWidget({
               </button>
 
               {isPro() ? (
-                <div className="absolute -top-2 -right-1 bg-moss-light text-forest text-[9px] font-black rounded-full px-2 py-0.5 shadow-sm pointer-events-none">
+                <div className="absolute -top-2 -right-1 bg-moss-light text-ink text-[9px] font-black rounded-full px-2 py-0.5 shadow-sm pointer-events-none">
                   PRO
                 </div>
               ) : creditsLeft > 0 ? (
-                <div className="absolute -top-2 -right-1 bg-moss-light text-forest text-[9px] font-black rounded-full px-2 py-0.5 shadow-sm tabular-nums pointer-events-none">
+                <div className="absolute -top-2 -right-1 bg-moss-light text-ink text-[9px] font-black rounded-full px-2 py-0.5 shadow-sm tabular-nums pointer-events-none">
                   {creditsLeft} FREE
                 </div>
               ) : (

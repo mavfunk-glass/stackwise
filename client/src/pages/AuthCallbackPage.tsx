@@ -48,7 +48,7 @@ export default function AuthCallbackPage() {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-6 bg-cream">
+    <div className="min-h-screen flex flex-col items-center justify-center px-6 bg-sw-bg">
       <StackyCat mood="think" size={100} />
       <p className="mt-6 text-sm text-warm-mid text-center max-w-sm">{message}</p>
       {hint && (

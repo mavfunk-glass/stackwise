@@ -40,8 +40,11 @@ import {
   supplementIHerbSearchHref,
 } from '../utils/supplementRetailerUrls';
 import type { PrimaryGoal } from '../types/stackwise';
+import { useTheme } from '../theme/ThemeProvider';
 
 function GoalPillRow({ goals, compact }: { goals: PrimaryGoal[]; compact?: boolean }) {
+  const { resolved } = useTheme();
+  const isDark = resolved === 'dark';
   const max = compact ? 5 : 8;
   const safe = goals.filter((g): g is PrimaryGoal => g in GOAL_THEME);
   const slice = safe.slice(0, max);
@@ -55,7 +58,15 @@ function GoalPillRow({ goals, compact }: { goals: PrimaryGoal[]; compact?: boole
             key={g}
             title={label}
             className="text-[10px] font-semibold px-2 py-0.5 rounded-full max-w-[9rem] truncate"
-            style={{ color: theme.text, background: theme.pillBg, border: `1px solid ${theme.pillBorder}` }}
+            style={
+              isDark
+                ? {
+                    color: theme.pillTextDark,
+                    background: theme.pillBgDark,
+                    border: `1px solid ${theme.pillBorderDark}`,
+                  }
+                : { color: theme.text, background: theme.pillBg, border: `1px solid ${theme.pillBorder}` }
+            }
           >
             {emoji} {label}
           </span>
@@ -163,12 +174,10 @@ export default function CoachHubPage() {
   );
 
   return (
-    <div className="min-h-screen bg-cream text-warm">
+    <div className="min-h-screen bg-sw-bg text-warm">
       <nav
-        className="sticky top-0 z-40 border-b border-stone"
+        className="sticky top-0 z-40 border-b border-stone sw-sticky-nav"
         style={{
-          background: 'rgba(249,246,241,0.95)',
-          backdropFilter: 'blur(12px)',
           borderBottomWidth: isNavScrolled ? '0.5px' : '1px',
         }}
       >
@@ -177,18 +186,18 @@ export default function CoachHubPage() {
             <button
               type="button"
               onClick={() => navigate('/results')}
-              className="inline-flex items-center gap-1.5 shrink-0 text-xs font-semibold text-forest hover:text-moss transition-colors whitespace-nowrap"
+              className="inline-flex items-center gap-1.5 shrink-0 text-xs font-semibold text-ink hover:text-moss transition-colors whitespace-nowrap dark:text-warm dark:hover:text-moss"
             >
-              <NavIcon kind="stack" size={15} className="text-forest opacity-90" />
+              <NavIcon kind="stack" size={15} className="text-ink opacity-90" />
               <span>Back to stack</span>
             </button>
             <button
               type="button"
               onClick={() => navigate('/landing')}
-              className="inline-flex items-center gap-1.5 font-serif font-light tracking-widest text-sm text-forest truncate"
+              className="inline-flex items-center gap-1.5 font-serif font-light tracking-widest text-sm text-ink truncate dark:text-warm"
               style={{ letterSpacing: '0.15em' }}
             >
-              <NavIcon kind="home" size={17} className="text-forest opacity-90 shrink-0" />
+              <NavIcon kind="home" size={17} className="text-ink opacity-90 shrink-0" />
               <span>STACKWISE</span>
             </button>
           </div>
@@ -196,7 +205,7 @@ export default function CoachHubPage() {
             <button
               type="button"
               onClick={() => navigate('/dashboard')}
-              className="inline-flex items-center gap-1 text-xs font-medium text-warm-mid hover:text-forest transition-colors"
+              className="inline-flex items-center gap-1 text-xs font-medium text-warm-mid hover:text-ink transition-colors dark:text-warm-mid dark:hover:text-warm"
             >
               <NavIcon kind="daily" size={15} className="opacity-90" />
               <span>Daily</span>
@@ -204,12 +213,12 @@ export default function CoachHubPage() {
             <button
               type="button"
               onClick={() => navigate('/results')}
-              className="inline-flex items-center justify-center gap-2 min-h-[44px] rounded-full border-2 border-forest/25 bg-white px-4 text-sm font-bold text-forest hover:bg-moss-light/25 transition-colors"
+              className="inline-flex items-center justify-center gap-2 min-h-[44px] rounded-full border-2 border-forest/25 bg-surface-elevated px-4 text-sm font-bold text-ink hover:bg-moss-light/25 transition-colors dark:text-warm"
             >
-              <NavIcon kind="stack" size={17} className="text-forest opacity-90" />
+              <NavIcon kind="stack" size={17} className="text-ink opacity-90" />
               <span>Full stack guide</span>
             </button>
-            <span className="inline-flex items-center gap-1 text-xs font-semibold text-warm-mid px-1">
+            <span className="inline-flex items-center gap-1 text-xs font-semibold text-warm-mid px-1 dark:text-warm-mid">
               <NavIcon kind="hub" size={15} className="text-warm-mid opacity-90" />
               <span>Stack Hub</span>
             </span>
@@ -221,9 +230,9 @@ export default function CoachHubPage() {
         key={`hub-${location.key}`}
         className="max-w-4xl mx-auto px-4 py-6 pb-56 sm:pb-60 space-y-4"
       >
-        <div className="stackwise-result-block-reveal rounded-2xl border border-stone bg-white p-5 shadow-sm">
+        <div className="stackwise-result-block-reveal rounded-2xl border border-stone bg-surface-elevated p-5 shadow-sm">
           <div className="text-[10px] uppercase tracking-widest text-warm-light font-semibold mb-2">Quick action</div>
-          <p className="text-base font-bold text-forest mb-1">{REBUILD_HEADLINE}</p>
+          <p className="text-base font-bold text-ink mb-1">{REBUILD_HEADLINE}</p>
           <p className="text-sm text-warm-mid leading-relaxed mb-4">
             {isBasicOrPro() ? REBUILD_PAID_REMINDER : REBUILD_SAVINGS_TEASER}
           </p>
@@ -231,28 +240,28 @@ export default function CoachHubPage() {
             <button
               type="button"
               onClick={() => navigate('/quiz', { state: { quickRebuild: true } })}
-              className="inline-flex w-full min-h-[56px] items-center justify-center gap-2 rounded-2xl bg-forest px-5 text-base font-bold text-cream hover:bg-forest-light transition-colors shadow-lg ring-2 ring-forest/20"
+              className="inline-flex w-full min-h-[56px] items-center justify-center gap-2 rounded-2xl bg-forest px-5 text-base font-bold text-on-dark-primary hover:bg-forest-light transition-colors shadow-lg ring-2 ring-forest/20"
             >
-              <NavIcon kind="rebuild" size={18} className="text-cream opacity-95" />
+              <NavIcon kind="rebuild" size={18} className="text-on-dark-primary opacity-95" />
               <span>Build a new stack</span>
             </button>
           ) : (
             <button
               type="button"
               onClick={() => navigate('/pricing', { state: { intent: 'rebuild' } })}
-              className="inline-flex w-full min-h-[56px] items-center justify-center gap-2 rounded-2xl border-2 border-forest bg-cream px-5 text-base font-bold text-forest hover:bg-moss-light/40 transition-colors shadow-md"
+              className="inline-flex w-full min-h-[56px] items-center justify-center gap-2 rounded-2xl border-2 border-forest bg-cream px-5 text-base font-bold text-ink hover:bg-moss-light/40 transition-colors shadow-md"
             >
-              <NavIcon kind="pricing" size={18} className="text-forest opacity-90" />
+              <NavIcon kind="pricing" size={18} className="text-ink opacity-90" />
               <span>{REBUILD_UPGRADE_CTA}</span>
             </button>
           )}
         </div>
 
         <div
-          className="stackwise-result-hero-reveal rounded-2xl border border-stone bg-white p-4 sm:p-5 shadow-sm"
+          className="stackwise-result-hero-reveal rounded-2xl border border-stone bg-surface-elevated p-4 sm:p-5 shadow-sm"
           style={{ animationDelay: '120ms' }}
         >
-          <h1 className="font-display text-2xl sm:text-3xl text-forest leading-tight">Your Stack Hub</h1>
+          <h1 className="font-display text-2xl sm:text-3xl text-ink leading-tight">Your Stack Hub</h1>
 
           <div className="mt-4 flex flex-col sm:flex-row gap-4 items-start">
             <div className="flex-shrink-0 mx-auto sm:mx-0">
@@ -264,7 +273,7 @@ export default function CoachHubPage() {
             </div>
             <div className="flex-1 min-w-0 w-full">
               <p className="text-sm leading-relaxed text-warm">
-                Hey <span className="font-semibold text-forest">{displayName}</span>. This is your home base for your stack, daily check-ins, reminders, and quick support from Stacky.
+                Hey <span className="font-semibold text-ink">{displayName}</span>. This is your home base for your stack, daily check-ins, reminders, and quick support from Stacky.
               </p>
               <p className="text-sm leading-relaxed text-warm mt-2">
                 Everything below is organized to help you stay consistent and make clearer supplement decisions over time.
@@ -275,10 +284,10 @@ export default function CoachHubPage() {
                   : 'Upgrade to Pro for unlimited Stacky chat and deeper guidance.'}{' '}
                 <button
                   type="button"
-                  className="inline-flex items-center gap-1 font-semibold text-forest underline underline-offset-2"
+                  className="inline-flex items-center gap-1 font-semibold text-ink underline underline-offset-2"
                   onClick={() => navigate('/profile')}
                 >
-                  <NavIcon kind="profile" size={14} className="text-forest opacity-90" />
+                  <NavIcon kind="profile" size={14} className="text-ink opacity-90" />
                   <span>Profile</span>
                 </button>
               </p>
@@ -298,12 +307,12 @@ export default function CoachHubPage() {
                     setSavedName(true);
                     window.setTimeout(() => setSavedName(false), 1300);
                   }}
-                  className="rounded-xl bg-forest text-cream text-xs font-semibold px-3 py-2 sm:self-stretch"
+                  className="rounded-xl bg-forest text-on-dark-primary text-xs font-semibold px-3 py-2 sm:self-stretch"
                 >
                   Save name
                 </button>
               </div>
-              {savedName && <div className="text-xs text-forest-light mt-2">Name saved.</div>}
+              {savedName && <div className="text-xs text-forest-light dark:text-moss mt-2">Name saved.</div>}
             </div>
           </div>
 
@@ -313,7 +322,7 @@ export default function CoachHubPage() {
               Open your current stack or load a previous one. Past stacks appear here after each rebuild on Basic or Pro.
             </p>
             {isPro() && (
-              <p className="text-[10px] text-forest-light mb-3">
+              <p className="text-[10px] text-forest-light dark:text-moss mb-3">
                 Pro: Edit names inside each stack card and reorder archived stacks with the arrows.
               </p>
             )}
@@ -325,7 +334,7 @@ export default function CoachHubPage() {
                 <div className="rounded-xl border border-forest/25 bg-moss-light/20 px-3 py-2.5">
                   <div className="flex flex-col gap-2">
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
-                      <span className="text-[10px] font-bold uppercase tracking-wide text-forest shrink-0">Active</span>
+                      <span className="text-[10px] font-bold uppercase tracking-wide text-ink shrink-0">Active</span>
                       {isPro() ? (
                         <div className="flex flex-1 min-w-0 flex-wrap items-center gap-2">
                           <input
@@ -333,7 +342,7 @@ export default function CoachHubPage() {
                             value={activeStackNameDraft}
                             onChange={(e) => setActiveStackNameDraft(e.target.value)}
                             onClick={(e) => e.stopPropagation()}
-                            className="min-w-0 flex-1 rounded-lg border border-stone bg-white px-2.5 py-1.5 text-xs text-forest"
+                            className="min-w-0 flex-1 rounded-lg border border-stone bg-surface-elevated px-2.5 py-1.5 text-xs text-ink"
                             placeholder="Name this stack"
                             aria-label="Stack name"
                           />
@@ -346,13 +355,13 @@ export default function CoachHubPage() {
                                 setActiveStackNameDraft(next.name);
                               }
                             }}
-                            className="shrink-0 rounded-lg border border-forest/25 bg-moss-light/40 px-2.5 py-1.5 text-[10px] font-semibold text-forest hover:bg-moss-light/60"
+                            className="shrink-0 rounded-lg border border-forest/25 bg-moss-light/40 px-2.5 py-1.5 text-[10px] font-semibold text-ink hover:bg-moss-light/60"
                           >
                             Save
                           </button>
                         </div>
                       ) : (
-                        <span className="text-xs font-semibold text-forest truncate">
+                        <span className="text-xs font-semibold text-ink truncate">
                           {profile?.name?.trim() || 'Current stack'}
                         </span>
                       )}
@@ -368,7 +377,7 @@ export default function CoachHubPage() {
                       <button
                         type="button"
                         onClick={() => navigate('/results')}
-                        className="shrink-0 rounded-lg border border-forest/30 bg-white/80 px-3 py-1.5 text-[11px] font-semibold text-forest hover:bg-white"
+                        className="shrink-0 rounded-lg border border-forest/30 bg-surface-elevated/80 px-3 py-1.5 text-[11px] font-semibold text-ink hover:bg-surface-elevated"
                       >
                         Open stack
                       </button>
@@ -390,7 +399,7 @@ export default function CoachHubPage() {
                                 onChange={(e) =>
                                   setArchiveLabelDraft((prev) => ({ ...prev, [entry.id]: e.target.value }))
                                 }
-                                className="min-w-0 flex-1 rounded-lg border border-stone bg-white px-2 py-1.5 text-xs"
+                                className="min-w-0 flex-1 rounded-lg border border-stone bg-surface-elevated px-2 py-1.5 text-xs"
                                 placeholder="Stack name"
                                 aria-label="Rename stack"
                               />
@@ -403,7 +412,7 @@ export default function CoachHubPage() {
                                     setEditingArchiveId(null);
                                   }
                                 }}
-                                className="rounded-lg border border-forest/25 bg-moss-light/30 px-2 py-1.5 text-[10px] font-semibold text-forest"
+                                className="rounded-lg border border-forest/25 bg-moss-light/30 px-2 py-1.5 text-[10px] font-semibold text-ink"
                               >
                                 Save
                               </button>
@@ -417,7 +426,7 @@ export default function CoachHubPage() {
                             </div>
                           ) : (
                             <div className="flex flex-wrap items-center gap-2">
-                              <span className="text-xs font-semibold text-forest truncate">{entry.label}</span>
+                              <span className="text-xs font-semibold text-ink truncate">{entry.label}</span>
                               {isPro() && (
                                 <button
                                   type="button"
@@ -425,7 +434,7 @@ export default function CoachHubPage() {
                                     setEditingArchiveId(entry.id);
                                     setArchiveLabelDraft((prev) => ({ ...prev, [entry.id]: entry.label }));
                                   }}
-                                  className="shrink-0 rounded-md border border-stone/80 bg-white/60 px-2 py-0.5 text-[10px] font-semibold text-warm-mid hover:text-forest"
+                                  className="shrink-0 rounded-md border border-stone/80 bg-surface-elevated/60 px-2 py-0.5 text-[10px] font-semibold text-warm-mid hover:text-ink"
                                 >
                                   Edit name
                                 </button>
@@ -448,7 +457,7 @@ export default function CoachHubPage() {
                               saveResult(entry.result);
                               navigate('/results', { replace: true });
                             }}
-                            className="shrink-0 rounded-lg border border-stone bg-white/70 px-3 py-1.5 text-[11px] font-semibold text-forest hover:bg-white"
+                            className="shrink-0 rounded-lg border border-stone bg-surface-elevated/70 px-3 py-1.5 text-[11px] font-semibold text-ink hover:bg-surface-elevated"
                           >
                             Load
                           </button>
@@ -469,7 +478,7 @@ export default function CoachHubPage() {
                               onClick={() => {
                                 if (moveStackArchiveEntry(entry.id, -1)) setStackArchive(loadStackArchive());
                               }}
-                              className="rounded-lg border border-stone px-2 py-1 text-[10px] font-semibold text-warm-mid hover:bg-white/80"
+                              className="rounded-lg border border-stone px-2 py-1 text-[10px] font-semibold text-warm-mid hover:bg-surface-elevated/80"
                               aria-label="Move stack up"
                             >
                               ↑
@@ -479,7 +488,7 @@ export default function CoachHubPage() {
                               onClick={() => {
                                 if (moveStackArchiveEntry(entry.id, 1)) setStackArchive(loadStackArchive());
                               }}
-                              className="rounded-lg border border-stone px-2 py-1 text-[10px] font-semibold text-warm-mid hover:bg-white/80"
+                              className="rounded-lg border border-stone px-2 py-1 text-[10px] font-semibold text-warm-mid hover:bg-surface-elevated/80"
                               aria-label="Move stack down"
                             >
                               ↓
@@ -500,7 +509,7 @@ export default function CoachHubPage() {
         </div>
 
         <div
-          className="stackwise-result-block-reveal rounded-2xl border border-stone bg-white p-4 shadow-sm"
+          className="stackwise-result-block-reveal rounded-2xl border border-stone bg-surface-elevated p-4 shadow-sm"
           style={{ animationDelay: '220ms' }}
         >
           <div className="text-[10px] uppercase tracking-widest text-warm-light font-semibold mb-2">Profile snapshot</div>
@@ -539,7 +548,7 @@ export default function CoachHubPage() {
         </div>
 
         <div
-          className="stackwise-result-block-reveal rounded-2xl border border-stone bg-white p-4 shadow-sm"
+          className="stackwise-result-block-reveal rounded-2xl border border-stone bg-surface-elevated p-4 shadow-sm"
           style={{ animationDelay: '300ms' }}
         >
           <div className="text-[10px] uppercase tracking-widest text-warm-light font-semibold mb-2">Stacky daily check-in</div>
@@ -550,7 +559,7 @@ export default function CoachHubPage() {
             <div className="flex items-start gap-2.5">
               <StackyCat mood={mood <= 2 ? 'think' : mood >= 4 ? 'celebrate' : 'wave'} size={54} />
               <div className="min-w-0">
-                <p className="text-[11px] font-semibold text-forest mb-1">
+                <p className="text-[11px] font-semibold text-ink mb-1">
                   Stacky says for today ({MOOD_LABELS[mood]}):
                 </p>
                 <p className="text-xs text-warm-mid leading-relaxed">
@@ -565,12 +574,9 @@ export default function CoachHubPage() {
                 key={m}
                 type="button"
                 onClick={() => setMood(m as 1 | 2 | 3 | 4 | 5)}
-                className="rounded-full px-3 py-1.5 text-xs font-semibold border"
-                style={{
-                  background: mood === m ? '#1C3A2E' : '#FFFFFF',
-                  color: mood === m ? '#F9F6F1' : '#3D2E22',
-                  borderColor: '#E8E0D5',
-                }}
+                className={`rounded-full px-3 py-1.5 text-xs font-semibold border border-stone ${
+                  mood === m ? 'bg-forest text-on-dark-primary' : 'bg-surface-elevated text-warm'
+                }`}
               >
                 {m} · {MOOD_LABELS[m as 1 | 2 | 3 | 4 | 5]}
               </button>
@@ -591,11 +597,11 @@ export default function CoachHubPage() {
                 setSavedCheckIn(true);
                 window.setTimeout(() => setSavedCheckIn(false), 1400);
               }}
-              className="rounded-xl bg-forest text-cream text-xs font-semibold px-3 py-2"
+              className="rounded-xl bg-forest text-on-dark-primary text-xs font-semibold px-3 py-2"
             >
               Check in with Stacky
             </button>
-            {savedCheckIn && <span className="text-xs text-forest-light">Checked in.</span>}
+            {savedCheckIn && <span className="text-xs text-forest-light dark:text-moss">Checked in.</span>}
             <span className="text-xs text-warm-light ml-auto">
               Streak: {accountability.currentStreak}d (best {accountability.longestStreak}d)
             </span>
@@ -603,7 +609,7 @@ export default function CoachHubPage() {
         </div>
 
         <div
-          className="stackwise-result-block-reveal rounded-2xl border border-stone bg-white p-4 shadow-sm"
+          className="stackwise-result-block-reveal rounded-2xl border border-stone bg-surface-elevated p-4 shadow-sm"
           style={{ animationDelay: '380ms' }}
         >
           <div className="text-[10px] uppercase tracking-widest text-warm-light font-semibold mb-2">Reminder settings</div>
@@ -613,8 +619,8 @@ export default function CoachHubPage() {
               : 'Upgrade to Basic or Pro for daily email reminders.'}
           </p>
           {isBasicOrPro() && accountEmail && (
-            <p className="text-[11px] text-forest-light mb-2">
-              Reminders will go to <strong className="text-forest">{accountEmail}</strong>
+            <p className="text-[11px] text-forest-light dark:text-moss mb-2">
+              Reminders will go to <strong className="text-ink">{accountEmail}</strong>
             </p>
           )}
           {isBasicOrPro() ? (
@@ -643,14 +649,14 @@ export default function CoachHubPage() {
                       }
                     })();
                   }}
-                  className="rounded-xl bg-forest text-cream text-xs font-semibold px-3 py-2"
+                  className="rounded-xl bg-forest text-on-dark-primary text-xs font-semibold px-3 py-2"
                 >
                   Save reminder
                 </button>
-                {savedReminder && <span className="text-xs text-forest-light">Saved.</span>}
+                {savedReminder && <span className="text-xs text-forest-light dark:text-moss">Saved.</span>}
               </div>
               {reminderServerSaved && (
-                <p className="text-xs text-forest-light mt-2">
+                <p className="text-xs text-forest-light dark:text-moss mt-2">
                   ✓ Email reminder saved. Stacky will email you at {reminder} each day.
                 </p>
               )}
@@ -672,16 +678,16 @@ export default function CoachHubPage() {
             <button
               type="button"
               onClick={() => navigate('/pricing')}
-              className="inline-flex w-full min-h-[44px] items-center justify-center gap-2 rounded-xl bg-forest text-cream text-sm font-semibold px-4"
+              className="inline-flex w-full min-h-[44px] items-center justify-center gap-2 rounded-xl bg-forest text-on-dark-primary text-sm font-semibold px-4"
             >
-              <NavIcon kind="pricing" size={17} className="text-cream opacity-95" />
+              <NavIcon kind="pricing" size={17} className="text-on-dark-primary opacity-95" />
               <span>Upgrade for email reminders</span>
             </button>
           )}
         </div>
 
         <div
-          className="stackwise-result-block-reveal rounded-2xl border border-stone bg-white p-4 shadow-sm"
+          className="stackwise-result-block-reveal rounded-2xl border border-stone bg-surface-elevated p-4 shadow-sm"
           style={{ animationDelay: '460ms' }}
         >
           <div className="text-[10px] uppercase tracking-widest text-warm-light font-semibold mb-1">Supplement list</div>
@@ -716,7 +722,7 @@ export default function CoachHubPage() {
                     </span>
                   )}
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-forest text-sm">{s.name}</div>
+                    <div className="font-semibold text-ink text-sm">{s.name}</div>
                     {isLocked ? (
                       <>
                         <div className="text-[10px] font-semibold text-warm-light mt-1 uppercase tracking-wide">
@@ -736,9 +742,9 @@ export default function CoachHubPage() {
                         <button
                           type="button"
                           onClick={() => navigate('/pricing')}
-                          className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-forest underline underline-offset-2 decoration-moss/40 hover:text-moss"
+                          className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-ink underline underline-offset-2 decoration-moss/40 hover:text-moss"
                         >
-                          <NavIcon kind="pricing" size={13} className="text-forest opacity-90" />
+                          <NavIcon kind="pricing" size={13} className="text-ink opacity-90" />
                           <span>Upgrade to unlock</span>
                         </button>
                       </>
@@ -746,7 +752,7 @@ export default function CoachHubPage() {
                       <>
                         <div className="text-xs text-warm-mid mt-1">Dose: {s.dosage}</div>
                         <div className="text-xs text-warm-mid">Timing: {s.timing}</div>
-                        <div className="mt-2.5 rounded-lg border border-stone/80 bg-white/80 p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]">
+                        <div className="mt-2.5 rounded-lg border border-stone/80 bg-surface-elevated/80 p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] dark:shadow-[inset_0_1px_0_rgba(80,160,120,0.12)]">
                           <div className="text-[9px] font-bold uppercase tracking-wider text-warm-mid mb-1.5">Shop</div>
                           <div className="flex flex-wrap gap-2">
                             <a
@@ -769,12 +775,12 @@ export default function CoachHubPage() {
                           {(amazonIsProduct || iHerbIsProduct) && (
                             <div className="mt-2 flex flex-wrap gap-x-3 gap-y-0.5 border-t border-stone/40 pt-2">
                               {amazonIsProduct && (
-                                <a href={amazonSearchOnly} target="_blank" rel="noreferrer" className="text-[10px] font-medium text-forest/85 underline underline-offset-2">
+                                <a href={amazonSearchOnly} target="_blank" rel="noreferrer" className="text-[10px] font-medium text-ink/85 underline underline-offset-2">
                                   Amazon search
                                 </a>
                               )}
                               {iHerbIsProduct && (
-                                <a href={iHerbSearchOnly} target="_blank" rel="noreferrer" className="text-[10px] font-medium text-forest/85 underline underline-offset-2">
+                                <a href={iHerbSearchOnly} target="_blank" rel="noreferrer" className="text-[10px] font-medium text-ink/85 underline underline-offset-2">
                                   iHerb search
                                 </a>
                               )}
@@ -791,10 +797,10 @@ export default function CoachHubPage() {
         </div>
 
         <div
-          className="stackwise-result-block-reveal rounded-2xl border border-stone bg-white p-5 sm:p-6 shadow-sm mb-6"
+          className="stackwise-result-block-reveal rounded-2xl border border-stone bg-surface-elevated p-5 sm:p-6 shadow-sm mb-6"
           style={{ animationDelay: `${600 + result.supplements.length * 60}ms` }}
         >
-          <h2 className="font-display text-xl sm:text-2xl font-bold text-forest mb-2">Next step</h2>
+          <h2 className="font-display text-xl sm:text-2xl font-bold text-ink mb-2">Next step</h2>
           <p className="text-sm text-warm-mid leading-relaxed mb-5">
             Pick one action based on what you want to do now.
           </p>
@@ -805,7 +811,7 @@ export default function CoachHubPage() {
               className="btn-hub-cta w-full"
             >
               <span className="inline-flex items-center justify-center gap-2">
-                <NavIcon kind="stack" size={18} className="text-forest opacity-90" />
+                <NavIcon kind="stack" size={18} className="text-ink opacity-90" />
                 <span>Open full stack guide</span>
               </span>
               <span className="btn-hub-cta-sub">Review full reasoning, schedule, and details</span>
@@ -814,18 +820,18 @@ export default function CoachHubPage() {
               <button
                 type="button"
                 onClick={() => navigate('/quiz', { state: { quickRebuild: true } })}
-                className="inline-flex w-full min-h-[56px] items-center justify-center gap-2 rounded-2xl bg-forest text-cream font-bold text-base px-5 hover:bg-forest-light transition-colors shadow-lg ring-2 ring-forest/25"
+                className="inline-flex w-full min-h-[56px] items-center justify-center gap-2 rounded-2xl bg-forest text-on-dark-primary font-bold text-base px-5 hover:bg-forest-light transition-colors shadow-lg ring-2 ring-forest/25"
               >
-                <NavIcon kind="rebuild" size={18} className="text-cream opacity-95" />
+                <NavIcon kind="rebuild" size={18} className="text-on-dark-primary opacity-95" />
                 <span>Build a new stack</span>
               </button>
             ) : (
               <button
                 type="button"
                 onClick={() => navigate('/pricing', { state: { intent: 'rebuild' } })}
-                className="inline-flex w-full min-h-[56px] items-center justify-center gap-2 rounded-2xl border-2 border-forest bg-cream text-forest font-bold text-base px-5 hover:bg-moss-light/40 transition-colors shadow-md"
+                className="inline-flex w-full min-h-[56px] items-center justify-center gap-2 rounded-2xl border-2 border-forest bg-cream text-ink font-bold text-base px-5 hover:bg-moss-light/40 transition-colors shadow-md"
               >
-                <NavIcon kind="pricing" size={18} className="text-forest opacity-90" />
+                <NavIcon kind="pricing" size={18} className="text-ink opacity-90" />
                 <span>{REBUILD_UPGRADE_CTA}</span>
               </button>
             )}

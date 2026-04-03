@@ -35,6 +35,7 @@ import {
 } from '../utils/supplementRetailerUrls';
 import { findSupplementForScheduleLine, isRhythmLineLockedForFreeTier } from '../utils/scheduleLineGating';
 import type { GeminiResult, PrimaryGoal, Supplement } from '../types/stackwise';
+import { useTheme } from '../theme/ThemeProvider';
 
 const RESULTS_PHASE_KEY = 'stackwise_results_phase_v1';
 
@@ -117,11 +118,13 @@ const RHYTHM_ICONS = {
 } as const;
 
 function GoalPill({ goal }: { goal: PrimaryGoal }) {
+  const { resolved } = useTheme();
+  const isDark = resolved === 'dark';
   const t = GOAL_THEME[goal];
   const { emoji, label } = splitPrimaryGoal(goal);
   if (!t) {
     return (
-      <span className="inline-flex items-center rounded-full border border-stone bg-cream px-2.5 py-1 text-[11px] font-semibold text-forest">
+      <span className="inline-flex items-center rounded-full border border-stone bg-cream px-2.5 py-1 text-[11px] font-semibold text-ink dark:bg-surface dark:text-warm">
         {goal}
       </span>
     );
@@ -129,7 +132,11 @@ function GoalPill({ goal }: { goal: PrimaryGoal }) {
   return (
     <span
       className="inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold border"
-      style={{ background: t.pillBg, borderColor: t.pillBorder, color: t.text }}
+      style={
+        isDark
+          ? { background: t.pillBgDark, borderColor: t.pillBorderDark, color: t.pillTextDark }
+          : { background: t.pillBg, borderColor: t.pillBorder, color: t.text }
+      }
     >
       <span className="mr-0.5" aria-hidden>
         {emoji}
@@ -141,37 +148,49 @@ function GoalPill({ goal }: { goal: PrimaryGoal }) {
 
 /** Explains that the supplement was surfaced because of quiz goal selection; colors align with GOAL_THEME. */
 function GoalMatchCallout({ goals }: { goals: PrimaryGoal[] }) {
+  const { resolved } = useTheme();
+  const isDark = resolved === 'dark';
   if (goals.length === 0) return null;
   const single = goals.length === 1;
   const t = single ? GOAL_THEME[goals[0]] : undefined;
 
   return (
     <div
-      className="rounded-xl px-3.5 py-3 mb-1"
+      className={
+        single && t
+          ? 'rounded-xl px-3.5 py-3 mb-1'
+          : 'rounded-xl px-3.5 py-3 mb-1 border border-emerald-800/25 bg-gradient-to-br from-emerald-50/90 to-white shadow-[inset_3px_0_0_rgba(28,58,46,0.35)] dark:from-surface-elevated dark:to-surface dark:border-emerald-500/35 dark:shadow-[inset_3px_0_0_rgba(104,226,168,0.55)]'
+      }
       role="status"
       style={
         single && t
-          ? {
-              background: t.pillBg,
-              borderWidth: 1,
-              borderStyle: 'solid',
-              borderColor: t.pillBorder,
-              boxShadow: `inset 3px 0 0 ${t.text}`,
-            }
-          : {
-              background: 'linear-gradient(135deg, rgba(212,232,218,0.45) 0%, rgba(255,255,255,0.9) 100%)',
-              borderWidth: 1,
-              borderStyle: 'solid',
-              borderColor: 'rgba(74, 124, 89, 0.28)',
-              boxShadow: 'inset 3px 0 0 rgba(28, 58, 46, 0.35)',
-            }
+          ? isDark
+            ? {
+                background: t.pillBgDark,
+                borderWidth: 1,
+                borderStyle: 'solid',
+                borderColor: t.pillBorderDark,
+                boxShadow: `inset 3px 0 0 ${t.pillTextDark}`,
+              }
+            : {
+                background: t.pillBg,
+                borderWidth: 1,
+                borderStyle: 'solid',
+                borderColor: t.pillBorder,
+                boxShadow: `inset 3px 0 0 ${t.text}`,
+              }
+          : undefined
       }
     >
       <p
         className="text-[10px] font-bold uppercase tracking-[0.14em] mb-1"
-        style={{ color: single && t ? t.text : '#1C3A2E' }}
+        style={single && t ? { color: isDark ? t.pillTextDark : t.text } : undefined}
       >
-        {single ? 'Included for your selected goal' : 'Included for your selected goals'}
+        {single ? (
+          'Included for your selected goal'
+        ) : (
+          <span className="text-ink dark:text-warm">Included for your selected goals</span>
+        )}
       </p>
       <p className="text-xs text-warm-mid leading-relaxed mb-2.5">
         Stacky showed this because it supports {single ? 'a goal you picked in the quiz' : 'goals you picked in the quiz'}, not a random add-on.
@@ -207,29 +226,28 @@ function ClarityHero({
 
   return (
     <section
-      className={`relative overflow-hidden rounded-[28px] p-[3px] shadow-[0_20px_50px_-12px_rgba(28,58,46,0.22)] ${className}`.trim()}
+      className={`relative overflow-hidden rounded-[28px] p-[3px] shadow-[0_20px_50px_-12px_rgba(28,58,46,0.22)] dark:shadow-[0_24px_56px_-14px_rgba(0,0,0,0.55)] ${className}`.trim()}
       style={{
         background: 'linear-gradient(135deg, #1C3A2E 0%, #3d6b4f 45%, #b8956a 100%)',
       }}
     >
-      <div className="relative rounded-[25px] bg-gradient-to-b from-white via-[#FDFCFA] to-[#f3efe8] px-5 py-7 sm:px-8 sm:py-8 overflow-hidden">
-        <div className="pointer-events-none absolute -right-16 -top-24 h-52 w-52 rounded-full bg-emerald-200/35 blur-3xl" />
-        <div className="pointer-events-none absolute -left-20 bottom-0 h-44 w-44 rounded-full bg-amber-200/30 blur-3xl" />
+      <div className="sw-hero-panel relative rounded-[25px] px-5 py-7 sm:px-8 sm:py-8 overflow-hidden">
+        <div className="pointer-events-none absolute -right-16 -top-24 h-52 w-52 rounded-full bg-emerald-200/35 blur-3xl dark:bg-emerald-400/15" />
+        <div className="pointer-events-none absolute -left-20 bottom-0 h-44 w-44 rounded-full bg-amber-200/30 blur-3xl dark:bg-amber-400/10" />
 
         <div className="relative flex flex-col sm:flex-row gap-6 sm:gap-8 items-center sm:items-start">
           <div className="shrink-0 flex flex-col items-center">
-            <div
-              className="rounded-2xl shadow-lg border border-white/90 p-2"
-              style={{ background: 'linear-gradient(180deg, #ffffff 0%, #f6f3ee 100%)' }}
-            >
+            <div className="rounded-2xl shadow-lg border border-stone p-2 bg-surface-elevated">
               <StackyCat mood="wave" size={76} />
             </div>
             <span className="mt-2 text-[10px] font-bold uppercase tracking-widest text-moss">Stacky</span>
           </div>
 
           <div className="flex-1 min-w-0 text-center sm:text-left">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-forest/55 mb-1.5">Your plan</p>
-            <h1 className="font-display text-xl sm:text-2xl text-forest leading-snug text-balance">{headline}</h1>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink/55 dark:text-warm-mid mb-1.5">
+              Your plan
+            </p>
+            <h1 className="font-display text-xl sm:text-2xl text-ink leading-snug text-balance">{headline}</h1>
 
             {(goals.length > 0 || target) && (
               <div className="mt-4 flex flex-wrap justify-center sm:justify-start gap-1.5">
@@ -238,13 +256,7 @@ function ClarityHero({
                 ))}
                 {target && (
                   <span
-                    className="inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold"
-                    style={{
-                      color: '#5A3E14',
-                      border: '1.5px solid #C4A574',
-                      background: 'linear-gradient(135deg, #FFFDF8 0%, #FFF3D6 55%, #FCE9BE 100%)',
-                      boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.55), 0 2px 10px rgba(196,165,116,0.3)',
-                    }}
+                    className="inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold text-[#5A3E14] border-[1.5px] border-[#C4A574] bg-gradient-to-br from-[#FFFDF8] via-[#FFF3D6] to-[#FCE9BE] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.55),0_2px_10px_rgba(196,165,116,0.3)] dark:text-amber-100 dark:border-amber-600/60 dark:from-amber-950/80 dark:via-amber-900/50 dark:to-amber-950/80 dark:shadow-none"
                   >
                     Super Focus: {target}
                   </span>
@@ -253,13 +265,10 @@ function ClarityHero({
             )}
 
             <div className="mt-5 space-y-3 text-left">
-              <p className="text-sm text-warm leading-relaxed rounded-2xl border border-stone/90 bg-[#FDFCFA] px-4 py-3.5 shadow-sm">
+              <p className="sw-inset-panel text-sm leading-relaxed rounded-2xl px-4 py-3.5 shadow-sm">
                 {diagnosis}
               </p>
-              <p
-                className="text-sm text-forest font-semibold leading-relaxed rounded-2xl px-4 py-3.5 shadow-sm border border-sage/25"
-                style={{ background: 'linear-gradient(135deg, rgba(212,232,218,0.55) 0%, #ffffff 60%)' }}
-              >
+              <p className="sw-accent-panel text-sm font-semibold text-ink leading-relaxed rounded-2xl px-4 py-3.5">
                 {solutionIntro}
               </p>
             </div>
@@ -301,8 +310,7 @@ function SupplementCard({
 
   return (
     <div
-      className="rounded-2xl border border-stone overflow-hidden bg-white"
-      style={{ boxShadow: '0 4px 20px rgba(28, 58, 46, 0.06)' }}
+      className="sw-stack-card rounded-2xl border border-stone overflow-hidden"
     >
       {locked ? (
         <div className="w-full px-4 py-4 sm:py-5 flex items-start gap-3">
@@ -310,7 +318,7 @@ function SupplementCard({
             ??
           </span>
           <div className="flex-1 min-w-0">
-            <div className="font-semibold text-base text-forest">{s.name}</div>
+            <div className="font-semibold text-base text-ink">{s.name}</div>
             <div className="text-[11px] font-semibold text-warm-light mt-1 uppercase tracking-wide">
               Unlock dose, timing &amp; why it fits
             </div>
@@ -330,7 +338,7 @@ function SupplementCard({
         <button
           type="button"
           onClick={onToggle}
-          className="w-full px-4 py-4 sm:py-5 text-left flex items-start gap-3 border-b border-transparent hover:bg-[#FDFCFA]/90 transition-colors group"
+          className="w-full px-4 py-4 sm:py-5 text-left flex items-start gap-3 border-b border-transparent hover:bg-cream-dark/70 dark:hover:bg-surface-elevated/55 transition-colors group"
           aria-expanded={expanded}
           aria-label={expanded ? `Collapse details for ${s.name}` : `Expand for full details: ${s.name}`}
         >
@@ -342,12 +350,9 @@ function SupplementCard({
           </span>
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between gap-2">
-              <div className="font-semibold text-base text-forest">{s.name}</div>
+              <div className="font-semibold text-base text-ink">{s.name}</div>
               {!expanded && (
-                <span
-                  className="shrink-0 inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-full"
-                  style={{ background: 'transparent', color: '#B0A89E', border: '1px solid #E0D8D0' }}
-                >
+                <span className="shrink-0 inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-full border border-stone/90 text-warm-mid bg-cream/40 dark:border-stone dark:text-warm-mid dark:bg-surface/60">
                   tap to expand ▾
                 </span>
               )}
@@ -364,7 +369,7 @@ function SupplementCard({
               {badges.map((b) => (
                 <span
                   key={b}
-                  className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-moss-light/45 text-forest border border-sage/25"
+                  className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-moss-light/45 text-ink border border-sage/25"
                 >
                   {b}
                 </span>
@@ -378,7 +383,7 @@ function SupplementCard({
         <div className="p-4 space-y-3 text-sm border-t border-stone">
           {goalTags.length > 0 && <GoalMatchCallout goals={goalTags} />}
           <p className="text-warm leading-relaxed">
-            <span className="font-semibold text-forest">{whyItFitsLead}</span>
+            <span className="font-semibold text-ink">{whyItFitsLead}</span>
             {s.whyYouNeedThis}
           </p>
           <p className="text-warm-mid text-xs leading-relaxed">
@@ -390,17 +395,17 @@ function SupplementCard({
             {s.whatYoullFeel}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-            <div className="rounded-xl border border-stone bg-cream/50 px-3 py-2">
-              <div className="font-semibold text-forest mb-0.5">Dose</div>
+            <div className="rounded-xl border border-stone bg-cream/50 px-3 py-2 dark:bg-surface-elevated/70 dark:border-stone">
+              <div className="font-semibold text-ink mb-0.5">Dose</div>
               <div className="text-warm-mid">{s.dosage}</div>
             </div>
-            <div className="rounded-xl border border-stone bg-cream/50 px-3 py-2">
-              <div className="font-semibold text-forest mb-0.5">Timing & absorption</div>
+            <div className="rounded-xl border border-stone bg-cream/50 px-3 py-2 dark:bg-surface-elevated/70 dark:border-stone">
+              <div className="font-semibold text-ink mb-0.5">Timing & absorption</div>
               <div className="text-warm-mid">{s.timing}</div>
               {badges.length > 0 && (
                 <div className="flex flex-wrap gap-1 mt-2">
                   {badges.map((b) => (
-                    <span key={b} className="text-[10px] px-1.5 py-0.5 rounded bg-white border border-stone text-forest">
+                    <span key={b} className="text-[10px] px-1.5 py-0.5 rounded bg-surface border border-stone text-ink">
                       {b}
                     </span>
                   ))}
@@ -411,17 +416,19 @@ function SupplementCard({
           <div className="flex flex-wrap gap-2 text-xs text-warm-light">
             <span className="inline-flex items-center gap-1.5">
               <span className="inline-flex items-center gap-0.5">
-                {[1, 2, 3].map((i) => (
-                  <span
-                    key={i}
-                    style={{
-                      fontSize: 7,
-                      color: i <= ({ Strong: 3, Moderate: 2, Emerging: 1 } as Record<string, number>)[s.evidenceStrength]
-                        ? '#4A7C59'
-                        : '#DDD5CB',
-                    }}
-                  >●</span>
-                ))}
+                {[1, 2, 3].map((i) => {
+                  const filled =
+                    i <= ({ Strong: 3, Moderate: 2, Emerging: 1 } as Record<string, number>)[s.evidenceStrength];
+                  return (
+                    <span
+                      key={i}
+                      className={filled ? 'text-moss' : 'text-stone/55 dark:text-warm-light/40'}
+                      style={{ fontSize: 7 }}
+                    >
+                      ●
+                    </span>
+                  );
+                })}
               </span>
               <span>{{ Strong: 'Well studied', Moderate: 'Supported', Emerging: 'Promising' }[s.evidenceStrength] ?? s.evidenceStrength}</span>
             </span>
@@ -430,10 +437,10 @@ function SupplementCard({
               {formatPerSupplementMonthly(s.estimatedMonthlyCostLow, s.estimatedMonthlyCostHigh)}
             </span>
           </div>
-          <div className="mt-1 rounded-xl border border-stone/90 bg-gradient-to-b from-white to-[#F7F4EF] p-3 shadow-[0_1px_3px_rgba(28,58,46,0.06)]">
+          <div className="mt-1 rounded-xl border border-stone bg-surface p-3 shadow-[0_1px_3px_rgba(28,58,46,0.06)] dark:shadow-[inset_0_1px_0_rgba(100,200,150,0.08)]">
             <div className="flex items-center justify-between mb-2.5">
               <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-warm-mid">Shop</div>
-              <div className="text-[9px]" style={{ color: '#C4B9AC' }}>Affiliate links - we may earn a commission</div>
+              <div className="text-[9px] text-stone dark:text-warm-light">Affiliate links - we may earn a commission</div>
             </div>
             <div className="flex flex-col sm:flex-row gap-2.5">
               <a
@@ -460,7 +467,7 @@ function SupplementCard({
                     href={amazonSearchOnly}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[11px] font-medium text-forest/90 underline underline-offset-2 decoration-forest/25 hover:text-forest hover:decoration-forest/50"
+                    className="text-[11px] font-medium text-ink/90 underline underline-offset-2 decoration-forest/25 hover:text-ink hover:decoration-forest/50"
                   >
                     Search Amazon instead
                   </a>
@@ -470,7 +477,7 @@ function SupplementCard({
                     href={iHerbSearchOnly}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[11px] font-medium text-forest/90 underline underline-offset-2 decoration-forest/25 hover:text-forest hover:decoration-forest/50"
+                    className="text-[11px] font-medium text-ink/90 underline underline-offset-2 decoration-forest/25 hover:text-ink hover:decoration-forest/50"
                   >
                     Search iHerb instead
                   </a>
@@ -569,13 +576,10 @@ export default function ResultsPage() {
 
   if (!result) {
     return (
-      <div className="min-h-screen bg-cream text-warm pb-12 font-body">
+      <div className="min-h-screen bg-sw-bg text-warm pb-12 font-body">
         <nav
-          className="sticky top-0 z-40 px-5 border-b border-stone"
+          className="sticky top-0 z-40 px-5 border-b border-stone sw-sticky-nav"
           style={{
-            background: 'rgba(249,246,241,0.95)',
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(12px)',
             paddingTop: 'max(14px, env(safe-area-inset-top, 14px))',
             paddingBottom: 14,
           }}
@@ -584,7 +588,7 @@ export default function ResultsPage() {
             <button
               type="button"
               onClick={() => navigate('/landing')}
-              className="inline-flex items-center gap-1.5 font-serif font-light tracking-widest text-sm text-forest"
+              className="inline-flex items-center gap-1.5 font-serif font-light tracking-widest text-sm text-ink"
               style={{ letterSpacing: '0.15em' }}
             >
               <NavIcon kind="home" size={17} className="opacity-90" />
@@ -600,13 +604,13 @@ export default function ResultsPage() {
             </p>
             <button type="button" className="btn-primary mt-6 max-w-xs mx-auto" onClick={() => navigate('/quiz')}>
               <span className="inline-flex items-center justify-center gap-2">
-                <NavIcon kind="rebuild" size={17} className="text-cream opacity-95" />
+                <NavIcon kind="rebuild" size={17} className="text-on-dark-primary opacity-95" />
                 <span>Build my stack</span>
               </span>
             </button>
             <button
               type="button"
-              className="mt-4 block w-full text-sm font-medium text-warm-light hover:text-forest transition-colors"
+              className="mt-4 block w-full text-sm font-medium text-warm-light hover:text-ink transition-colors"
               onClick={() => navigate('/landing')}
             >
               <span className="inline-flex items-center justify-center gap-2">
@@ -626,13 +630,10 @@ export default function ResultsPage() {
   const blurRhythmForLockedSupplements = !isBasicOrPro() && supplements.length > 2;
 
   return (
-    <div className="min-h-screen bg-cream text-warm pb-[calc(88px+env(safe-area-inset-bottom,0px))] font-body">
+    <div className="min-h-screen bg-sw-bg text-warm pb-[calc(88px+env(safe-area-inset-bottom,0px))] font-body">
       <nav
-        className="sticky top-0 z-40 px-5 border-b border-stone"
+        className="sticky top-0 z-40 px-5 border-b border-stone sw-sticky-nav"
         style={{
-          background: 'rgba(249,246,241,0.95)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
           paddingTop: 'max(14px, env(safe-area-inset-top, 14px))',
           paddingBottom: 14,
         }}
@@ -641,22 +642,22 @@ export default function ResultsPage() {
           <button
             type="button"
             onClick={() => navigate('/landing')}
-            className="inline-flex items-center gap-1.5 font-serif font-light tracking-widest text-sm text-forest shrink-0"
+            className="inline-flex items-center gap-1.5 font-serif font-light tracking-widest text-sm text-ink shrink-0"
             style={{ letterSpacing: '0.15em' }}
           >
-            <NavIcon kind="home" size={17} className="text-forest opacity-90" />
+            <NavIcon kind="home" size={17} className="text-ink opacity-90" />
             <span>STACKWISE</span>
           </button>
           <div className="flex items-center gap-2 sm:gap-3 flex-wrap justify-end">
             {tier !== 'free' && (
-              <span className="text-[10px] sm:text-xs font-semibold px-2 py-1 rounded-full bg-moss-light text-forest border border-sage/30">
+              <span className="text-[10px] sm:text-xs font-semibold px-2 py-1 rounded-full bg-moss-light text-ink border border-sage/30">
                 {tier.toUpperCase()}
               </span>
             )}
             <button
               type="button"
               onClick={() => navigate('/dashboard')}
-              className="inline-flex items-center gap-1 text-xs font-medium text-warm-mid hover:text-forest transition-colors"
+              className="inline-flex items-center gap-1 text-xs font-medium text-warm-mid hover:text-ink transition-colors"
             >
               <NavIcon kind="daily" size={15} className="opacity-90" />
               <span>Daily</span>
@@ -664,7 +665,7 @@ export default function ResultsPage() {
             <button
               type="button"
               onClick={() => navigate('/coach')}
-              className="inline-flex items-center gap-1 text-xs font-medium text-warm-mid hover:text-forest transition-colors"
+              className="inline-flex items-center gap-1 text-xs font-medium text-warm-mid hover:text-ink transition-colors"
             >
               <NavIcon kind="hub" size={15} className="opacity-90" />
               <span>Stack Hub</span>
@@ -673,7 +674,7 @@ export default function ResultsPage() {
               <button
                 type="button"
                 onClick={() => navigate('/quiz', { state: { quickRebuild: true } })}
-                className="inline-flex items-center gap-1 text-xs font-semibold text-forest hover:text-moss transition-colors whitespace-nowrap"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-ink hover:text-moss transition-colors whitespace-nowrap"
               >
                 <NavIcon kind="rebuild" size={15} className="opacity-90" />
                 <span>New stack</span>
@@ -695,11 +696,11 @@ export default function ResultsPage() {
               {firstName ? `${firstName}, your first 90 days` : 'Your first 90 days'}
             </h1>
             <p className="text-sm text-warm-mid max-w-md leading-relaxed">
-              <span className="font-semibold text-forest">StackWise</span> is here to help guide you through the confusion around{' '}
-              <span className="font-semibold text-forest">what to take</span>, how supplements fit your{' '}
-              <span className="font-semibold text-forest">budget</span>, and how to avoid{' '}
-              <span className="font-semibold text-forest">wasting money on poor fits</span>.{' '}
-              {firstName ? `${firstName}, this` : 'This'} guide sits <span className="font-semibold text-forest">next to</span> sleep, movement, and how you eat, not instead of them.
+              <span className="font-semibold text-ink">StackWise</span> is here to help guide you through the confusion around{' '}
+              <span className="font-semibold text-ink">what to take</span>, how supplements fit your{' '}
+              <span className="font-semibold text-ink">budget</span>, and how to avoid{' '}
+              <span className="font-semibold text-ink">wasting money on poor fits</span>.{' '}
+              {firstName ? `${firstName}, this` : 'This'} guide sits <span className="font-semibold text-ink">next to</span> sleep, movement, and how you eat, not instead of them.
             </p>
             <p className="text-xs text-warm-light max-w-md leading-relaxed">
               The timeline may use your first name if you shared one in the quiz. Retake anytime to refresh this outlook.
@@ -707,7 +708,7 @@ export default function ResultsPage() {
           </div>
 
           <div
-            className="stackwise-result-block-reveal rounded-2xl border border-stone bg-white p-5 space-y-5 shadow-sm"
+            className="stackwise-result-block-reveal rounded-2xl border border-stone bg-surface-elevated p-5 space-y-5 shadow-sm dark:shadow-[0_8px_30px_rgba(0,0,0,0.35)]"
             style={{ animationDelay: '200ms' }}
           >
             <div>
@@ -726,14 +727,14 @@ export default function ResultsPage() {
 
           <button type="button" className="btn-results-next w-full" onClick={goToFullResults}>
             <span className="inline-flex items-center justify-center gap-2">
-              <NavIcon kind="stack" size={20} className="text-forest opacity-90" />
+              <NavIcon kind="stack" size={20} className="text-ink opacity-90" />
               <span>See my full stack</span>
             </span>
             <span className="btn-results-next-sub">Dose, daily rhythm, timing, and shop links, next step</span>
           </button>
           <button type="button" className="btn-hub-cta w-full" onClick={() => navigate('/coach')}>
             <span className="inline-flex items-center justify-center gap-2">
-              <NavIcon kind="hub" size={20} className="text-forest opacity-90" />
+              <NavIcon kind="hub" size={20} className="text-ink opacity-90" />
               <span>Open Stack Hub</span>
             </span>
             <span className="btn-hub-cta-sub">Your plan and supplements on one easy screen</span>
@@ -745,7 +746,7 @@ export default function ResultsPage() {
               className="w-full min-h-[56px] rounded-2xl bg-forest text-on-dark-primary font-bold text-base hover:bg-forest-light transition-colors shadow-md"
             >
               <span className="inline-flex items-center justify-center gap-2">
-                <NavIcon kind="rebuild" size={20} className="text-cream opacity-95" />
+                <NavIcon kind="rebuild" size={20} className="text-on-dark-primary opacity-95" />
                 <span>Build a new stack, skip intro and edit goals</span>
               </span>
             </button>
@@ -765,22 +766,14 @@ export default function ResultsPage() {
           />
 
           {saveStatus !== 'sent' && !accountEmail && (
-            <div
-              className="rounded-2xl p-5"
-              style={{ background: '#FFFFFF', border: '1px solid #E8E0D5' }}
-            >
+            <div className="rounded-2xl p-5 bg-surface-elevated border border-stone shadow-sm dark:shadow-[0_8px_30px_rgba(0,0,0,0.35)]">
               <div className="flex items-center gap-3 mb-3">
-                <div
-                  className="rounded-full flex items-center justify-center shrink-0"
-                  style={{ width: 36, height: 36, background: '#F0F5F2', border: '1px solid #D4E8DA' }}
-                >
-                  <span style={{ fontSize: 16 }}>??</span>
+                <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 bg-emerald-50 border border-emerald-200/90 dark:bg-emerald-950/50 dark:border-emerald-800/50">
+                  <span className="text-base">??</span>
                 </div>
                 <div>
-                  <div className="font-semibold text-sm" style={{ color: '#1C3A2E' }}>
-                    Save your stack, access it anywhere
-                  </div>
-                  <div className="text-xs" style={{ color: '#9C8E84' }}>
+                  <div className="font-semibold text-sm text-ink">Save your stack, access it anywhere</div>
+                  <div className="text-xs text-warm-light">
                     We&apos;ll email you a link. No password, no account form.
                   </div>
                 </div>
@@ -796,59 +789,34 @@ export default function ResultsPage() {
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') void handleSaveStack();
                   }}
-                  className="flex-1 rounded-xl border px-3 py-2.5 text-sm"
-                  style={{
-                    borderColor: '#E8E0D5',
-                    background: '#FDFCFA',
-                    color: '#3D2E22',
-                    fontFamily: 'Figtree, system-ui, sans-serif',
-                    outline: 'none',
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = '#1C3A2E';
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = '#E8E0D5';
-                  }}
+                  className="flex-1 rounded-xl border border-stone bg-surface px-3 py-2.5 text-sm text-warm placeholder:text-warm-light focus:border-forest focus:outline-none focus:ring-1 focus:ring-forest/30 font-body min-h-[44px]"
                 />
                 <button
                   type="button"
                   onClick={() => void handleSaveStack()}
                   disabled={saveStatus === 'sending' || !saveEmail.includes('@')}
-                  className="rounded-xl font-semibold text-xs px-4 transition-all"
-                  style={{
-                    background: saveEmail.includes('@') ? '#1C3A2E' : '#E8E0D5',
-                    color: saveEmail.includes('@') ? '#F9F6F1' : '#9C8E84',
-                    minHeight: 44,
-                    minWidth: 80,
-                    opacity: saveStatus === 'sending' ? 0.6 : 1,
-                  }}
+                  className={`rounded-xl font-semibold text-xs px-4 transition-all min-h-[44px] min-w-[80px] shrink-0 ${
+                    saveEmail.includes('@')
+                      ? 'bg-forest text-on-dark-primary hover:bg-forest-light'
+                      : 'bg-stone dark:bg-surface text-warm-light dark:text-warm-mid'
+                  } disabled:opacity-60`}
                 >
                   {saveStatus === 'sending' ? 'Sending...' : 'Send link'}
                 </button>
               </div>
-              {saveStatus === 'error' && (
-                <p className="text-xs mt-2" style={{ color: '#E05050' }}>
-                  {saveError}
-                </p>
-              )}
-              <p className="text-xs mt-2" style={{ color: '#C4B9AC' }}>
+              {saveStatus === 'error' && <p className="text-xs mt-2 text-red-600 dark:text-red-400">{saveError}</p>}
+              <p className="text-xs mt-2 text-warm-light">
                 One-click link, no password needed, your stack saved to your account
               </p>
             </div>
           )}
 
           {saveStatus === 'sent' && (
-            <div
-              className="rounded-2xl p-4 flex items-start gap-3"
-              style={{ background: '#F0F5F2', border: '1px solid #D4E8DA' }}
-            >
-              <span style={{ fontSize: 20 }}>?</span>
+            <div className="rounded-2xl p-4 flex items-start gap-3 bg-emerald-50/90 border border-emerald-200/80 dark:bg-emerald-950/35 dark:border-emerald-800/50">
+              <span className="text-xl">?</span>
               <div>
-                <div className="font-semibold text-sm" style={{ color: '#1C3A2E' }}>
-                  Check your email
-                </div>
-                <p className="text-xs mt-0.5 leading-relaxed" style={{ color: '#4A7C59' }}>
+                <div className="font-semibold text-sm text-ink">Check your email</div>
+                <p className="text-xs mt-0.5 leading-relaxed text-emerald-900 dark:text-emerald-100">
                   We sent a sign-in link to <strong>{saveEmail}</strong>. Click it to save your stack and access it from any
                   device. Link expires in 15 minutes.
                 </p>
@@ -857,12 +825,9 @@ export default function ResultsPage() {
           )}
 
           {accountEmail && (
-            <div
-              className="rounded-2xl px-4 py-3 flex items-center gap-2"
-              style={{ background: '#F0F5F2', border: '1px solid #D4E8DA' }}
-            >
-              <span style={{ fontSize: 14 }}>?</span>
-              <p className="text-xs" style={{ color: '#4A7C59' }}>
+            <div className="rounded-2xl px-4 py-3 flex items-center gap-2 bg-emerald-50/90 border border-emerald-200/80 dark:bg-emerald-950/35 dark:border-emerald-800/50">
+              <span className="text-sm">?</span>
+              <p className="text-xs text-emerald-900 dark:text-emerald-100">
                 Stack saved to <strong>{accountEmail}</strong>, accessible from any device.
               </p>
             </div>
@@ -871,32 +836,32 @@ export default function ResultsPage() {
           <button
             type="button"
             onClick={showPlanAgain}
-            className="w-full text-center text-xs font-medium text-forest underline underline-offset-2 decoration-moss/50 hover:text-moss"
+            className="w-full text-center text-xs font-medium text-ink underline underline-offset-2 decoration-moss/50 hover:text-moss"
           >
             <span className="inline-flex items-center justify-center gap-1.5">
-              <NavIcon kind="daily" size={14} className="text-forest opacity-90" />
+              <NavIcon kind="daily" size={14} className="text-ink opacity-90" />
               <span>Review your 90-day outlook</span>
             </span>
           </button>
 
           <div className="stackwise-result-block-reveal" style={{ animationDelay: '140ms' }}>
-            <h2 className="font-display text-xl text-forest mb-2">Your stack</h2>
+            <h2 className="font-display text-xl text-ink mb-2">Your stack</h2>
             <p className="text-sm text-warm-mid mb-1 leading-relaxed">
-              <span className="font-semibold text-forest">Tap any supplement</span> below to open the full card?dose, timing, why it fits your goals, evidence, and buy links.
+              <span className="font-semibold text-ink">Tap any supplement</span> below to open the full card?dose, timing, why it fits your goals, evidence, and buy links.
             </p>
             <p className="text-xs text-warm-light mb-4">Collapsed rows show a quick summary; expand when you&apos;re ready to go deeper.</p>
-            <div className="rounded-2xl border border-sage/35 bg-moss-light/30 px-4 py-3 mb-4 space-y-2">
-              <p className="text-sm font-semibold text-forest">Already taking supplements?</p>
+            <div className="rounded-2xl border border-sage/35 bg-moss-light/30 px-4 py-3 mb-4 space-y-2 dark:border-stone dark:bg-surface/85 dark:shadow-[inset_0_1px_0_rgba(104,226,168,0.1)]">
+              <p className="text-sm font-semibold text-ink">Already taking supplements?</p>
               <p className="text-xs text-warm-mid leading-relaxed">
                 Tell Stacky what you take, even if it is not on this list yet. Stacky can add them to your stack with the same detail as everything here: best way to take them (food, absorption, spacing), where they fit in your daily rhythm, benefits you might notice, and shop links?just ask in chat.
               </p>
               <button
                 type="button"
                 onClick={() => setChatOpenSignal((n) => n + 1)}
-                className="text-xs font-bold text-forest underline underline-offset-2 decoration-moss/50 hover:text-moss"
+                className="text-xs font-bold text-ink underline underline-offset-2 decoration-moss/50 hover:text-moss"
               >
                 <span className="inline-flex items-center gap-1.5">
-                  <NavIcon kind="chat" size={14} className="text-forest opacity-90" />
+                  <NavIcon kind="chat" size={14} className="text-ink opacity-90" />
                   <span>Open Stacky to add what you take</span>
                 </span>
               </button>
@@ -926,35 +891,24 @@ export default function ResultsPage() {
             </div>
 
             {!isBasicOrPro() && supplements.length > 2 && (
-              <div
-                className="rounded-2xl p-5 text-center"
-                style={{ background: '#1C3A2E', border: '1px solid rgba(255,255,255,0.06)' }}
-              >
+              <div className="rounded-2xl p-5 text-center bg-forest border border-white/10">
                 <div className="text-2xl mb-2">??</div>
-                <div className="font-serif font-light text-lg mb-1" style={{ color: '#F9F6F1' }}>
+                <div className="font-serif font-light text-lg mb-1 text-on-dark-primary">
                   {supplements.length - 2} more supplement{supplements.length - 2 !== 1 ? 's' : ''} in your plan
                 </div>
-                <p className="text-sm mb-4 leading-relaxed" style={{ color: 'rgba(249,246,241,0.75)' }}>
+                <p className="text-sm mb-4 leading-relaxed text-on-dark-muted">
                   Unlock full dose, timing, and the reasoning behind every recommendation. Plus rebuild your stack whenever
                   your goals change.
                 </p>
                 <button
                   type="button"
                   onClick={() => navigate('/pricing')}
-                  className="w-full rounded-full font-semibold text-sm transition-all inline-flex items-center justify-center gap-2"
-                  style={{
-                    background: '#F9F6F1',
-                    color: '#1C3A2E',
-                    height: 50,
-                    maxWidth: 280,
-                    margin: '0 auto',
-                    display: 'flex',
-                  }}
+                  className="sw-pill-on-dark w-full rounded-full font-semibold text-sm transition-all inline-flex items-center justify-center gap-2 hover:opacity-95 h-[50px] max-w-[280px] mx-auto"
                 >
-                  <NavIcon kind="pricing" size={16} className="text-forest opacity-90" />
+                  <NavIcon kind="pricing" size={16} className="opacity-90" />
                   <span>Unlock full stack, from $9/mo.</span>
                 </button>
-                <p className="text-xs mt-3" style={{ color: 'rgba(249,246,241,0.4)' }}>
+                <p className="text-xs mt-3 text-on-dark-subtle">
                   Cancel anytime · 7-day fit guarantee
                 </p>
               </div>
@@ -963,38 +917,46 @@ export default function ResultsPage() {
 
           {quiz?.specificGoal?.trim() && (
             <section
-              className="stackwise-result-block-reveal rounded-[24px] p-[1.5px] shadow-[0_22px_52px_rgba(120,84,20,0.35)]"
+              className="stackwise-result-block-reveal rounded-[24px] p-[1.5px] shadow-[0_22px_48px_rgba(28,58,46,0.32)]"
               style={{
                 animationDelay: `${300 + supplements.length * 72}ms`,
-                background: 'linear-gradient(135deg, #E4C27A 0%, #B8872E 22%, #5A3F16 55%, #D8B160 100%)',
+                background:
+                  'linear-gradient(135deg, #E8CF7A 0%, #C9A855 22%, #4A7C59 52%, #1C3A2E 100%)',
               }}
             >
               <div
                 className="rounded-[23px] p-4 sm:p-5"
                 style={{
                   background:
-                    'radial-gradient(circle at top right, rgba(255,236,186,0.36) 0%, transparent 42%), linear-gradient(180deg, #1D1711 0%, #2C2113 100%)',
-                  border: '1.5px solid rgba(218,180,96,0.7)',
+                    'radial-gradient(circle at top right, rgba(247,226,178,0.14) 0%, transparent 46%), linear-gradient(180deg, #142920 0%, #1C3A2E 52%, #163028 100%)',
+                  border: '1.5px solid rgba(123, 158, 135, 0.55)',
+                  boxShadow: 'inset 0 1px 0 rgba(247,226,178,0.12)',
                 }}
               >
-                <div className="flex flex-wrap items-center gap-2 mb-2">
-                  <h3 className="font-display text-lg text-[#F7E2B2]">Super Focus, premium add-on lane</h3>
-                  <span
-                    className="text-[10px] font-black uppercase tracking-[0.16em] px-2 py-0.5 rounded-full"
+                <div className="mb-3">
+                  <h3
+                    className="font-display text-xl sm:text-2xl font-semibold text-[#F7E2B2] tracking-[0.04em]"
                     style={{
-                      background: 'linear-gradient(135deg, #F7E2B2 0%, #E4C27A 55%, #C69538 100%)',
-                      color: '#4D3412',
-                      border: '1px solid rgba(255,243,214,0.6)',
-                      boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.35), 0 2px 8px rgba(196,149,56,0.35)',
+                      textShadow:
+                        '0 0 36px rgba(212,232,218,0.22), 0 0 42px rgba(247,226,178,0.32), 0 2px 10px rgba(0,0,0,0.35)',
                     }}
                   >
-                    Pro
-                  </span>
+                    Super Focus
+                  </h3>
+                  <div
+                    className="mt-2.5 h-0.5 max-w-[7.5rem] rounded-full"
+                    style={{
+                      background:
+                        'linear-gradient(90deg, #E4C27A 0%, #4A7C59 55%, rgba(74,124,89,0.25) 100%)',
+                      boxShadow: '0 0 14px rgba(74,124,89,0.35), 0 0 8px rgba(228,194,122,0.25)',
+                    }}
+                    aria-hidden
+                  />
                 </div>
-                <p className="text-sm text-[#E8D7B4] leading-relaxed">
+                <p className="text-sm text-[#D4E8DA] leading-relaxed">
                   Built from your specific target: <span className="font-semibold text-[#F7E2B2]">{quiz?.specificGoal}</span>.
                 </p>
-                <p className="text-xs text-[#CDBA96] mt-2 leading-relaxed">
+                <p className="text-xs text-[#9BB8A8] mt-2 leading-relaxed">
                   Budget-aware behavior stays on. Super Focus scales to your budget while keeping your base stack pricing stable.
                 </p>
 
@@ -1007,22 +969,23 @@ export default function ResultsPage() {
                           key={cardId}
                           className="relative rounded-2xl p-[1.5px]"
                           style={{
-                            background: 'linear-gradient(135deg, #F7E2B2 0%, #D6A64A 45%, #9C6B1E 100%)',
-                            boxShadow: '0 10px 28px rgba(177,126,33,0.28)',
+                            background:
+                              'linear-gradient(135deg, #F7E2B2 0%, #B8D4C4 38%, #4A7C59 72%, #2D5242 100%)',
+                            boxShadow: '0 10px 28px rgba(28,58,46,0.22)',
                           }}
                         >
                           <span
                             className="absolute -top-2.5 right-3 z-10 text-[10px] font-black uppercase tracking-[0.14em] px-2.5 py-1 rounded-full"
                             style={{
-                              background: 'linear-gradient(135deg, #FFF3D6 0%, #E7C47E 58%, #C99639 100%)',
-                              color: '#4D3412',
-                              border: '1px solid rgba(255,243,214,0.7)',
-                              boxShadow: '0 2px 8px rgba(201,150,57,0.35)',
+                              background: 'linear-gradient(135deg, #E8F2EC 0%, #D4E8DA 55%, #B8D4C4 100%)',
+                              color: '#1C3A2E',
+                              border: '1px solid rgba(228,194,122,0.55)',
+                              boxShadow: '0 2px 10px rgba(28,58,46,0.2)',
                             }}
                           >
                             Super Focus
                           </span>
-                          <div className="rounded-2xl bg-white">
+                          <div className="rounded-2xl bg-surface-elevated">
                             <SupplementCard
                               s={s}
                               quizGoals={quizGoalList}
@@ -1035,7 +998,7 @@ export default function ResultsPage() {
                     })}
                   </div>
                 ) : (
-                  <div className="rounded-xl border border-amber-200 bg-amber-50/70 px-3 py-2.5 mt-4 text-xs text-amber-900">
+                  <div className="rounded-xl border border-sage/35 bg-moss-light/85 px-3 py-2.5 mt-4 text-xs text-ink">
                     Super Focus is saved, but no extra add-ons were needed for your current budget and target.
                   </div>
                 )}
@@ -1044,10 +1007,10 @@ export default function ResultsPage() {
           )}
 
           <div
-            className="stackwise-result-block-reveal rounded-2xl border border-stone bg-white overflow-hidden"
+            className="stackwise-result-block-reveal rounded-2xl border border-stone bg-surface-elevated overflow-hidden"
             style={{ animationDelay: `${240 + supplements.length * 72}ms` }}
           >
-            <div className="px-4 py-3 border-b border-stone bg-[#FDFCFA]">
+            <div className="px-4 py-3 border-b border-stone bg-cream-dark/50">
               <div className="text-xs font-semibold uppercase tracking-widest text-warm-light">Daily rhythm</div>
               <p className="text-[11px] text-warm-mid mt-1">Your supplement schedule, made simple.</p>
             </div>
@@ -1060,7 +1023,7 @@ export default function ResultsPage() {
                     <span className="text-lg" aria-hidden>
                       {RHYTHM_ICONS[period]}
                     </span>
-                    <span className="text-sm font-semibold capitalize text-forest">{period}</span>
+                    <span className="text-sm font-semibold capitalize text-ink">{period}</span>
                   </div>
                   <ul className="space-y-2 text-sm text-warm-mid">
                     {items.map((line) => {
@@ -1093,7 +1056,7 @@ export default function ResultsPage() {
                                   {lineBadges.map((b) => (
                                     <span
                                       key={b}
-                                      className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-moss-light/40 text-forest"
+                                      className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-moss-light/40 text-ink"
                                     >
                                       {b}
                                     </span>
@@ -1109,7 +1072,7 @@ export default function ResultsPage() {
                                   {lineBadges.map((b) => (
                                     <span
                                       key={b}
-                                      className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-moss-light/40 text-forest"
+                                      className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-moss-light/40 text-ink"
                                     >
                                       {b}
                                     </span>
@@ -1128,19 +1091,19 @@ export default function ResultsPage() {
           </div>
 
           <div
-            className="stackwise-result-block-reveal rounded-2xl border-2 border-moss/35 bg-gradient-to-b from-[#F5FBF7] to-[#F0F5F2] p-5 sm:p-6 space-y-4 shadow-[0_8px_30px_rgba(28,58,46,0.08)]"
+            className="stackwise-result-block-reveal rounded-2xl border-2 border-moss/35 bg-surface-elevated dark:border-moss/25 p-5 sm:p-6 space-y-4 shadow-[0_8px_30px_rgba(28,58,46,0.08)] dark:shadow-[0_8px_36px_rgba(0,0,0,0.35)]"
             style={{ animationDelay: `${320 + supplements.length * 72}ms` }}
           >
-            <h3 className="font-display text-xl sm:text-2xl text-forest font-bold tracking-tight">
+            <h3 className="font-display text-xl sm:text-2xl text-ink font-bold tracking-tight">
               What do you want to do next?
             </h3>
             <p className="text-sm text-warm-mid leading-relaxed">
-              <span className="font-semibold text-forest">Take your time</span> scrolling your stack and daily rhythm
+              <span className="font-semibold text-ink">Take your time</span> scrolling your stack and daily rhythm
               above. There is no rush. When you are ready to go deeper, use the bright orange button first to chat with
               Stacky, or open Stack Hub for your full plan on one screen.
             </p>
               <p className="text-xs text-warm-light leading-relaxed border-l-2 border-moss/40 pl-3">
-              Want to log mood and reminders? Use <span className="font-semibold text-forest">Track daily rhythm</span>, it is a lighter step whenever you are ready.
+              Want to log mood and reminders? Use <span className="font-semibold text-ink">Track daily rhythm</span>, it is a lighter step whenever you are ready.
             </p>
             <div className="flex flex-col gap-3 pt-1">
               <button
@@ -1149,7 +1112,7 @@ export default function ResultsPage() {
                 onClick={() => setChatOpenSignal((n) => n + 1)}
               >
                 <span className="btn-stacky-continue-title inline-flex items-center justify-center gap-2">
-                  <NavIcon kind="chat" size={18} className="text-forest opacity-95" />
+                  <NavIcon kind="chat" size={18} className="text-ink opacity-95" />
                   <span>Continue, talk to Stacky</span>
                 </span>
                 <span className="btn-stacky-continue-sub">Tap when you have looked through your plan</span>
@@ -1160,22 +1123,22 @@ export default function ResultsPage() {
                 onClick={() => navigate('/coach')}
               >
                 <span className="inline-flex items-center justify-center gap-2">
-                  <NavIcon kind="hub" size={18} className="text-forest opacity-90" />
+                  <NavIcon kind="hub" size={18} className="text-ink opacity-90" />
                   <span>Open Stack Hub</span>
                 </span>
                 <span className="btn-hub-cta-sub">See your plan, supplements, and saved stacks in one place</span>
               </button>
               <button type="button" className="btn-daily-soft w-full" onClick={() => navigate('/dashboard')}>
                 <span className="inline-flex items-center justify-center gap-2">
-                  <NavIcon kind="daily" size={18} className="text-forest opacity-90" />
+                  <NavIcon kind="daily" size={18} className="text-ink opacity-90" />
                   <span>Track daily rhythm</span>
                 </span>
               </button>
             </div>
           </div>
 
-          <div className="rounded-xl border border-stone bg-white px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-            <span className="text-sm font-semibold text-forest">Estimated monthly range</span>
+          <div className="rounded-xl border border-stone bg-surface-elevated px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <span className="text-sm font-semibold text-ink">Estimated monthly range</span>
             <span className="text-sm text-warm-mid tabular-nums">
               {formatStackTotalMonthly(result.totalMonthlyCostLow, result.totalMonthlyCostHigh)}
             </span>
@@ -1183,13 +1146,13 @@ export default function ResultsPage() {
 
           <p className="text-[11px] leading-relaxed text-warm-light px-1">{result.disclaimer}</p>
 
-          <p className="text-[11px] leading-relaxed px-1" style={{ color: '#C4B9AC', marginTop: -4 }}>
+          <p className="text-[11px] leading-relaxed px-1 text-warm-light/90 dark:text-warm-mid" style={{ marginTop: -4 }}>
             These statements have not been evaluated by the Food and Drug Administration. Supplement recommendations are not intended to diagnose, treat, cure, or prevent any disease. Always consult a qualified healthcare professional before starting or changing any supplement regimen, particularly if you take prescription medications or have a medical condition.
           </p>
 
           <div className="space-y-4 pb-4">
-            <div className="rounded-2xl border-2 border-moss/35 bg-white px-4 py-5 shadow-sm">
-              <p className="font-display text-lg font-bold text-forest mb-1">More ways to get around</p>
+            <div className="rounded-2xl border-2 border-moss/35 bg-surface-elevated px-4 py-5 shadow-sm dark:shadow-[0_8px_28px_rgba(0,0,0,0.3)]">
+              <p className="font-display text-lg font-bold text-ink mb-1">More ways to get around</p>
               <p className="text-sm text-warm-mid leading-relaxed mb-4">
                 Tap what you need. You can always come back to this page from the menu at the top.
               </p>
@@ -1199,37 +1162,37 @@ export default function ResultsPage() {
                 onClick={() => navigate('/coach')}
               >
                 <span className="inline-flex items-center justify-center gap-2">
-                  <NavIcon kind="hub" size={18} className="text-forest opacity-90" />
+                  <NavIcon kind="hub" size={18} className="text-ink opacity-90" />
                   <span>Open Stack Hub</span>
                 </span>
                 <span className="btn-hub-cta-sub">One screen for your stack, reminders, and check-ins</span>
               </button>
             </div>
 
-            <div className="rounded-xl border border-sage/30 bg-[#F0F5F2] px-4 py-4">
-              <p className="text-base font-bold text-forest mb-1">{REBUILD_HEADLINE}</p>
+            <div className="rounded-xl border border-sage/30 bg-moss-light/35 dark:bg-surface dark:border-sage/25 px-4 py-4">
+              <p className="text-base font-bold text-ink mb-1">{REBUILD_HEADLINE}</p>
               <p className="text-sm text-warm-mid leading-relaxed mb-4">
                 {isBasicOrPro() ? REBUILD_PAID_REMINDER : REBUILD_SAVINGS_BODY}
               </p>
               {isBasicOrPro() ? (
                 <button
                   type="button"
-                  className="w-full min-h-[56px] rounded-2xl bg-forest text-cream font-bold text-base hover:bg-forest-light transition-colors px-4 shadow-lg ring-2 ring-forest/20"
+                  className="w-full min-h-[56px] rounded-2xl bg-forest text-on-dark-primary font-bold text-base hover:bg-forest-light transition-colors px-4 shadow-lg ring-2 ring-forest/20"
                   onClick={() => navigate('/quiz', { state: { quickRebuild: true } })}
                 >
                   <span className="inline-flex items-center justify-center gap-2">
-                    <NavIcon kind="rebuild" size={18} className="text-cream opacity-95" />
+                    <NavIcon kind="rebuild" size={18} className="text-on-dark-primary opacity-95" />
                     <span>Build a new stack</span>
                   </span>
                 </button>
               ) : (
                 <button
                   type="button"
-                  className="w-full min-h-[56px] rounded-2xl border-2 border-forest bg-cream text-forest font-bold text-base hover:bg-moss-light/40 transition-colors px-4 shadow-md"
+                  className="w-full min-h-[56px] rounded-2xl border-2 border-forest bg-cream text-ink font-bold text-base hover:bg-moss-light/40 transition-colors px-4 shadow-md"
                   onClick={() => navigate('/pricing', { state: { intent: 'rebuild' } })}
                 >
                   <span className="inline-flex items-center justify-center gap-2">
-                    <NavIcon kind="pricing" size={18} className="text-forest opacity-90" />
+                    <NavIcon kind="pricing" size={18} className="text-ink opacity-90" />
                     <span>{REBUILD_UPGRADE_CTA}</span>
                   </span>
                 </button>
@@ -1239,7 +1202,7 @@ export default function ResultsPage() {
               {!isPro() && (
                 <button type="button" className="btn-primary flex-1 min-h-[52px] text-base" onClick={() => navigate('/pricing')}>
                   <span className="inline-flex items-center justify-center gap-2">
-                    <NavIcon kind="pricing" size={18} className="text-cream opacity-95" />
+                    <NavIcon kind="pricing" size={18} className="text-on-dark-primary opacity-95" />
                     <span>Upgrade for Stacky Pro</span>
                   </span>
                 </button>

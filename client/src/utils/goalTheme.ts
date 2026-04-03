@@ -11,6 +11,8 @@ export type GoalTheme = {
   pillBgDark: string;
   /** Pill border on dark UI (results hero). */
   pillBorderDark: string;
+  /** Pill label color on dark UI — must read on pillBgDark (light/mid tint). */
+  pillTextDark: string;
 };
 
 // Colors are tuned for readability on the existing StackWise palette.
@@ -21,6 +23,7 @@ export const GOAL_THEME: Record<PrimaryGoal, GoalTheme> = {
     pillBorder: 'rgba(214, 69, 69, 0.35)',
     pillBgDark: 'rgba(214, 69, 69, 0.20)',
     pillBorderDark: 'rgba(214, 69, 69, 0.45)',
+    pillTextDark: '#FCA5A5',
   },
   '💪 Muscle & Strength': {
     text: '#C05621',
@@ -28,6 +31,7 @@ export const GOAL_THEME: Record<PrimaryGoal, GoalTheme> = {
     pillBorder: 'rgba(192, 86, 33, 0.34)',
     pillBgDark: 'rgba(192, 86, 33, 0.22)',
     pillBorderDark: 'rgba(192, 86, 33, 0.46)',
+    pillTextDark: '#FDBA74',
   },
   '🫧 Debloating & Gut Health': {
     text: '#0F766E',
@@ -35,6 +39,7 @@ export const GOAL_THEME: Record<PrimaryGoal, GoalTheme> = {
     pillBorder: 'rgba(15, 118, 110, 0.34)',
     pillBgDark: 'rgba(15, 118, 110, 0.22)',
     pillBorderDark: 'rgba(15, 118, 110, 0.47)',
+    pillTextDark: '#5EEAD4',
   },
   '⚡ Energy & Focus': {
     text: '#0EA5E9',
@@ -42,6 +47,7 @@ export const GOAL_THEME: Record<PrimaryGoal, GoalTheme> = {
     pillBorder: 'rgba(14, 165, 233, 0.30)',
     pillBgDark: 'rgba(14, 165, 233, 0.22)',
     pillBorderDark: 'rgba(14, 165, 233, 0.45)',
+    pillTextDark: '#7DD3FC',
   },
   '🧠 Brain Enhancement': {
     text: '#5B21B6',
@@ -49,6 +55,7 @@ export const GOAL_THEME: Record<PrimaryGoal, GoalTheme> = {
     pillBorder: 'rgba(91, 33, 182, 0.34)',
     pillBgDark: 'rgba(91, 33, 182, 0.22)',
     pillBorderDark: 'rgba(91, 33, 182, 0.48)',
+    pillTextDark: '#DDD6FE',
   },
   '😴 Sleep & Recovery': {
     text: '#1E3A8A',
@@ -56,6 +63,7 @@ export const GOAL_THEME: Record<PrimaryGoal, GoalTheme> = {
     pillBorder: 'rgba(30, 58, 138, 0.34)',
     pillBgDark: 'rgba(30, 58, 138, 0.22)',
     pillBorderDark: 'rgba(30, 58, 138, 0.48)',
+    pillTextDark: '#93C5FD',
   },
   '🌿 Hormone Balance': {
     text: '#2E7D32',
@@ -63,6 +71,7 @@ export const GOAL_THEME: Record<PrimaryGoal, GoalTheme> = {
     pillBorder: 'rgba(46, 125, 50, 0.34)',
     pillBgDark: 'rgba(46, 125, 50, 0.22)',
     pillBorderDark: 'rgba(46, 125, 50, 0.47)',
+    pillTextDark: '#86EFAC',
   },
   '🌸 Menopause Support': {
     text: '#BE185D',
@@ -70,6 +79,7 @@ export const GOAL_THEME: Record<PrimaryGoal, GoalTheme> = {
     pillBorder: 'rgba(190, 24, 93, 0.34)',
     pillBgDark: 'rgba(190, 24, 93, 0.22)',
     pillBorderDark: 'rgba(190, 24, 93, 0.47)',
+    pillTextDark: '#FBCFE8',
   },
   '🛡️ Longevity & Immunity': {
     text: '#A16207',
@@ -77,6 +87,7 @@ export const GOAL_THEME: Record<PrimaryGoal, GoalTheme> = {
     pillBorder: 'rgba(161, 98, 7, 0.34)',
     pillBgDark: 'rgba(161, 98, 7, 0.22)',
     pillBorderDark: 'rgba(161, 98, 7, 0.47)',
+    pillTextDark: '#FACC15',
   },
   '💇 Hair Growth': {
     text: '#8D6E00',
@@ -84,6 +95,7 @@ export const GOAL_THEME: Record<PrimaryGoal, GoalTheme> = {
     pillBorder: 'rgba(141, 110, 0, 0.34)',
     pillBgDark: 'rgba(141, 110, 0, 0.22)',
     pillBorderDark: 'rgba(141, 110, 0, 0.47)',
+    pillTextDark: '#FDE047',
   },
   '✨ Skin Health & Glow': {
     text: '#C2185B',
@@ -91,6 +103,7 @@ export const GOAL_THEME: Record<PrimaryGoal, GoalTheme> = {
     pillBorder: 'rgba(194, 24, 91, 0.34)',
     pillBgDark: 'rgba(194, 24, 91, 0.22)',
     pillBorderDark: 'rgba(194, 24, 91, 0.47)',
+    pillTextDark: '#FBCFE8',
   },
   '🪞 LooksMaxxing': {
     text: '#7E22CE',
@@ -98,6 +111,7 @@ export const GOAL_THEME: Record<PrimaryGoal, GoalTheme> = {
     pillBorder: 'rgba(126, 34, 206, 0.34)',
     pillBgDark: 'rgba(126, 34, 206, 0.22)',
     pillBorderDark: 'rgba(126, 34, 206, 0.48)',
+    pillTextDark: '#E9D5FF',
   },
   '💖 Sexual Health & Vitality': {
     text: '#D81B60',
@@ -105,6 +119,7 @@ export const GOAL_THEME: Record<PrimaryGoal, GoalTheme> = {
     pillBorder: 'rgba(216, 27, 96, 0.34)',
     pillBgDark: 'rgba(216, 27, 96, 0.22)',
     pillBorderDark: 'rgba(216, 27, 96, 0.47)',
+    pillTextDark: '#FBCFE8',
   },
   '🧬 Peptide Optimization': {
     text: '#00838F',
@@ -112,6 +127,7 @@ export const GOAL_THEME: Record<PrimaryGoal, GoalTheme> = {
     pillBorder: 'rgba(0, 131, 143, 0.34)',
     pillBgDark: 'rgba(0, 131, 143, 0.22)',
     pillBorderDark: 'rgba(0, 131, 143, 0.47)',
+    pillTextDark: '#67E8F9',
   },
 };
 

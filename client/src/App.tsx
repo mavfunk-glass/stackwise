@@ -15,6 +15,8 @@ import IntroPage from './pages/IntroPage';
 import MagicVerifyPage from './pages/MagicVerifyPage';
 import UnsubscribePage from './pages/UnsubscribePage';
 import CookieConsent from './components/CookieConsent';
+import AppVersion from './components/AppVersion';
+import ThemeToggle from './theme/ThemeToggle';
 import AuthCallbackPage from './pages/AuthCallbackPage';
 import CoachHubPage from './pages/CoachHubPage';
 import { ensureApiSession, fetchBillingStatus } from './api/session';
@@ -97,6 +99,16 @@ export default function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <CookieConsent />
+      <div
+        className="fixed z-[51] pointer-events-auto"
+        style={{
+          bottom: 'max(10px, env(safe-area-inset-bottom, 10px))',
+          left: 'max(10px, env(safe-area-inset-left, 10px))',
+        }}
+      >
+        <ThemeToggle variant="compact" />
+      </div>
+      <AppVersion />
     </PayPalScriptProvider>
   );
 }

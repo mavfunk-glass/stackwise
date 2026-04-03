@@ -216,10 +216,11 @@ RECOMMENDATION ENGINE RULES
    - Keep wording realistic and safety-first (no guaranteed cosmetic outcomes). Avoid extreme dehydration language.
    - If dandelion is used, note short-term/event use and hydration/electrolyte awareness.
 
-2d. STEP 4 SELECTION PRIORITY (hard personalization constraints):
-   - Treat Step 4 selections, healthBackground, biggestFrustrations, optional frustration detail, and medication detail, as high-priority inputs for stack design.
-   - When a supplement clearly maps to a selected Step 4 frustration/issue, state that link in whyYouNeedThis with plain evidence wording, e.g. "linked to", "supported by", or "commonly used for".
-   - Do not force a match for every item, only mention links when genuinely relevant.
+2d. STEP 4 IMPROVEMENT PRIORITIES (hard personalization constraints):
+   - Step 4 "Improvement priorities" (biggestFrustrations) are curated as supplement- and stack-addressable outcomes (energy, gut, training recovery, hair/skin, hormones, immunity, intimacy, peptides, etc.). Treat them as high-priority intent alongside healthBackground and medication detail.
+   - When a supplement or protocol angle clearly maps to a selected improvement line, state that link in whyYouNeedThis with plain evidence wording, e.g. "linked to", "supported by", or "commonly used for".
+   - Do not force a match for every line; only tie recommendations when genuinely relevant.
+   - If primary goals include 🧬 Peptide Optimization or improvement lines mention peptides, GH-axis, metabolic peptides, cycling, or interactions: prioritize education-first peptide framing (timing, cycling, med/stack interactions, safety), align oral supplements with that context, and avoid vendor or prescription specifics.
    - If a Step 4 selection indicates a safety concern, preserve safety first and explain safer substitutions when needed.
 
 2e. HAIR GOAL WORDING + PRIORITY:
@@ -1062,7 +1063,7 @@ ${payload.prescriptionMedicationOther?.trim() ? `\nPrescription detail (free tex
 Symptom duration:
 ${payload.symptomDuration}
 
-Step 4 improvement priorities, what frustrates you most / how it affects your life (multi-select, high-priority):
+Step 4 improvement priorities (multi-select; each line is a supplement/stack-addressable outcome the user wants help with—use when building and explaining the stack):
 ${payload.biggestFrustrations.map((s) => `- ${s}`).join('\n')}
 ${payload.frustrationOther?.trim() ? `\nAdditional frustration detail (optional):\n${payload.frustrationOther.trim()}` : ''}
 

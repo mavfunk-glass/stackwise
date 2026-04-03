@@ -1,4 +1,12 @@
-import { useEffect, useState, type CSSProperties } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from 'react';
+import { useTheme } from '../theme/ThemeProvider';
 import { isPro } from '../types/storage';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -41,7 +49,7 @@ interface StackyCatProps {
   size?: number;
   className?: string;
   speaking?: boolean;
-  bubble?: string;
+  bubble?: ReactNode;
   bubblePosition?: 'right' | 'left' | 'top';
   /**
    * When `bubblePosition` is `top`, vertical space reserved above the cat so the bubble does not
@@ -55,7 +63,7 @@ interface StackyCatProps {
 }
 
 // ─── CHIBI DESIGN CONSTANTS ──────────────────────────────────────────────────
-const C = {
+const C_LIGHT = {
   /** Tuxedo: black/white cat (body); tail uses same fur */
   fur: '#1E1E1E',
   furMid: '#2E2E2E',
@@ -100,10 +108,32 @@ const C = {
   heart: '#E85555',
 };
 
+/** Dark mode: orange tabby — reads on deep green surfaces; aligns with brand Stacky orange */
+const C_DARK_ORANGE: typeof C_LIGHT = {
+  ...C_LIGHT,
+  fur: '#F5924A',
+  furMid: '#E07A35',
+  furOutline: '#7A3E18',
+  bib: '#FFF5EB',
+  pawWhite: '#FFFAF4',
+  orange: '#F5924A',
+  orangeShad: '#C85A20',
+  cream: '#FFF5EB',
+  innerEar: '#FF9A7A',
+  outline: '#5C2810',
+  cheek: 'rgba(255,120,70,0.32)',
+  cheekSad: 'rgba(180,160,200,0.22)',
+  whisker: '#E8D4C4',
+};
+
+type StackyPalette = typeof C_LIGHT;
+const StackyPaletteContext = createContext<StackyPalette>(C_LIGHT);
+
 // ─── FLUFFY TAIL ──────────────────────────────────────────────────────────────
 // Stacked overlapping circles = milkkoyo-style cloud puffs
 // sad/nervous = thin flat path (no puff, defeated cat)
 function FluffyTail({ mood }: { mood: StackyMood }) {
+  const C = useContext(StackyPaletteContext);
   // Each puff array goes from body connection outward to tip
   const PUFFS: Record<string, { cx: number; cy: number; r: number }[]> = {
     wave: [{ cx: 98, cy: 98, r: 10 }, { cx: 110, cy: 84, r: 12 }, { cx: 116, cy: 68, r: 13 }, { cx: 114, cy: 50, r: 12 }, { cx: 106, cy: 36, r: 11 }],
@@ -152,6 +182,7 @@ function FluffyTail({ mood }: { mood: StackyMood }) {
 
 // ─── EYES ─────────────────────────────────────────────────────────────────────
 function Eyes({ mood }: { mood: StackyMood }) {
+  const C = useContext(StackyPaletteContext);
   const lx = 46; const rx = 80; const ey = 44;
   const BaseEye = ({ cx, flip }: { cx: number; flip?: boolean }) => (
     <>
@@ -256,6 +287,7 @@ function Eyes({ mood }: { mood: StackyMood }) {
 
 // ─── MOUTH ────────────────────────────────────────────────────────────────────
 function Mouth({ mood }: { mood: StackyMood }) {
+  const C = useContext(StackyPaletteContext);
   const mx = 63; const my = 68;
   if (mood === 'sleep') return <path d={`M${mx - 3} ${my} Q${mx} ${my + 3} ${mx + 3} ${my}`} stroke={C.eye} strokeWidth={2} strokeLinecap="round" fill="none" />;
   if (mood === 'sad') return <path d={`M${mx - 7} ${my + 4} Q${mx} ${my - 2} ${mx + 7} ${my + 4}`} stroke={C.eye} strokeWidth={2.5} strokeLinecap="round" fill="none" />;
@@ -275,6 +307,7 @@ function Mouth({ mood }: { mood: StackyMood }) {
 
 // ─── ARMS ─────────────────────────────────────────────────────────────────────
 function Arms({ mood }: { mood: StackyMood }) {
+  const C = useContext(StackyPaletteContext);
   const sw = C.swMd;
   const arm = C.fur;
   const paw = C.pawWhite;
@@ -343,6 +376,7 @@ function Arms({ mood }: { mood: StackyMood }) {
 
 // ─── OUTFIT ───────────────────────────────────────────────────────────────────
 function Outfit({ outfit }: { outfit: StackyOutfit }) {
+  const C = useContext(StackyPaletteContext);
   if (outfit === 'labCoat') return (
     <g>
       <path d="M42 74 L52 86 L63 76 L74 86 L84 74" fill="none" stroke="#DDDBD8" strokeWidth={2} />
@@ -444,6 +478,7 @@ function Outfit({ outfit }: { outfit: StackyOutfit }) {
 
 // ─── MAIN CAT ─────────────────────────────────────────────────────────────────
 function FallbackCat({ mood, outfit, size }: { mood: StackyMood; outfit: StackyOutfit; size: number }) {
+  const C = useContext(StackyPaletteContext);
   const sw = C.sw;
   return (
     <svg width={size} height={size} viewBox="0 0 126 136" fill="none"
@@ -561,6 +596,10 @@ export default function StackyCat({
   outfit: outfitProp,
   animate = false,
 }: StackyCatProps) {
+  const { resolved } = useTheme();
+  const isDark = resolved === 'dark';
+  const stackyPalette = isDark ? C_DARK_ORANGE : C_LIGHT;
+
   const [imgError, setImgError] = useState(false);
   const useImage = !STACKY_USE_FALLBACK && !imgError;
   const [visible, setVisible] = useState(false);
@@ -583,17 +622,17 @@ export default function StackyCat({
     width: bubbleWidth,
     minWidth: 200,
     maxWidth: 420,
-    background: '#FFFFFF',
-    border: '1.5px solid #E8E0D5',
+    background: isDark ? '#1a2420' : '#FFFFFF',
+    border: isDark ? '1.5px solid rgba(61,79,69,0.9)' : '1.5px solid #E8E0D5',
     borderRadius: 16,
     padding: '10px 14px',
     fontSize: 13,
     lineHeight: 1.45,
     textAlign: 'center',
-    color: '#3D2E22',
+    color: isDark ? '#e8ebe8' : '#3D2E22',
     fontFamily: 'Figtree, system-ui, sans-serif',
     fontWeight: 500,
-    boxShadow: '0 4px 16px rgba(28,58,46,0.1)',
+    boxShadow: isDark ? '0 4px 20px rgba(0,0,0,0.35)' : '0 4px 16px rgba(28,58,46,0.1)',
     whiteSpace: 'pre-line',
     writingMode: 'horizontal-tb',
     WebkitWritingMode: 'horizontal-tb',
@@ -627,8 +666,8 @@ export default function StackyCat({
     position: 'absolute',
     width: 10,
     height: 10,
-    background: '#FFFFFF',
-    border: '1.5px solid #E8E0D5',
+    background: isDark ? '#1a2420' : '#FFFFFF',
+    border: isDark ? '1.5px solid rgba(61,79,69,0.9)' : '1.5px solid #E8E0D5',
     borderRight: 'none',
     borderTop: 'none',
     transform: 'rotate(45deg)',
@@ -644,7 +683,8 @@ export default function StackyCat({
     : undefined;
 
   const catInner = (
-    <>
+    <StackyPaletteContext.Provider value={stackyPalette}>
+      <>
       {animate && (
         <style>{`
           @keyframes stackyBobGlobal { from { transform: translateY(0); } to { transform: translateY(-5px); } }
@@ -695,7 +735,7 @@ export default function StackyCat({
         </div>
       )}
 
-      {bubble && (
+      {bubble != null && bubble !== '' && (
         <div className="stacky-speech-bubble" style={bubbleStyle}>
           <div style={tailStyle} aria-hidden />
           <span dir="ltr" className="stacky-speech-bubble__text">
@@ -709,7 +749,8 @@ export default function StackyCat({
           to { transform: translateY(-2px); opacity: 1; }
         }
       `}</style>
-    </>
+      </>
+    </StackyPaletteContext.Provider>
   );
 
   if (topBubbleLayoutReservePx > 0) {

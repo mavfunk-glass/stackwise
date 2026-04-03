@@ -143,7 +143,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-cream text-warm pb-12">
+    <div className="min-h-screen bg-sw-bg text-warm pb-12">
 
       {/* Nav */}
       <div
@@ -162,7 +162,7 @@ export default function DashboardPage() {
             className="inline-flex items-center gap-1.5 font-serif font-light tracking-widest text-sm"
             style={{ color: '#1C3A2E', letterSpacing: '0.15em' }}
           >
-            <NavIcon kind="home" size={17} className="text-forest opacity-90" />
+            <NavIcon kind="home" size={17} className="text-ink opacity-90" />
             <span>STACKWISE</span>
           </button>
           <div className="flex items-center gap-2 sm:gap-3 flex-wrap justify-end">

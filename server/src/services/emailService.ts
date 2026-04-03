@@ -12,7 +12,7 @@ export interface EmailPayload {
 
 export async function sendEmail(payload: EmailPayload): Promise<{ ok: boolean; error?: string }> {
   const apiKey = process.env.RESEND_API_KEY;
-  const fromEmail = process.env.RESEND_FROM_EMAIL ?? 'stacky@stackwise.app';
+  const fromEmail = process.env.RESEND_FROM_EMAIL ?? 'stacky@stack-wise.org';
 
   if (!apiKey) {
     // Dev mode: log to console instead of sending
@@ -265,7 +265,7 @@ export function buildWinBackEmail(data: WinBackEmailData): string {
         <p style="font-size:12px;color:#9C8E84;margin:0 0 4px;line-height:1.5;">
           You received this because your StackWise ${tierLabel} subscription was cancelled.<br/>
           Questions? Reply to this email or contact
-          <a href="mailto:MAVFunk@gmail.com" style="color:#4A7C59;text-decoration:none;">MAVFunk@gmail.com</a>
+          <a href="mailto:stacky@stack-wise.org" style="color:#4A7C59;text-decoration:none;">stacky@stack-wise.org</a>
         </p>
         <p style="font-size:11px;color:#C4B9AC;margin:6px 0 0;">
           StackWise · 3101 Borgata Way · CA 95762

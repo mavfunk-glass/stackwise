@@ -20,7 +20,7 @@ export default function FaqPage() {
     },
     {
       q: 'What is the 7-day fit guarantee?',
-      a: "If StackWise isn't the right fit within your first 7 days (the plan doesn't make sense, the guidance isn't useful), email MAVFunk@gmail.com for a full refund. This covers fit and clarity, not supplement outcomes (those depend on the supplements and take weeks).",
+      a: "If StackWise isn't the right fit within your first 7 days (the plan doesn't make sense, the guidance isn't useful), email stacky@stack-wise.org for a full refund. This covers fit and clarity, not supplement outcomes (those depend on the supplements and take weeks).",
     },
     {
       q: 'What makes Stacky different from ChatGPT?',
@@ -33,35 +33,30 @@ export default function FaqPage() {
   ];
 
   return (
-    <div className="min-h-screen" style={{ background: '#F9F6F1' }}>
+    <div className="min-h-screen bg-sw-bg text-warm">
       <div
-        className="sticky top-0 z-40 px-5"
+        className="sticky top-0 z-40 px-5 border-b border-stone sw-sticky-nav"
         style={{
-          background: 'rgba(249,246,241,0.95)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
           paddingTop: `max(14px, env(safe-area-inset-top, 14px))`,
           paddingBottom: '14px',
-          borderBottom: '1px solid #E8E0D5',
         }}
       >
         <div className="max-w-3xl mx-auto flex items-center justify-between">
           <button
             type="button"
             onClick={() => navigate('/landing')}
-            className="inline-flex items-center gap-1.5 font-serif font-light tracking-widest text-sm"
-            style={{ color: '#1C3A2E', letterSpacing: '0.15em' }}
+            className="inline-flex items-center gap-1.5 font-serif font-light tracking-widest text-sm text-ink"
+            style={{ letterSpacing: '0.15em' }}
           >
-            <NavIcon kind="home" size={17} className="text-forest opacity-90" />
+            <NavIcon kind="home" size={17} className="text-ink opacity-90" />
             <span>STACKWISE</span>
           </button>
           <button
             type="button"
             onClick={() => navigate('/pricing')}
-            className="inline-flex items-center gap-1.5 rounded-full text-xs font-semibold px-4 py-1.5"
-            style={{ background: '#1C3A2E', color: '#F9F6F1' }}
+            className="inline-flex items-center gap-1.5 rounded-full text-xs font-semibold px-4 py-1.5 bg-forest text-on-dark-primary hover:bg-forest-light"
           >
-            <NavIcon kind="pricing" size={15} className="text-cream opacity-95" />
+            <NavIcon kind="pricing" size={15} className="text-on-dark-primary opacity-95" />
             <span>Pricing</span>
           </button>
         </div>
@@ -79,7 +74,7 @@ export default function FaqPage() {
               topBubbleReservePx={96}
             />
             <div className="min-w-0 flex-1">
-              <div className="quiz-label mb-3" style={{ color: '#9C8E84' }}>
+              <div className="quiz-label mb-3 text-warm-light">
                 Common questions
               </div>
               <h1 className="quiz-headline mb-2">How StackWise and Stacky work.</h1>
@@ -92,33 +87,24 @@ export default function FaqPage() {
 
         <section className="space-y-3 mb-10">
           {faqs.map((item) => (
-            <article
-              key={item.q}
-              className="rounded-2xl p-4"
-              style={{ background: '#FFFFFF', border: '1px solid #E8E0D5' }}
-            >
-              <h2 className="font-semibold text-sm mb-1.5" style={{ color: '#1C3A2E' }}>
-                {item.q}
-              </h2>
-              <p className="text-xs leading-relaxed" style={{ color: '#6B5B4E' }}>
-                {item.a}
-              </p>
+            <article key={item.q} className="rounded-2xl p-4 bg-white border border-stone">
+              <h2 className="font-semibold text-sm mb-1.5 text-ink">{item.q}</h2>
+              <p className="text-xs leading-relaxed text-warm-mid">{item.a}</p>
             </article>
           ))}
         </section>
-        <section className="rounded-2xl p-5 mb-10" style={{ background: '#1C3A2E' }}>
-          <div className="font-serif font-light text-lg mb-1" style={{ color: '#F9F6F1', fontStyle: 'italic' }}>
+        <section className="rounded-2xl p-5 mb-10 bg-forest">
+          <div className="font-serif font-light text-lg mb-1 text-on-dark-primary italic">
             Still have a question?
           </div>
-          <p className="text-sm mb-4" style={{ color: 'rgba(249,246,241,0.7)' }}>
+          <p className="text-sm mb-4 text-on-dark-muted">
             Billing, refund requests, data deletion, or anything else - email us directly.
           </p>
           <a
-            href="mailto:MAVFunk@gmail.com"
-            className="inline-block rounded-full font-semibold text-sm px-5 py-2.5 transition-opacity hover:opacity-90"
-            style={{ background: '#F9F6F1', color: '#1C3A2E' }}
+            href="mailto:stacky@stack-wise.org"
+            className="inline-block rounded-full font-semibold text-sm px-5 py-2.5 transition-opacity hover:opacity-90 bg-[#F9F6F1] text-[#1C3A2E] dark:bg-surface-elevated dark:text-warm dark:border dark:border-stone/90"
           >
-            MAVFunk@gmail.com
+            stacky@stack-wise.org
           </a>
         </section>
       </main>

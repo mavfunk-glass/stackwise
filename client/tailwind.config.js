@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
     extend: {
@@ -14,19 +15,25 @@ export default {
         body: ['"Figtree"', 'system-ui', 'sans-serif'],
       },
       colors: {
-        // Hims-inspired palette
-        forest: '#1C3A2E',         // deep green — primary
+        // Hims-inspired palette — theme surfaces use CSS vars (see src/styles/index.css :root / html.dark)
+        /** Full-page canvas — always use for `min-h-screen` shells (light cream / dark near-black) */
+        'sw-bg': 'var(--sw-bg)',
+        forest: '#1C3A2E',         // deep green — primary (buttons, dark panels)
         'forest-light': '#2D5242', // lighter green
-        cream: '#F9F6F1',          // warm off-white background
-        'cream-dark': '#F0EBE3',   // slightly darker cream for cards
-        stone: '#E8E0D5',          // borders, dividers
-        'stone-dark': '#C4B9AC',   // stronger borders
-        sage: '#7B9E87',           // muted green accent
-        warm: '#3D2E22',           // warm dark brown for text
-        'warm-mid': '#6B5B4E',     // mid text
-        'warm-light': '#9C8E84',   // placeholder/subtle text
-        moss: '#4A7C59',           // action green
-        'moss-light': '#D4E8DA',   // light green tint
+        ink: 'rgb(var(--tw-ink) / <alpha-value>)', // primary text on cream (light) / on dark bg (dark)
+        cream: 'rgb(var(--tw-cream) / <alpha-value>)',
+        'cream-dark': 'rgb(var(--tw-cream-dark) / <alpha-value>)',
+        /** Cards / panels — use instead of hardcoded #fff / #FDFCFA */
+        surface: 'rgb(var(--tw-surface) / <alpha-value>)',
+        'surface-elevated': 'rgb(var(--tw-surface-elevated) / <alpha-value>)',
+        stone: 'rgb(var(--tw-stone) / <alpha-value>)',
+        'stone-dark': 'rgb(var(--tw-stone-dark) / <alpha-value>)',
+        sage: 'rgb(var(--tw-sage) / <alpha-value>)',
+        warm: 'rgb(var(--tw-warm) / <alpha-value>)',
+        'warm-mid': 'rgb(var(--tw-warm-mid) / <alpha-value>)',
+        'warm-light': 'rgb(var(--tw-warm-light) / <alpha-value>)',
+        moss: 'rgb(var(--tw-moss) / <alpha-value>)',
+        'moss-light': 'rgb(var(--tw-moss-light) / <alpha-value>)',
         navy: '#0A1628',           // keep for compatibility
         lime: {
           DEFAULT: '#4A7C59',

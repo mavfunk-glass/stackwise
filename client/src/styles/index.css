@@ -15,6 +15,53 @@
     --sw-text: #3d2e22;
     --sw-text-muted: #6b5b4e;
     --sw-text-subtle: #9c8e84;
+    /* Tailwind rgb() theme tokens — must stay space-separated for / opacity modifiers */
+    --tw-cream: 249 246 241;
+    --tw-cream-dark: 240 235 227;
+    --tw-stone: 232 224 213;
+    --tw-stone-dark: 196 185 172;
+    --tw-warm: 61 46 34;
+    --tw-warm-mid: 107 91 78;
+    --tw-warm-light: 156 142 132;
+    --tw-sage: 123 158 135;
+    --tw-moss: 74 124 89;
+    --tw-moss-light: 212 232 218;
+    --tw-ink: 28 58 46;
+    /* Elevated panels (cards, modals) — swap with html.dark */
+    --tw-surface: 255 255 255;
+    --tw-surface-elevated: 253 252 250;
+  }
+
+  /**
+   * Dark mode — “Frosted evergreen”: borders use celadon (--tw-stone). Body copy must stay much
+   * lighter than borders so nothing reads as brown-on-grey. text-stone* utilities are remapped in
+   * @layer utilities (those tokens are for borders, not readable text).
+   */
+  html.dark {
+    color-scheme: dark;
+    --on-dark-primary: #ffffff;
+    --on-dark-muted: rgba(255, 255, 255, 0.96);
+    --on-dark-subtle: rgba(245 252 248 / 0.92);
+    --sw-bg: #060807;
+    --sw-card: #121a16;
+    --sw-card-soft: #0e1411;
+    --sw-border: #4a5f52;
+    --sw-text: #ffffff;
+    --sw-text-muted: #ecf6f1;
+    --sw-text-subtle: #dbece3;
+    --tw-cream: 12 16 14;
+    --tw-cream-dark: 26 34 30;
+    --tw-stone: 74 98 86;
+    --tw-stone-dark: 98 120 108;
+    --tw-warm: 255 255 255;
+    --tw-warm-mid: 245 249 247;
+    --tw-warm-light: 230 240 234;
+    --tw-sage: 130 210 178;
+    --tw-moss: 80 220 170;
+    --tw-moss-light: 22 32 28;
+    --tw-ink: 255 255 255;
+    --tw-surface: 20 28 24;
+    --tw-surface-elevated: 32 42 36;
   }
 
   *,
@@ -31,7 +78,7 @@
     font-family: 'Figtree', system-ui, sans-serif;
     scroll-behavior: smooth;
     overscroll-behavior: none;
-    background: #F9F6F1;
+    background: var(--sw-bg);
     overflow-x: clip;
   }
 
@@ -41,11 +88,18 @@
     padding-left: env(safe-area-inset-left, 0px);
     padding-right: env(safe-area-inset-right, 0px);
     overflow-x: clip;
-    background: #F9F6F1;
-    color: #3D2E22;
+    background: var(--sw-bg);
+    color: rgb(var(--tw-warm));
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overscroll-behavior: none;
+  }
+
+  html.dark body {
+    background:
+      radial-gradient(ellipse 120% 70% at 50% -15%, rgba(80, 220, 170, 0.09) 0%, transparent 55%),
+      radial-gradient(ellipse 90% 50% at 100% 0%, rgba(52, 211, 153, 0.05) 0%, transparent 48%),
+      var(--sw-bg);
   }
 
   body::before,
@@ -69,6 +123,24 @@
     background: linear-gradient(to right, rgba(156, 142, 132, 0.18), rgba(156, 142, 132, 0.08), rgba(156, 142, 132, 0.18));
   }
 
+  html.dark body::before {
+    background: linear-gradient(
+      to right,
+      rgba(80, 220, 170, 0.22),
+      rgba(184, 205, 194, 0.08),
+      rgba(80, 220, 170, 0.22)
+    );
+  }
+
+  html.dark body::after {
+    background: linear-gradient(
+      to right,
+      rgba(98, 120, 108, 0.4),
+      rgba(74, 98, 86, 0.14),
+      rgba(98, 120, 108, 0.4)
+    );
+  }
+
   button, a, label, [role="button"] {
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
@@ -81,6 +153,11 @@
   :focus-visible {
     outline: 2px solid #4A7C59;
     outline-offset: 2px;
+  }
+
+  html.dark :focus-visible {
+    outline-color: #6ee7b7;
+    outline-offset: 3px;
   }
 
   :focus:not(:focus-visible) {
@@ -114,10 +191,194 @@
     min-height: 100dvh;
     min-height: -webkit-fill-available;
     isolation: isolate;
+    background: var(--sw-bg);
+  }
+
+  /* Light surfaces → zinc panels (Tailwind bg-white) */
+  html.dark .bg-white {
+    background-color: rgb(var(--tw-surface-elevated)) !important;
+  }
+
+  html.dark .bg-white\/95 {
+    background-color: rgb(var(--tw-surface-elevated) / 0.95) !important;
+  }
+
+  html.dark .bg-white\/90 {
+    background-color: rgb(var(--tw-surface-elevated) / 0.9) !important;
+  }
+
+  html.dark .bg-white\/80 {
+    background-color: rgb(var(--tw-surface-elevated) / 0.8) !important;
+  }
+
+  html.dark .bg-white\/70 {
+    background-color: rgb(var(--tw-surface-elevated) / 0.7) !important;
+  }
+
+  html.dark .bg-white\/60 {
+    background-color: rgb(var(--tw-surface-elevated) / 0.6) !important;
+  }
+
+  html.dark .hover\:bg-white:hover {
+    background-color: rgb(var(--tw-surface-elevated) / 0.95) !important;
+    filter: brightness(1.04);
+  }
+
+  /** Primary actions — emerald on true black (Resend-style CTA) */
+  html.dark .bg-forest {
+    background-color: #059669 !important;
+  }
+
+  html.dark .hover\:bg-forest-light:hover {
+    background-color: #10b981 !important;
+  }
+
+  /**
+   * Tailwind gradient stops use literal #fff for from-white / to-white — remap in dark so
+   * overlays (e.g. chat fade) cannot flash bright.
+   */
+  html.dark .from-white {
+    --tw-gradient-from: rgb(var(--tw-surface-elevated)) var(--tw-gradient-from-position);
+  }
+
+  html.dark .to-white {
+    --tw-gradient-to: rgb(var(--tw-surface-elevated)) var(--tw-gradient-to-position);
+  }
+
+  /** Brand greens → emerald ramps in dark (matches .bg-forest overrides) */
+  html.dark .from-forest {
+    --tw-gradient-from: #059669 var(--tw-gradient-from-position);
+  }
+
+  html.dark .to-forest-light {
+    --tw-gradient-to: #10b981 var(--tw-gradient-to-position);
   }
 }
 
 @layer components {
+
+  /* Sticky app nav: uses theme tokens so light/dark both look correct (avoid hardcoded rgba in TSX) */
+  .sw-sticky-nav {
+    background: rgb(var(--tw-cream) / 0.92);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgb(var(--tw-stone) / 0.5);
+  }
+  html.dark .sw-sticky-nav {
+    background: rgba(20, 28, 24, 0.92);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    border-bottom-color: rgb(var(--tw-stone));
+    box-shadow: 0 1px 0 rgb(184 205 194 / 0.08);
+  }
+
+  /**
+   * Results hero + inset copy blocks — single source for light/dark (no #FDFCFA in TSX).
+   */
+  .sw-hero-panel {
+    background: linear-gradient(180deg, #ffffff 0%, #faf8f5 42%, #efeae2 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+  }
+  html.dark .sw-hero-panel {
+    background: linear-gradient(180deg, rgb(var(--tw-surface-elevated)) 0%, rgb(var(--tw-surface)) 100%);
+    border: 1px solid rgb(var(--tw-stone));
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 0.05),
+      0 12px 48px rgba(0, 0, 0, 0.55),
+      0 0 64px -20px rgba(52, 211, 153, 0.12);
+  }
+
+  /**
+   * Results: supplement cards — lifted panel vs canvas (utilities alone looked flat in dark).
+   */
+  .sw-stack-card {
+    background-color: rgb(var(--tw-surface-elevated));
+    box-shadow: 0 4px 20px rgba(28, 58, 46, 0.06);
+  }
+  html.dark .sw-stack-card {
+    background: linear-gradient(165deg, rgb(var(--tw-surface-elevated)) 0%, rgb(var(--tw-surface)) 100%);
+    border: 1px solid rgb(var(--tw-stone));
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 0.05),
+      0 10px 40px rgba(0, 0, 0, 0.5),
+      0 0 56px -18px rgba(52, 211, 153, 0.1);
+  }
+
+  .sw-inset-panel {
+    background: rgb(var(--tw-surface-elevated));
+    border: 1px solid rgb(var(--tw-stone) / 0.85);
+    color: rgb(var(--tw-warm));
+  }
+  html.dark .sw-inset-panel {
+    background: rgb(var(--tw-surface-elevated));
+    border-color: rgb(var(--tw-stone));
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.04),
+      0 6px 28px rgba(0, 0, 0, 0.4);
+  }
+
+  .sw-accent-panel {
+    background: linear-gradient(135deg, rgba(212, 232, 218, 0.55) 0%, #ffffff 60%);
+    border: 1px solid rgb(var(--tw-sage) / 0.35);
+  }
+  html.dark .sw-accent-panel {
+    background: rgb(var(--tw-surface-elevated));
+    border-color: rgb(var(--tw-stone));
+    color: rgb(var(--tw-warm));
+    box-shadow: none;
+  }
+
+  .sw-pill-on-dark {
+    background: linear-gradient(180deg, #f7fdf9 0%, #dcefe4 100%);
+    color: #0a1f18;
+    border: 1px solid rgba(100, 200, 150, 0.45);
+  }
+  html.dark .sw-pill-on-dark {
+    background: rgb(var(--tw-surface-elevated));
+    color: rgb(var(--tw-warm));
+    border-color: rgb(var(--tw-stone-dark));
+    box-shadow: inset 0 1px 0 rgb(184 205 194 / 0.08);
+  }
+
+  /** Landing: goal emoji tiles — hover uses tokens (pills elsewhere keep goalTheme colors) */
+  .landing-goal-tile {
+    background: rgb(var(--tw-surface));
+    border: 1px solid rgb(var(--tw-stone));
+  }
+  .landing-goal-tile:hover {
+    border-color: #1c3a2e;
+    background: #f0f5f2;
+  }
+  html.dark .landing-goal-tile {
+    background: rgb(var(--tw-surface-elevated));
+    border-color: rgb(var(--tw-stone));
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 0.04),
+      0 6px 24px rgba(0, 0, 0, 0.45);
+  }
+  html.dark .landing-goal-tile:hover {
+    border-color: rgb(var(--tw-stone-dark));
+    background: rgb(var(--tw-surface-elevated));
+    box-shadow:
+      0 0 0 1px rgb(52 211 153 / 0.2),
+      0 8px 32px rgba(0, 0, 0, 0.5),
+      0 0 40px -12px rgba(52, 211, 153, 0.15);
+  }
+
+  /** Intro / landing: example stack card — clear lift from #000 + soft emerald bloom */
+  html.dark .sw-example-stack-preview {
+    background: linear-gradient(
+      168deg,
+      rgb(var(--tw-surface-elevated)) 0%,
+      rgb(var(--tw-surface)) 52%,
+      rgb(var(--tw-cream)) 100%
+    );
+    border-color: rgb(var(--tw-stone));
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 0.07),
+      0 12px 48px rgba(0, 0, 0, 0.62),
+      0 0 72px -20px rgba(52, 211, 153, 0.2);
+  }
 
   /* ─── QUIZ SPECIFIC ─── */
 
@@ -479,6 +740,23 @@
     font-weight: 600;
     color: #C05820;
     font-family: 'Figtree', system-ui, sans-serif;
+  }
+
+  html.dark .stacky-accent {
+    color: #fdba8c;
+  }
+
+  html.dark .stacky-badge {
+    background: rgba(180, 95, 40, 0.22);
+    border-color: rgba(253, 186, 140, 0.35);
+    color: #fed7aa;
+  }
+
+  html.dark .text-gradient-lime {
+    background: linear-gradient(135deg, #34d399 0%, #10b981 50%, #6ee7b7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   /* Scrollable areas */
@@ -887,5 +1165,182 @@
   }
   .quiz-intro-d7 {
     animation-delay: 0.64s;
+  }
+
+  /* ─── DARK MODE: quiz + shared controls ─── */
+  html.dark .quiz-step-card {
+    background: rgb(var(--tw-surface));
+    border-color: rgb(var(--tw-stone));
+    box-shadow: none;
+  }
+
+  html.dark .quiz-option {
+    border: 1px solid rgb(var(--tw-stone));
+    background: rgb(var(--tw-surface-elevated));
+    color: rgb(var(--tw-warm));
+    box-shadow: none;
+  }
+
+  html.dark .quiz-option:hover {
+    border-color: rgb(var(--tw-stone-dark));
+    background: rgb(var(--tw-cream-dark));
+    box-shadow: none;
+  }
+
+  html.dark .quiz-option.selected {
+    border-color: rgb(16 185 129 / 0.65);
+    background: rgb(16 185 129 / 0.12);
+    box-shadow: none;
+  }
+
+  html.dark .quiz-check {
+    border-color: rgb(var(--tw-stone-dark));
+  }
+
+  html.dark .quiz-check.checked {
+    border-color: #10b981;
+    background: #059669;
+    box-shadow: none;
+  }
+
+  html.dark .quiz-label {
+    color: rgb(var(--tw-warm-mid));
+    letter-spacing: 0.12em;
+  }
+
+  html.dark .quiz-headline,
+  html.dark .quiz-headline-plain {
+    color: rgb(var(--tw-ink));
+  }
+
+  html.dark .quiz-sub {
+    color: rgb(var(--tw-warm-mid));
+  }
+
+  html.dark .quiz-bottom-nav {
+    background: linear-gradient(to top, rgb(var(--tw-cream)) 45%, transparent);
+  }
+
+  html.dark .btn-primary {
+    background: #059669;
+    color: #ffffff;
+    box-shadow: none;
+    border: 1px solid rgb(16 185 129 / 0.45);
+  }
+
+  html.dark .btn-primary:active {
+    background: #047857;
+    box-shadow: none;
+  }
+
+  html.dark .btn-primary:disabled {
+    background: rgb(var(--tw-surface-elevated));
+    color: rgb(var(--tw-warm-mid));
+    border-color: rgb(var(--tw-stone));
+    box-shadow: none;
+  }
+
+  html.dark .btn-results-next {
+    background: #059669;
+    color: #ffffff;
+    box-shadow: none;
+    border: 1px solid rgb(16 185 129 / 0.4);
+  }
+
+  html.dark .btn-results-next:hover {
+    background: #10b981;
+    box-shadow: none;
+    filter: none;
+  }
+
+  html.dark .btn-stacky-continue {
+    background: linear-gradient(145deg, #c27234 0%, #a85e26 42%, #864a1c 100%);
+    color: #fdf0e0;
+    border-color: rgba(200, 120, 50, 0.3);
+    box-shadow:
+      0 4px 0 rgba(0, 0, 0, 0.3),
+      0 12px 32px rgba(130, 70, 20, 0.45);
+  }
+
+  html.dark .btn-stacky-continue:hover {
+    filter: brightness(1.08);
+    box-shadow:
+      0 4px 0 rgba(0, 0, 0, 0.35),
+      0 16px 40px rgba(130, 70, 20, 0.55);
+  }
+
+  html.dark .btn-ghost {
+    border-color: rgb(var(--tw-stone));
+    color: rgb(var(--tw-warm-mid));
+    background: transparent;
+  }
+
+  html.dark .btn-ghost:active {
+    background: rgb(var(--tw-surface-elevated));
+  }
+
+  html.dark .btn-daily-soft {
+    background: rgb(var(--tw-surface-elevated));
+    color: rgb(var(--tw-warm));
+    border-color: rgb(var(--tw-stone));
+    box-shadow: none;
+  }
+
+  html.dark .btn-daily-soft:hover {
+    background: rgb(var(--tw-cream-dark));
+    border-color: rgb(var(--tw-stone-dark));
+  }
+
+  html.dark .btn-hub-cta {
+    background: rgb(var(--tw-surface-elevated));
+    color: rgb(var(--tw-warm));
+    border-color: rgb(var(--tw-stone));
+    box-shadow: none;
+  }
+
+  html.dark .btn-hub-cta:hover {
+    border-color: rgb(var(--tw-stone-dark));
+    background: rgb(var(--tw-cream-dark));
+    box-shadow: none;
+  }
+
+  html.dark .btn-hub-cta-sub {
+    color: rgb(var(--tw-warm-mid));
+  }
+
+  html.dark .trust-badge {
+    background: rgb(16 185 129 / 0.14);
+    border-color: rgb(110 231 183 / 0.35);
+    color: #a7f3d0;
+  }
+
+  html.dark .progress-bar-track {
+    background: rgb(var(--tw-stone));
+  }
+
+  html.dark .progress-bar-fill {
+    background: #10b981;
+    box-shadow: none;
+  }
+
+  html.dark .stackwise-frustration-scroll {
+    scrollbar-color: rgb(var(--tw-stone-dark)) transparent;
+  }
+
+  html.dark .stackwise-frustration-scroll::-webkit-scrollbar-thumb {
+    background: rgb(var(--tw-stone-dark));
+  }
+}
+
+/**
+ * Dark: Tailwind `text-stone` / `text-stone-dark` use --tw-stone*, which are BORDER rails (mid celadon).
+ * Using them for copy made body text look muddy brown-grey next to real greys. Force readable mist-white.
+ */
+@layer utilities {
+  html.dark .text-stone {
+    color: rgb(234 243 238);
+  }
+  html.dark .text-stone-dark {
+    color: rgb(228 238 232);
   }
 }

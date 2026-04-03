@@ -90,7 +90,7 @@ router.post('/magic-link', async (req, res) => {
     const magicUrl = `${appUrl}/auth/verify?token=${encodeURIComponent(token)}`;
 
     const resendKey = process.env.RESEND_API_KEY;
-    const fromEmail = process.env.RESEND_FROM_EMAIL ?? 'stacky@stackwise.app';
+    const fromEmail = process.env.RESEND_FROM_EMAIL ?? 'stacky@stack-wise.org';
 
     if (!resendKey) {
       // eslint-disable-next-line no-console

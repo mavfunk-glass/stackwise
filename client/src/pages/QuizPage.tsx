@@ -42,7 +42,7 @@ const MAX_STEP4_IMPROVEMENT_PICKS = 5;
 /** Free-text on step 4 health background (e.g. prescription “other”) */
 const MAX_STEP4_TEXT_CHARS = 500;
 
-/** Step 4 Improvements only: optional “More detail?” textarea */
+/** Step 4 Improvements: optional `frustrationOther` payload cap (no in-quiz editor) */
 const MAX_STEP4_IMPROVEMENT_OPTIONAL_DETAIL_CHARS = 50;
 
 /** Super Focus: free-text beyond normal goal picks */
@@ -315,22 +315,25 @@ const ALL_PRIMARY_GOALS = Object.keys(FEELINGS_BY_GOAL) as PrimaryGoal[];
 const FRUSTRATIONS_BY_GOAL: Record<PrimaryGoal, string[]> = {
   '🔥 Fat Loss': [
     "My weight won't move no matter what I do",
+    'I feel bloated or uncomfortable after eating',
     "I hit a wall every afternoon and can't push through",
     "I'm running on caffeine just to feel normal",
-    'I want weight loss to feel more natural instead of like a constant fight',
+    'My body feels inflamed, stiff, or puffy',
+    'I want appetite and cravings easier to manage while I work on body composition',
   ],
   '💪 Muscle & Strength': [
     'I feel weaker than I should, like my strength is gone',
     "I've stopped working out or can't recover the way I used to",
     "I wake up exhausted no matter how much I sleep",
-    'I want stronger pumps in the gym and better workout performance',
-    'I want to recover faster so I can progress between sessions',
+    'I want training recovery and muscle repair support from my stack',
+    'I want strength and power output supported alongside my nutrition',
   ],
   '🫧 Debloating & Gut Health': [
     'I feel bloated or uncomfortable after eating',
     'My body feels inflamed, stiff, or puffy',
     "I wake up exhausted no matter how much I sleep",
-    'I want meals to feel light and comfortable instead of heavy or bloated',
+    'I want gut comfort and regular digestion supported by supplements day to day',
+    "My weight won't move no matter what I do",
   ],
   '⚡ Energy & Focus': [
     "I hit a wall every afternoon and can't push through",
@@ -339,72 +342,76 @@ const FRUSTRATIONS_BY_GOAL: Record<PrimaryGoal, string[]> = {
     'I feel wired but exhausted at the same time',
     "I can't focus or stay on task the way I used to",
     "I'm not performing the way I want to at work",
-    'I want clean, steady energy that makes work and life feel easier',
   ],
   '🧠 Brain Enhancement': [
     "My mind feels slow, like I'm thinking through fog",
     "I can't focus or stay on task the way I used to",
     "I'm not performing the way I want to at work",
     'My drive and motivation feel completely gone',
-    'I want sharper thinking and memory so I can perform at my best',
+    'I feel wired but exhausted at the same time',
+    "I hit a wall every afternoon and can't push through",
   ],
   '😴 Sleep & Recovery': [
     "I wake up exhausted no matter how much I sleep",
     'I feel wired but exhausted at the same time',
     "I've stopped working out or can't recover the way I used to",
-    'My drive and motivation feel completely gone',
-    'I want deeper sleep so my body can actually repair and recover',
-    'I want rest days and nights to translate into real recovery',
+    'I have trouble falling or staying asleep and want supplement support for sleep quality',
+    'I want training recovery and muscle repair support from my stack',
   ],
   '🌿 Hormone Balance': [
     'My hormones feel out of control: mood swings, PMS, crashes',
     "I'm irritable or short-tempered and I hate it",
     'I feel low, flat, or disconnected from life',
-    'I want my hormones to feel stable so my mood and energy are predictable',
+    'I feel anxious or like my thoughts won\'t slow down',
+    'I want cycle-related mood and energy smoother with supplement support',
   ],
   '🌸 Menopause Support': [
     'My hormones feel out of control: mood swings, PMS, crashes',
     "I wake up exhausted no matter how much I sleep",
     "My mind feels slow, like I'm thinking through fog",
     'I feel older than I am, like something shifted',
-    'I want this phase to feel supported instead of like I am just enduring symptoms',
+    'I want menopause symptoms (sleep, mood, temperature) better supported with a supplement strategy',
   ],
   '🛡️ Longevity & Immunity': [
     "I keep getting sick or can't shake illness",
     'My body feels inflamed, stiff, or puffy',
     'I feel older than I am, like something shifted',
     "I wake up exhausted no matter how much I sleep",
-    'I want to age stronger: more energy, resilience, and protection over time',
+    'I want daily immune resilience supported by my stack',
+    'I want longevity-focused cellular and metabolic support from my stack',
   ],
   '💇 Hair Growth': [
     'My hair is thinning or not growing like it used to',
-    'I feel older than I am, like something shifted',
-    'I want my hair to feel thicker, stronger, and healthier again',
+    'I want my hairline and overall hair density to look stronger',
+    'I want scalp and follicle support from inside-out with supplements',
   ],
   '✨ Skin Health & Glow': [
     'My skin looks dull, tired, or broken out',
-    'Texture, pores, or tone bother me more than I want',
-    'I want fewer breakouts and calmer, more even-looking skin',
-    'I want finer lines and better elasticity when I look in the mirror',
+    'I want clearer skin texture and a more even tone',
+    'I want my under-eye area to look fresher and less tired',
+    'I want collagen, barrier, and UV-exposure support from my stack',
   ],
   '🪞 LooksMaxxing': [
-    'My face looks puffy or bloated, especially in photos or the morning',
-    'I want that inner glow. The kind that looks like health, not filters',
-    'Water retention or puff changes how my face looks day to day',
-    'My hairline or hair density is affecting the overall look I am going for',
+    'I want my face to look tighter and less puffy in photos',
+    'I want clearer skin texture and a more even tone',
+    'I want my hairline and overall hair density to look stronger',
+    'I want a sharper side profile and better facial structure',
   ],
   '💖 Sexual Health & Vitality': [
-    'My drive and motivation feel completely gone',
     'My sexual performance feels weaker than I want',
-    'I feel low, flat, or disconnected from life',
+    'I want blood flow, energy, and stamina support for intimacy',
+    'My drive and motivation feel completely gone',
     'My hormones feel out of control: mood swings, PMS, crashes',
-    'I want stronger desire, confidence, and performance in intimacy',
+    'I want libido and confidence supported alongside my health stack',
   ],
   '🧬 Peptide Optimization': [
+    'Recovery between hard sessions still lags — I want advanced options that fit my stack',
+    'I am exploring metabolic, GH-axis, or body-recomp peptides alongside supplements',
+    'I want cognitive- or stress-related peptides considered next to my daily stack',
+    'I need peptide timing, cycling, and interaction guidance with pills and powders I already take',
+    'Injury or tissue repair — I want peptide-level education beyond basic supplements',
     "I've stopped working out or can't recover the way I used to",
     'My body feels inflamed, stiff, or puffy',
-    'I feel weaker than I should, like my strength is gone',
-    'I want to use more advanced tools (like peptides) to recover faster and push progress safely',
   ],
 };
 
@@ -463,6 +470,26 @@ function isCategoryAnswered(hb: string[], cat: { category: string; options: stri
   return cat.options.some((opt) => hb.includes(opt));
 }
 
+/** Stacky bubble on step 3 after “how long” — tailored by duration. */
+function stackyFollowUpForSymptomDuration(sd: string | undefined): string {
+  switch (sd) {
+    case 'Less than 1 month':
+      return 'Since this is newer, I will keep your guide practical and easy to adjust as you see what helps. 🐾';
+    case '1-3 months':
+      return 'A few months in, we can balance quick wins with habits that are realistic to keep. 🐾';
+    case '3-6 months':
+      return 'That is enough time for patterns to show, so I will emphasize steady support and clear next steps. 🐾';
+    case '6-12 months':
+      return 'Longer timelines deserve patience. I will lean toward sustainable pacing in your guide. 🐾';
+    case 'Over 1 year':
+      return 'You have carried this for a while. I will prioritize gentle, sustainable angles and realistic timelines. 🐾';
+    case 'As long as I can remember / my whole life':
+      return 'If this has been part of your story for ages, I will focus on foundational support and manageable changes. 🐾';
+    default:
+      return 'No wrong answers. I will fold what you picked into a plan that fits what you want. 🐾';
+  }
+}
+
 export default function QuizPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -486,6 +513,7 @@ export default function QuizPage() {
     return { mood: config.mood, outfit };
   }
   const [step, setStep] = useState(1);
+  const prevStepRef = useRef(step);
   const [draft, setDraft] = useState<QuizDraft>({
     primaryGoals: [],
     specificGoal: '',
@@ -499,8 +527,8 @@ export default function QuizPage() {
   /** Imperial lb field must not round-trip through kg on each keystroke; that breaks typing. */
   const [weightLbsInput, setWeightLbsInput] = useState('');
   const [openHealthCategory, setOpenHealthCategory] = useState<string | null>(null);
-  /** Step 2: color-coded goal areas first, then optional specific target (same UX pattern as step 4). */
-  const [step2SubSlide, setStep2SubSlide] = useState<'goals' | 'superFocus'>('goals');
+  /** Step 3: personalize goal detail vs optional Super Focus (same UX pattern as step 4). */
+  const [step3SubSlide, setStep3SubSlide] = useState<'personalize' | 'superFocus'>('personalize');
   const [step4SubSlide, setStep4SubSlide] = useState<'background' | 'frustrations'>('background');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -508,6 +536,32 @@ export default function QuizPage() {
   const [nameDraft, setNameDraft] = useState(() => introNameDraftFromStorage());
   const [hasCompletedNamePrompt, setHasCompletedNamePrompt] = useState(false);
   const { showFact, factIdx, maybeShowFact, dismissFact } = useFactPopups();
+
+  /** Step 2: show upgrade explainer before sending users to pricing (avoid instant redirect). */
+  const [step2UpgradeGate, setStep2UpgradeGate] = useState<
+    null | { reason: 'max_goals' } | { reason: 'paid_goal'; label: string } | { reason: 'pro_goal'; label: string }
+  >(null);
+
+  useEffect(() => {
+    if (step !== 2) setStep2UpgradeGate(null);
+  }, [step]);
+
+  useEffect(() => {
+    const prev = prevStepRef.current;
+    prevStepRef.current = step;
+    if (step === 4 && prev === 3) {
+      setOpenHealthCategory(MEDICATIONS_CATEGORY);
+    }
+  }, [step]);
+
+  useEffect(() => {
+    if (!step2UpgradeGate) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setStep2UpgradeGate(null);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [step2UpgradeGate]);
 
   useEffect(() => {
     if (step !== 1 || bodyUnit !== 'imperial') return;
@@ -523,7 +577,7 @@ export default function QuizPage() {
   }, [step]);
 
   useEffect(() => {
-    if (step !== 2) setStep2SubSlide('goals');
+    if (step !== 3) setStep3SubSlide('personalize');
   }, [step]);
 
   useEffect(() => {
@@ -549,7 +603,6 @@ export default function QuizPage() {
       setWeightLbsInput(String(Math.round(kgToLbs(saved.weightKg))));
     }
     setStep(2);
-    setStep2SubSlide('goals');
     navigate('.', { replace: true, state: {} });
   }, [location.state, navigate]);
 
@@ -803,8 +856,6 @@ export default function QuizPage() {
           'PCOS (polycystic ovary syndrome)',
           'Menopause or perimenopause',
           'Diabetes or blood sugar issues',
-          'Adrenal fatigue or chronic stress response',
-          'Estrogen dominance or hormonal imbalance',
         ],
       },
       {
@@ -835,7 +886,6 @@ export default function QuizPage() {
         options: [
           'Anxiety or panic disorder',
           'Depression',
-          'Currently taking antidepressants or SSRIs',
           'ADHD or focus difficulties',
           'Chronic insomnia or sleep disorder',
         ],
@@ -866,7 +916,6 @@ export default function QuizPage() {
           'Osteoporosis or low bone density',
           'Arthritis or chronic joint pain',
           'Fibromyalgia or chronic muscle pain',
-          'History of stress fractures',
         ],
       },
       {
@@ -899,6 +948,28 @@ export default function QuizPage() {
     }
     return backgroundCategories;
   }, [backgroundCategories, draft.biologicalSex]);
+
+  /** Medications first so prescriptions are addressed before other conditions. */
+  const orderedHealthBackgroundCategories = useMemo(() => {
+    const cats = healthBackgroundCategories;
+    const med = cats.find((c) => c.category === MEDICATIONS_CATEGORY);
+    const rest = cats.filter((c) => c.category !== MEDICATIONS_CATEGORY);
+    return med ? [med, ...rest] : cats;
+  }, [healthBackgroundCategories]);
+
+  useEffect(() => {
+    const valid = new Set<string>(['None of the above']);
+    for (const c of backgroundCategories) {
+      valid.add(noneCategoryToken(c.category));
+      for (const o of c.options) valid.add(o);
+    }
+    setDraft((d) => {
+      const hb = d.healthBackground ?? [];
+      const next = hb.filter((x) => valid.has(x));
+      if (next.length === hb.length) return d;
+      return { ...d, healthBackground: next };
+    });
+  }, [backgroundCategories]);
 
   const healthChunks = useMemo(
     () => splitIntoThreeChunks(healthBackgroundCategories),
@@ -965,11 +1036,12 @@ export default function QuizPage() {
     { area: string; emoji: string; subtext: string; options: string[] }[]
   >(
     () => {
+      /** Every string here must appear in FRUSTRATIONS_BY_GOAL for at least one primary goal, or it never surfaces. */
       const allGroups = [
         {
-          area: 'Energy & Mind',
+          area: 'Energy & mental performance',
           emoji: '⚡',
-          subtext: 'How you feel getting through the day',
+          subtext: 'Focus, fatigue, and cognitive stamina (stack-addressable)',
           options: [
             "I wake up exhausted no matter how much I sleep",
             "I hit a wall every afternoon and can't push through",
@@ -977,31 +1049,52 @@ export default function QuizPage() {
             "I'm running on caffeine just to feel normal",
             'I feel wired but exhausted at the same time',
             "I can't focus or stay on task the way I used to",
+            "I'm not performing the way I want to at work",
           ],
         },
         {
-          area: 'Body & Physical',
+          area: 'Body composition, gut & inflammation',
           emoji: '🫁',
-          subtext: "What you're feeling in your body",
+          subtext: 'Weight, digestion, bloating, systemic inflammation',
           options: [
             "My weight won't move no matter what I do",
             'I feel bloated or uncomfortable after eating',
             'My body feels inflamed, stiff, or puffy',
-            'My hair is thinning or not growing like it used to',
-            'My skin looks dull, tired, or broken out',
-            'I want my face to look tighter and less puffy in photos',
-            'I want clearer skin texture and a more even tone',
-            'I want my under-eye area to look fresher and less tired',
-            'I want my hairline and overall hair density to look stronger',
-            'I want a sharper side profile and better facial structure',
-            'I feel weaker than I should, like my strength is gone',
-            "I keep getting sick or can't shake illness",
+            'I want appetite and cravings easier to manage while I work on body composition',
+            'I want gut comfort and regular digestion supported by supplements day to day',
           ],
         },
         {
-          area: 'Mood & Emotional',
+          area: 'Training, muscle & recovery',
+          emoji: '💪',
+          subtext: 'Strength, training frequency, repair between sessions',
+          options: [
+            'I feel weaker than I should, like my strength is gone',
+            "I've stopped working out or can't recover the way I used to",
+            'I want training recovery and muscle repair support from my stack',
+            'I want strength and power output supported alongside my nutrition',
+          ],
+        },
+        {
+          area: 'Hair, skin & appearance',
+          emoji: '✨',
+          subtext: 'What you see in the mirror (nutrition- and stack-supported)',
+          options: [
+            'My hair is thinning or not growing like it used to',
+            'My skin looks dull, tired, or broken out',
+            'I want clearer skin texture and a more even tone',
+            'I want my hairline and overall hair density to look stronger',
+            'I want my face to look tighter and less puffy in photos',
+            'I want a sharper side profile and better facial structure',
+            'I want my under-eye area to look fresher and less tired',
+            'I want collagen, barrier, and UV-exposure support from my stack',
+            'I want scalp and follicle support from inside-out with supplements',
+          ],
+        },
+        {
+          area: 'Mood, hormones, sleep & longevity',
           emoji: '🧠',
-          subtext: 'How you feel on the inside',
+          subtext: 'Stress, hormones, immunity, aging, sleep quality',
           options: [
             "I'm irritable or short-tempered and I hate it",
             "I feel anxious or like my thoughts won't slow down",
@@ -1009,20 +1102,36 @@ export default function QuizPage() {
             'My hormones feel out of control: mood swings, PMS, crashes',
             'I feel older than I am, like something shifted',
             'I feel disconnected from who I used to be',
+            "I keep getting sick or can't shake illness",
+            'I want daily immune resilience supported by my stack',
+            'I want longevity-focused cellular and metabolic support from my stack',
+            'I want menopause symptoms (sleep, mood, temperature) better supported with a supplement strategy',
+            'I want cycle-related mood and energy smoother with supplement support',
+            'I have trouble falling or staying asleep and want supplement support for sleep quality',
           ],
         },
         {
-          area: 'Life & Drive',
+          area: 'Drive, intimacy & confidence',
           emoji: '🎯',
-          subtext: 'How this is affecting your real life',
+          subtext: 'Libido, performance, motivation, how you feel in your body',
           options: [
-            "I'm not performing the way I want to at work",
-            "I've pulled back from social situations or people I love",
-            "I've stopped working out or can't recover the way I used to",
             'My drive and motivation feel completely gone',
             'My sexual performance feels weaker than I want',
-            "I feel like I'm falling further behind on my goals",
-    'My confidence in how I look or feel has taken a hit',
+            'I want blood flow, energy, and stamina support for intimacy',
+            'Low confidence in how I look or feel is affecting my day to day',
+            'I want libido and confidence supported alongside my health stack',
+          ],
+        },
+        {
+          area: 'Peptide & advanced stack',
+          emoji: '🧬',
+          subtext: 'When you are going beyond standard oral supplements',
+          options: [
+            'Recovery between hard sessions still lags — I want advanced options that fit my stack',
+            'I am exploring metabolic, GH-axis, or body-recomp peptides alongside supplements',
+            'I want cognitive- or stress-related peptides considered next to my daily stack',
+            'I need peptide timing, cycling, and interaction guidance with pills and powders I already take',
+            'Injury or tissue repair — I want peptide-level education beyond basic supplements',
           ],
         },
       ] as const;
@@ -1051,31 +1160,68 @@ export default function QuizPage() {
     "I'm running on caffeine just to feel normal": 'I want natural energy without depending on caffeine.',
     'I feel wired but exhausted at the same time': 'I want calm energy and better balance.',
     "I can't focus or stay on task the way I used to": 'I want stronger focus and follow-through.',
+    "I'm not performing the way I want to at work": 'I want to perform at my best at work.',
     "My weight won't move no matter what I do": 'I want fat loss that finally moves.',
     'I feel bloated or uncomfortable after eating': 'I want meals to feel light and easy.',
     'My body feels inflamed, stiff, or puffy': 'I want to feel less inflamed and more mobile.',
+    'I want appetite and cravings easier to manage while I work on body composition':
+      'I want appetite and cravings easier to manage while I cut.',
+    'I want gut comfort and regular digestion supported by supplements day to day':
+      'I want comfortable, predictable digestion supported by my stack.',
+    'I feel weaker than I should, like my strength is gone': 'I want my strength and performance back.',
+    "I've stopped working out or can't recover the way I used to": 'I want to recover better and train stronger.',
+    'I want training recovery and muscle repair support from my stack':
+      'I want training recovery and repair supported by what I take.',
+    'I want strength and power output supported alongside my nutrition':
+      'I want strength and power output supported by my stack.',
     'My hair is thinning or not growing like it used to': 'I want fuller, healthier hair growth.',
     'My skin looks dull, tired, or broken out': 'I want clearer, brighter skin.',
-    'I want my face to look tighter and less puffy in photos': 'I want my face to look tighter and less puffy in photos.',
     'I want clearer skin texture and a more even tone': 'I want clearer skin texture and a more even tone.',
-    'I want my under-eye area to look fresher and less tired': 'I want my under-eye area to look fresher and less tired.',
-    'I want my hairline and overall hair density to look stronger': 'I want my hairline and overall hair density to look stronger.',
-    'I want a sharper side profile and better facial structure': 'I want a sharper side profile and better facial structure.',
-    'I feel weaker than I should, like my strength is gone': 'I want my strength and performance back.',
+    'I want my hairline and overall hair density to look stronger':
+      'I want my hairline and overall hair density to look stronger.',
+    'I want my face to look tighter and less puffy in photos': 'I want my face to look tighter and less puffy in photos.',
+    'I want a sharper side profile and better facial structure':
+      'I want a sharper side profile and better facial structure.',
+    'I want my under-eye area to look fresher and less tired':
+      'I want my under-eye area to look fresher and less tired.',
+    'I want collagen, barrier, and UV-exposure support from my stack':
+      'I want collagen, barrier, and sun-exposure support from my stack.',
+    'I want scalp and follicle support from inside-out with supplements':
+      'I want scalp and follicle support from the inside out.',
     "I keep getting sick or can't shake illness": 'I want stronger immunity and resilience.',
+    'I want daily immune resilience supported by my stack': 'I want daily immune resilience from my stack.',
+    'I want longevity-focused cellular and metabolic support from my stack':
+      'I want longevity-focused metabolic and cellular support from my stack.',
     "I'm irritable or short-tempered and I hate it": 'I want a calmer, steadier mood.',
     "I feel anxious or like my thoughts won't slow down": 'I want to feel calm and in control.',
     'I feel low, flat, or disconnected from life': 'I want to feel motivated and connected again.',
     'My hormones feel out of control: mood swings, PMS, crashes': 'I want stable hormones and smoother days.',
     'I feel older than I am, like something shifted': 'I want to feel younger, stronger, and more like myself.',
     'I feel disconnected from who I used to be': 'I want to feel like myself again.',
-    "I'm not performing the way I want to at work": 'I want to perform at my best at work.',
-    "I've pulled back from social situations or people I love": 'I want more social confidence and connection.',
-    "I've stopped working out or can't recover the way I used to": 'I want to recover better and train stronger.',
+    'I want menopause symptoms (sleep, mood, temperature) better supported with a supplement strategy':
+      'I want menopause symptoms better supported with a clear supplement strategy.',
+    'I want cycle-related mood and energy smoother with supplement support':
+      'I want cycle-related mood and energy smoother with stack support.',
+    'I have trouble falling or staying asleep and want supplement support for sleep quality':
+      'I want sleep quality supported by the right supplements.',
     'My drive and motivation feel completely gone': 'I want my drive and motivation back.',
     'My sexual performance feels weaker than I want': 'I want my sexual performance at its best.',
-    "I feel like I'm falling further behind on my goals": 'I want real momentum toward my goals.',
-    'My confidence in how I look or feel has taken a hit': 'I want to feel confident in how I look and feel.',
+    'I want blood flow, energy, and stamina support for intimacy':
+      'I want blood flow, energy, and stamina support for intimacy.',
+    'Low confidence in how I look or feel is affecting my day to day':
+      'I want to feel confident in how I look and feel day to day.',
+    'I want libido and confidence supported alongside my health stack':
+      'I want libido and confidence supported alongside my health stack.',
+    'Recovery between hard sessions still lags — I want advanced options that fit my stack':
+      'I want advanced recovery options that fit my stack.',
+    'I am exploring metabolic, GH-axis, or body-recomp peptides alongside supplements':
+      'I want metabolic, GH-axis, or recomp peptide angles aligned with my supplements.',
+    'I want cognitive- or stress-related peptides considered next to my daily stack':
+      'I want cognitive- or stress-related peptide paths considered next to my stack.',
+    'I need peptide timing, cycling, and interaction guidance with pills and powders I already take':
+      'I want peptide timing, cycling, and interaction guidance with what I already take.',
+    'Injury or tissue repair — I want peptide-level education beyond basic supplements':
+      'I want injury and tissue-repair education beyond basic supplements.',
   };
 
   const toImprovementLabel = (option: string) => IMPROVEMENT_LABELS[option] ?? option;
@@ -1176,11 +1322,15 @@ export default function QuizPage() {
       case 3:
         return !!draft.currentFeelings?.length && !!draft.symptomDuration;
       case 4:
-        if ((draft.healthBackground ?? []).includes('Taking prescription medication (any)')) {
-          if (!draft.prescriptionMedication) return false;
-          if (draft.prescriptionMedication === PRESCRIPTION_OTHER_OPTION) {
-            return !!draft.prescriptionMedicationOther?.trim();
+        if (step4SubSlide === 'background') {
+          if (!healthBackgroundComplete()) return false;
+          if ((draft.healthBackground ?? []).includes('Taking prescription medication (any)')) {
+            if (!draft.prescriptionMedication) return false;
+            if (draft.prescriptionMedication === PRESCRIPTION_OTHER_OPTION) {
+              return !!draft.prescriptionMedicationOther?.trim();
+            }
           }
+          return true;
         }
         return true;
       case 5:
@@ -1310,8 +1460,8 @@ export default function QuizPage() {
     },
     {
       label: 'Your guide',
-      headline: 'Choose your focus',
-      sub: 'What you pick here shapes your plan around your real goals, not generic trends. Super Focus adds a premium intentional layer in your own words.',
+      headline: 'What are your Goals?',
+      sub: 'Let\'s start building! Select the building blocks you want your stack to focus on',
     },
     {
       label: 'Personalize',
@@ -1319,9 +1469,9 @@ export default function QuizPage() {
       sub: 'Add detail so your recommendations match your goals and how you live. Guidance only, not medical advice.',
     },
     {
-      label: 'Anything else',
-      headline: 'Anything else we should know?',
-      sub: 'Private: stays on this device until you build your supplement guide. Select what matters for safety and dosing.',
+      label: 'Conditions and prescriptions',
+      headline: 'Conditions and prescriptions for your stack',
+      sub: 'Any health concerns? Your health and goals are our number one priority. Stacky accommodates and personalizes your stack around possible health concerns because Stacky wants you to feel your best!',
     },
     {
       label: 'Your diet',
@@ -1343,7 +1493,7 @@ export default function QuizPage() {
     ...meta,
     headline:
       firstName && step === 2
-        ? `${firstName}, what should your plan focus on first?`
+        ? `What are your Goals, ${firstName}?`
         : firstName && step === 3
         ? `${firstName}, what should we factor into your guide?`
         : firstName && step === 4
@@ -1354,15 +1504,12 @@ export default function QuizPage() {
   };
 
   return (
-    <div className="min-h-screen bg-cream text-warm">
+    <div className="min-h-screen bg-sw-bg text-warm">
 
       {/* ─── TOP BAR ─── */}
       <div
-        className="sticky top-0 z-40 px-5 border-b border-stone"
+        className="sticky top-0 z-40 px-5 border-b border-stone sw-sticky-nav"
         style={{
-          background: 'rgba(249,246,241,0.92)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
           paddingTop: 'calc(env(safe-area-inset-top, 0px) + 6px)',
           paddingBottom: 6,
         }}
@@ -1371,14 +1518,14 @@ export default function QuizPage() {
           <button
             type="button"
             onClick={() => navigate('/landing')}
-            className="font-serif font-light tracking-widest text-sm hover:opacity-80 transition-opacity shrink-0"
-            style={{ color: '#1C3A2E', letterSpacing: '0.15em' }}
+            className="font-serif font-light tracking-widest text-sm text-ink hover:opacity-80 transition-opacity shrink-0"
+            style={{ letterSpacing: '0.15em' }}
             aria-label="Back to home screen"
           >
             STACKWISE
           </button>
           <div className="flex items-center gap-2 sm:gap-3 min-w-0 text-xs">
-            <span className="font-medium tabular-nums shrink-0" style={{ color: '#9C8E84', letterSpacing: '0.05em' }}>
+            <span className="font-medium tabular-nums shrink-0 text-warm-light" style={{ letterSpacing: '0.05em' }}>
               {step} / 6
             </span>
             <button
@@ -1400,7 +1547,7 @@ export default function QuizPage() {
               {REBUILD_GATE_BODY}
               <button
                 type="button"
-                className="block mt-2 font-bold text-forest underline underline-offset-2"
+                className="block mt-2 font-bold text-ink underline underline-offset-2"
                 onClick={() => navigate('/pricing', { state: { intent: 'rebuild' } })}
               >
                 View Basic &amp; Pro, save vs. buying blind
@@ -1414,7 +1561,11 @@ export default function QuizPage() {
       <div className="max-w-lg mx-auto px-5 pb-nav">
 
         {/* Step headline */}
-        <div className={step === 3 ? 'pt-6 pb-4' : 'pt-8 pb-6'}>
+        <div
+          className={
+            step === 3 ? 'pt-6 pb-4' : step === 2 ? 'pt-8 pb-3 text-center' : 'pt-8 pb-6'
+          }
+        >
           {step === 3 ? (
             <>
               <div className="flex justify-center mb-3">
@@ -1422,9 +1573,11 @@ export default function QuizPage() {
                   mood={getStepStacky(3).mood}
                   size={96}
                   outfit={getStepStacky(step).outfit}
-                  bubble={`${
-                    firstName && firstName !== 'Skip' ? `${firstName}, ` : ''
-                  }Perfect, now let's get into the nitty gritty of your goals for this guide.`}
+                  bubble={
+                    firstName && firstName !== 'Skip'
+                      ? `Perfect ${firstName}! Let's get into the nitty gritty of your goals now`
+                      : `Perfect! Let's get into the nitty gritty of your goals now`
+                  }
                   bubblePosition="top"
                   topBubbleReservePx={88}
                 />
@@ -1433,21 +1586,24 @@ export default function QuizPage() {
             </>
           ) : (
             <>
-              <div className="quiz-label mb-3">{personalizedMeta.label}</div>
+              {step !== 2 && <div className="quiz-label mb-3">{personalizedMeta.label}</div>}
               <h1
                 className={[
                   step >= 7 && step <= 10 ? 'quiz-headline-plain' : 'quiz-headline',
                   'mb-2',
+                  step === 2 ? 'max-w-xl mx-auto' : '',
                 ].join(' ')}
               >
                 {personalizedMeta.headline}
               </h1>
               {step === 2 && (
-                <div className="mb-3">
+                <div className="mb-3 flex justify-center">
                   <div className="stackwise-focus-underline" />
                 </div>
               )}
-              <p className="quiz-sub">{personalizedMeta.sub}</p>
+              <p className={['quiz-sub', step === 2 ? 'max-w-xl mx-auto' : ''].filter(Boolean).join(' ')}>
+                {personalizedMeta.sub}
+              </p>
             </>
           )}
         </div>
@@ -1459,7 +1615,7 @@ export default function QuizPage() {
               position: 'fixed',
               inset: 0,
               zIndex: 80,
-              background: 'rgba(249,246,241,0.97)',
+              background: 'rgb(var(--tw-cream) / 0.97)',
               backdropFilter: 'blur(8px)',
               display: 'flex',
               flexDirection: 'column',
@@ -1494,15 +1650,16 @@ export default function QuizPage() {
                   fontWeight: 500,
                 }}
               >
-                Stacky is here to replace confusion and sales hype with clarity: this quiz, a plan tailored to you, smarter spending, and ongoing help for months as your goals evolve.
+                <strong>Don&apos;t waste money</strong> on overhyped supplements that aren&apos;t for you. Stacky builds simple, personalized stacks for your specific goals that evolve as you do.
               </p>
               <div className="quiz-intro-rise quiz-intro-d3 flex justify-center" style={{ marginBottom: 8 }}>
                 <StackyCat
                   mood={getStepStacky(1).mood}
                   size={130}
                   outfit={getStepStacky(step).outfit}
-                  bubble="Hey! I'm Stacky 👋 What's your name? Your first name is enough."
+                  bubble="I'm tired of people pressuring you to waste your money on vague supplements. Let's build something that's actually for you together! What should I call you?"
                   bubblePosition="top"
+                  topBubbleReservePx={180}
                 />
               </div>
 
@@ -1518,7 +1675,7 @@ export default function QuizPage() {
                     marginBottom: 0,
                   }}
                 >
-                  What&apos;s your name?
+                  What's your name?
                 </div>
               </div>
 
@@ -1527,7 +1684,7 @@ export default function QuizPage() {
                 type="text"
                 autoFocus
                 autoComplete="given-name"
-                placeholder="Tell Stacky your name!"
+                placeholder="Hi Stacky! My name is..."
                 value={nameDraft}
                 onChange={(e) => setNameDraft(e.target.value)}
                 onKeyDown={(e) => {
@@ -1986,78 +2143,33 @@ export default function QuizPage() {
           </div>
         )}
 
-        {/* STEP 2: Goals (two-part UI like step 4: goal areas first, optional focus second) */}
+        {/* STEP 2: Goals — primary goal picks only */}
         {step === 2 && (
-          <div className="space-y-5 stackwise-result-block-reveal">
-            <div className="rounded-2xl px-4 py-3" style={{ background: '#FDFCFA', border: '1px solid #E8E0D5' }}>
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                <div className="min-w-0 flex-1">
-                  <div className="font-semibold text-sm" style={{ color: '#1C3A2E' }}>
-                    Two parts
-                  </div>
-                  <div className="text-xs mt-0.5" style={{ color: '#9C8E84' }}>
-                    {step2SubSlide === 'goals'
-                      ? 'Colored picks: each matches part of your guide.'
-                      : 'Pro: dial in a stack beyond the standard options.'}
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setStep2SubSlide('goals')}
-                    className={[
-                      'px-4 py-2 rounded-xl text-xs font-semibold transition-all active:scale-95 border',
-                      step2SubSlide === 'goals'
-                        ? 'bg-[#1C3A2E] text-[#F9F6F1] border-[#1C3A2E]'
-                        : 'bg-white text-[#3D2E22] border-[#E8E0D5] hover:border-[#C4B9AC]',
-                    ].join(' ')}
-                  >
-                    Goal areas
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setStep2SubSlide('superFocus')}
-                    className={[
-                      'px-4 py-2 rounded-xl text-xs font-semibold transition-all active:scale-95 border inline-flex items-center gap-2 stackwise-pro-dramatic-reveal',
-                      step2SubSlide === 'superFocus'
-                        ? 'bg-[#1C3A2E] text-[#F9F6F1] border-[#C4A574]'
-                        : 'bg-white text-[#3D2E22] border-[#C4A574] hover:border-[#A57C2D]',
-                    ].join(' ')}
-                    style={{
-                      animationDelay: '120ms',
-                      boxShadow:
-                        step2SubSlide === 'superFocus'
-                          ? '0 0 0 1px rgba(196,165,116,0.55), 0 8px 22px rgba(139,105,20,0.25)'
-                          : '0 0 0 1px rgba(196,165,116,0.3), inset 0 0 0 1px rgba(255,246,222,0.45)',
-                      backgroundImage:
-                        step2SubSlide === 'superFocus'
-                          ? 'linear-gradient(135deg, #1C3A2E 0%, #2D5242 55%, #3E6A59 100%)'
-                          : 'linear-gradient(135deg, #FFFDF8 0%, #FFF7E8 100%)',
-                    }}
-                  >
-                    <span>Super Focus</span>
-                  </button>
-                </div>
-              </div>
+          <div className="space-y-3 stackwise-result-block-reveal">
+            <div className="flex justify-center pt-1">
+              <StackyCat
+                mood="think"
+                size={88}
+                outfit={getStepStacky(step).outfit}
+                topBubbleReservePx={102}
+                bubble={
+                  firstName ? (
+                    <>
+                      What type of Stack are we building today,{' '}
+                      <span style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}>
+                        {firstName}
+                      </span>
+                      ? Let&apos;s build the best stack you&apos;ve ever seen for your goals.
+                    </>
+                  ) : (
+                    'What type of Stack are we building today? Let\'s build the best stack you\'ve ever seen for your goals.'
+                  )
+                }
+                bubblePosition="top"
+              />
             </div>
 
-            {step2SubSlide === 'goals' ? (
-              <>
-                <div className="flex justify-center py-1">
-                  <StackyCat
-                    mood="think"
-                    size={88}
-                    outfit={getStepStacky(step).outfit}
-                    topBubbleReservePx={120}
-                    bubble={
-                      'Tap the goals below. Each color matches an area of your guide. Mix and match what fits you. On Pro, Super Focus is next if you want a fully custom target in your own words.'
-                    }
-                    bubblePosition="top"
-                  />
-                </div>
-
-                {isFreeTier && (
+            {isFreeTier && (
                   <div
                     className="rounded-2xl px-4 py-3 flex items-start gap-2.5"
                     style={{ background: '#F0F5F2', border: '1px solid #D4E8DA' }}
@@ -2115,7 +2227,13 @@ export default function QuizPage() {
                               type="button"
                               onClick={() => {
                                 if (addLocked) {
-                                  navigate('/pricing');
+                                  if (proOnlyLocked) {
+                                    setStep2UpgradeGate({ reason: 'pro_goal', label: g.label });
+                                  } else if (paidOnlyLocked) {
+                                    setStep2UpgradeGate({ reason: 'paid_goal', label: g.label });
+                                  } else {
+                                    setStep2UpgradeGate({ reason: 'max_goals' });
+                                  }
                                   return;
                                 }
                                 setDraft((d) => {
@@ -2175,117 +2293,68 @@ export default function QuizPage() {
                       </div>
                     </div>
                   ))}
-                </div>
+            </div>
 
-                <div className="mt-6 pt-6 border-t border-[#E8E0D5]">
-                  <div
-                    className="relative mx-auto flex w-full max-w-md items-end justify-center"
-                    style={{ minHeight: 200 }}
-                  >
-                    <StackyCat
-                      mood="happy"
-                      size={88}
-                      outfit={getStepStacky(step).outfit}
-                      bubble={"Take your time. Your guide updates when you do. 🐾"}
-                      bubblePosition="top"
-                    />
-                  </div>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="flex justify-center pb-1">
-                  <StackyCat
-                    mood={getStepStacky(2).mood}
-                    size={92}
-                    outfit={getStepStacky(step).outfit}
-                    topBubbleReservePx={isProUser ? 160 : 140}
-                    bubble={
-                      isProUser
-                        ? 'Super Focus is for when the buttons are not enough. Say exactly what intentional stack you want, timing, tradeoffs, and edge cases, and I will steer the plan around it.'
-                        : 'Super Focus gives your stack a premium layer: your own words for a fully intentional target beyond the standard goal picks.'
-                    }
-                    bubblePosition="top"
-                  />
-                </div>
-
-                <div
-                  className="rounded-2xl p-1 overflow-hidden"
-                  style={{
-                    background: 'linear-gradient(135deg, #C4A574 0%, #1C3A2E 45%, #2D5242 100%)',
-                    boxShadow: '0 12px 40px rgba(28, 58, 46, 0.25)',
-                  }}
-                >
-                  <div className="rounded-[14px] p-4 sm:p-5" style={{ background: '#FDFCFA' }}>
-                    <div className="flex flex-wrap items-center gap-2 mb-1">
-                      <span className="quiz-label mb-0">Super Focus</span>
-                      {!isProUser && (
-                        <span
-                          className="text-[9px] font-black uppercase tracking-[0.2em] px-2 py-0.5 rounded-full"
-                          style={{ background: '#1C3A2E', color: '#E8D5A3', border: '1px solid #2D5242' }}
-                        >
-                          Premium
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-sm font-semibold leading-snug mb-2" style={{ color: '#1C3A2E' }}>
-                      Go beyond the quiz tiles, get as specific as you want.
-                    </p>
-                    <p className="text-xs mb-3 leading-relaxed" style={{ color: '#6B5E54' }}>
-                      Stack names, situations, or a razor-sharp outcome. This stays separate from your main budget stack
-                      so your core picks and pricing remain stable.
-                    </p>
-                    <textarea
-                      value={draft.specificGoal ?? ''}
-                      onChange={(e) =>
-                        setDraft((d) => ({
-                          ...d,
-                          specificGoal: sanitizeSuperFocusText(e.target.value),
-                        }))
-                      }
-                      maxLength={MAX_SUPER_FOCUS_CHARS}
-                      placeholder="Example: prioritize cognitive clarity on low sleep, cut bloat before events, or stack for gym + desk days without overstimulation…"
-                      rows={4}
-                      className="w-full rounded-xl px-3 py-2.5 text-sm leading-relaxed resize-none"
-                      style={{
-                        background: '#FFFFFF',
-                        border: '1.5px solid #E8E0D5',
-                        color: '#3D2E22',
-                        fontFamily: 'Figtree, system-ui, sans-serif',
-                        outline: 'none',
-                        minHeight: 100,
-                      }}
-                      onFocus={(e) => {
-                        e.target.style.borderColor = '#1C3A2E';
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.borderColor = '#E8E0D5';
-                      }}
-                    />
-                    <div className="flex justify-between items-center mt-2">
-                      <p className="text-[11px] leading-relaxed" style={{ color: '#9C8E84' }}>
-                        Your base stack stays budget-friendly. Super Focus appears as a separate premium section in results.
-                      </p>
-                      <p className="text-[11px] tabular-nums font-medium" style={{ color: '#9C8E84' }}>
-                        {(draft.specificGoal ?? '').length}/{MAX_SUPER_FOCUS_CHARS}
-                      </p>
-                    </div>
-                    {!isProUser && (
-                      <p className="text-[11px] mt-2 leading-relaxed" style={{ color: '#6B5E54' }}>
-                        Free users can still add Super Focus. Pro unlocks deeper ongoing refinement in Stack Hub.
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </>
-            )}
+            <div className="mt-6 pt-6 border-t border-[#E8E0D5]">
+              <div
+                className="relative mx-auto flex w-full max-w-md items-end justify-center"
+                style={{ minHeight: 200 }}
+              >
+                <StackyCat
+                  mood="happy"
+                  size={88}
+                  outfit={getStepStacky(step).outfit}
+                  bubble={"Take your time. Your guide updates when you do. 🐾"}
+                  bubblePosition="top"
+                />
+              </div>
+            </div>
           </div>
         )}
 
         {/* STEP 3: Personalize guide (goal-level detail) */}
         {step === 3 && (
           <div className="space-y-5 stackwise-result-block-reveal">
+            <div className="flex flex-wrap gap-2 justify-center">
+              <button
+                type="button"
+                onClick={() => setStep3SubSlide('personalize')}
+                className={[
+                  'px-4 py-2 rounded-xl text-xs font-semibold transition-all active:scale-95 border',
+                  step3SubSlide === 'personalize'
+                    ? 'bg-[#1C3A2E] text-[#F9F6F1] border-[#1C3A2E]'
+                    : 'bg-white text-[#3D2E22] border-[#E8E0D5] hover:border-[#C4B9AC]',
+                ].join(' ')}
+              >
+                Personalize
+              </button>
+              <button
+                type="button"
+                onClick={() => setStep3SubSlide('superFocus')}
+                className={[
+                  'px-4 py-2 rounded-xl text-xs font-semibold transition-all active:scale-95 border inline-flex items-center gap-2 stackwise-pro-dramatic-reveal',
+                  step3SubSlide === 'superFocus'
+                    ? 'bg-[#1C3A2E] text-[#F9F6F1] border-[#C4A574]'
+                    : 'bg-white text-[#3D2E22] border-[#C4A574] hover:border-[#A57C2D]',
+                ].join(' ')}
+                style={{
+                  animationDelay: '120ms',
+                  boxShadow:
+                    step3SubSlide === 'superFocus'
+                      ? '0 0 0 1px rgba(196,165,116,0.55), 0 8px 22px rgba(139,105,20,0.25)'
+                      : '0 0 0 1px rgba(196,165,116,0.3), inset 0 0 0 1px rgba(255,246,222,0.45)',
+                  backgroundImage:
+                    step3SubSlide === 'superFocus'
+                      ? 'linear-gradient(135deg, #1C3A2E 0%, #2D5242 55%, #3E6A59 100%)'
+                      : 'linear-gradient(135deg, #FFFDF8 0%, #FFF7E8 100%)',
+                }}
+              >
+                <span>Super Focus</span>
+              </button>
+            </div>
 
+            {step3SubSlide === 'personalize' ? (
+              <>
             <div
               className="rounded-2xl p-3 sm:p-4"
               style={{
@@ -2519,21 +2588,104 @@ export default function QuizPage() {
                   topBubbleReservePx={132}
                   bubble={
                     (() => {
-                      const quote =
-                        'More detail here means a guide that sounds like your goals, not a random shelf pick.';
-                      const longDuration =
-                        draft.symptomDuration && draft.symptomDuration !== 'Less than 1 month';
-                      const follow = longDuration
-                        ? "You have had this on your mind for a while, so I will lean toward steadier, sustainable angles in your guide. Thanks for the context. 🐾"
-                        : "No wrong answers. I will fold what you picked into a plan that fits what you want. 🐾";
-                      return `${quote}\n\n${follow}`;
+                      const lead =
+                        firstName && firstName !== 'Skip'
+                          ? `Let's flesh out these goals of yours, ${firstName}! Your improvements are my command.`
+                          : `Let's flesh out these goals of yours! Your improvements are my command.`;
+                      const follow = stackyFollowUpForSymptomDuration(draft.symptomDuration);
+                      return `${lead}\n\n${follow}`;
                     })()
                   }
                   bubblePosition="top"
                 />
               </div>
             </div>
+              </>
+            ) : (
+              <>
+                <div className="flex justify-center pb-1">
+                  <StackyCat
+                    mood={getStepStacky(3).mood}
+                    size={92}
+                    outfit={getStepStacky(step).outfit}
+                    topBubbleReservePx={isProUser ? 120 : 108}
+                    bubble={
+                      "They don't call me Stacky for nothin'. If the main boxes aren't enough and you need to stack every card in your favor to achieve a goal, tell me down below."
+                    }
+                    bubblePosition="top"
+                  />
+                </div>
 
+                <div
+                  className="rounded-2xl p-1 overflow-hidden"
+                  style={{
+                    background: 'linear-gradient(135deg, #C4A574 0%, #1C3A2E 45%, #2D5242 100%)',
+                    boxShadow: '0 12px 40px rgba(28, 58, 46, 0.25)',
+                  }}
+                >
+                  <div className="rounded-[14px] p-4 sm:p-5" style={{ background: '#FDFCFA' }}>
+                    <div className="flex flex-wrap items-center gap-2 mb-1">
+                      <span className="quiz-label mb-0">Super Focus</span>
+                      {!isProUser && (
+                        <span
+                          className="text-[9px] font-black uppercase tracking-[0.2em] px-2 py-0.5 rounded-full"
+                          style={{ background: '#1C3A2E', color: '#E8D5A3', border: '1px solid #2D5242' }}
+                        >
+                          Premium
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm font-semibold leading-snug mb-2" style={{ color: '#1C3A2E' }}>
+                      Use the box when the quiz tiles aren&apos;t enough.
+                    </p>
+                    <p className="text-xs mb-3 leading-relaxed" style={{ color: '#6B5E54' }}>
+                      Stack names, situations, or a razor-sharp outcome. This stays separate from your main budget stack
+                      so your core picks and pricing remain stable.
+                    </p>
+                    <textarea
+                      value={draft.specificGoal ?? ''}
+                      onChange={(e) =>
+                        setDraft((d) => ({
+                          ...d,
+                          specificGoal: sanitizeSuperFocusText(e.target.value),
+                        }))
+                      }
+                      maxLength={MAX_SUPER_FOCUS_CHARS}
+                      placeholder="Example: Stacky, give me the most comprehensive stack you can for sleep, recovery, blood flow, so I may destroy my enemies"
+                      rows={4}
+                      className="w-full rounded-xl px-3 py-2.5 text-sm leading-relaxed resize-none"
+                      style={{
+                        background: '#FFFFFF',
+                        border: '1.5px solid #E8E0D5',
+                        color: '#3D2E22',
+                        fontFamily: 'Figtree, system-ui, sans-serif',
+                        outline: 'none',
+                        minHeight: 100,
+                      }}
+                      onFocus={(e) => {
+                        e.target.style.borderColor = '#1C3A2E';
+                      }}
+                      onBlur={(e) => {
+                        e.target.style.borderColor = '#E8E0D5';
+                      }}
+                    />
+                    <div className="flex justify-between items-center mt-2">
+                      <p className="text-[11px] leading-relaxed" style={{ color: '#9C8E84' }}>
+                        Your base stack stays budget-friendly. Super Focus appears as a separate premium section in results.
+                      </p>
+                      <p className="text-[11px] tabular-nums font-medium" style={{ color: '#9C8E84' }}>
+                        {(draft.specificGoal ?? '').length}/{MAX_SUPER_FOCUS_CHARS}
+                      </p>
+                    </div>
+                    {!isProUser && (
+                      <p className="text-[11px] mt-2 leading-relaxed" style={{ color: '#6B5E54' }}>
+                        Free users can still add Super Focus. Pro unlocks deeper ongoing refinement in Stack Hub.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         )}
 
@@ -2567,166 +2719,229 @@ export default function QuizPage() {
 
             {/* Internal slide switch (UI only) */}
             <div className="rounded-2xl px-4 py-3" style={{ background: '#FDFCFA', border: '1px solid #E8E0D5' }}>
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                <div className="min-w-0 flex-1">
-                  <div className="font-semibold text-sm" style={{ color: '#1C3A2E' }}>
-                    Two parts
-                  </div>
-                  <div className="text-xs mt-0.5" style={{ color: '#9C8E84' }}>
-                    {step4SubSlide === 'background'
-                      ? 'Conditions & meds.'
-                      : 'Up to 5 priorities.'}
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setStep4SubSlide('background')}
-                    className={[
-                      'px-4 py-2 rounded-xl text-xs font-semibold transition-all active:scale-95 border',
-                      step4SubSlide === 'background'
-                        ? 'bg-[#1C3A2E] text-[#F9F6F1] border-[#1C3A2E]'
-                        : 'bg-white text-[#3D2E22] border-[#E8E0D5] hover:border-[#C4B9AC]',
-                    ].join(' ')}
-                  >
-                    Health
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setStep4SubSlide('frustrations')}
-                    className={[
-                      'px-4 py-2 rounded-xl text-xs font-semibold transition-all active:scale-95 border',
-                      step4SubSlide === 'frustrations'
-                        ? 'bg-[#1C3A2E] text-[#F9F6F1] border-[#1C3A2E]'
-                        : 'bg-white text-[#3D2E22] border-[#E8E0D5] hover:border-[#C4B9AC]',
-                    ].join(' ')}
-                  >
-                    Improvements
-                  </button>
-                </div>
+              <div className="flex flex-wrap gap-2 justify-center" role="tablist" aria-label="This step’s sections">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={step4SubSlide === 'background'}
+                  onClick={() => setStep4SubSlide('background')}
+                  className={[
+                    'px-4 py-2 rounded-xl text-xs font-semibold transition-all active:scale-95 border',
+                    step4SubSlide === 'background'
+                      ? 'bg-[#1C3A2E] text-[#F9F6F1] border-[#1C3A2E]'
+                      : 'bg-white text-[#3D2E22] border-[#E8E0D5] hover:border-[#C4B9AC]',
+                  ].join(' ')}
+                >
+                  Conditions and prescriptions
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={step4SubSlide === 'frustrations'}
+                  onClick={() => setStep4SubSlide('frustrations')}
+                  className={[
+                    'px-4 py-2 rounded-xl text-xs font-semibold transition-all active:scale-95 border',
+                    step4SubSlide === 'frustrations'
+                      ? 'bg-[#1C3A2E] text-[#F9F6F1] border-[#1C3A2E]'
+                      : 'bg-white text-[#3D2E22] border-[#E8E0D5] hover:border-[#C4B9AC]',
+                  ].join(' ')}
+                >
+                  Improvements
+                </button>
               </div>
             </div>
 
             {step4SubSlide === 'background' ? (
               <>
-                {/* Safety note */}
-                <div
-                  className="rounded-2xl px-4 py-3 flex items-start gap-3"
-                  style={{ background: '#F0F5F2', border: '1px solid #D4E8DA' }}
-                >
-                  <span style={{ color: '#4A7C59', fontSize: 16, flexShrink: 0 }}>🛡</span>
-                  <p className="text-xs leading-relaxed" style={{ color: '#4A7C59' }}>
-                    For safety and when to check with a professional. Symptoms and timing are from earlier.
-                    {draft.primaryGoals && draft.primaryGoals.length > 0 ? (
-                      <>
-                        {' '}
-                        Goals:{' '}
-                        {(() => {
-                          const labels = (draft.primaryGoals ?? []).map((g) => goalLabelByValue.get(g as PrimaryGoal) ?? g);
-                          const n = labels.length;
-                          if (n === 0) return 'your goals';
-                          if (n === 1) return labels[0];
-                          if (n === 2) return `${labels[0]} & ${labels[1]}`;
-                          return `${labels.slice(0, 2).join(', ')} +${n - 2} more`;
-                        })()}
-                        .
-                      </>
-                    ) : null}
-                  </p>
-                </div>
-
-                {/* Health background categories */}
+                {/* Health background categories (medications first; respects sex-specific list) */}
                 <div className="space-y-3">
                   <div
                     className="rounded-xl px-4 py-3.5"
                     style={{ background: '#F0F5F2', border: '2px solid #D4E8DA' }}
                   >
-                    <p className="text-sm font-bold leading-snug" style={{ color: '#1C3A2E' }}>
-                      Tap each topic below to open it
-                    </p>
-                    <p className="text-xs leading-relaxed mt-1.5" style={{ color: '#4A5C4E' }}>
-                      Sections start closed. Tap a row to expand and pick what applies. Tap again to collapse. Skip any
-                      section that does not apply to you.
+                    <p className="text-sm leading-snug" style={{ color: '#4A5C4E' }}>
+                      Tap to expand the topics that apply to you. If nothing fits, choose{' '}
+                      <span className="font-semibold" style={{ color: '#1C3A2E' }}>
+                        None of these apply to me
+                      </span>
+                      .
                     </p>
                   </div>
 
-                  {backgroundCategories.map((cat, catIdx) => {
+                  {orderedHealthBackgroundCategories.map((cat, catIdx) => {
                     const selCount = cat.options.filter((o) => (draft.healthBackground ?? []).includes(o)).length;
                     const isOpen = openHealthCategory === cat.category;
                     const panelId = `health-bg-panel-${catIdx}`;
+                    const showRxBlock =
+                      cat.category === MEDICATIONS_CATEGORY &&
+                      (draft.healthBackground ?? []).includes('Taking prescription medication (any)');
                     return (
-                      <div
-                        key={cat.category}
-                        className="rounded-2xl overflow-hidden"
-                        style={{ border: '1px solid #E8E0D5', background: '#FFFFFF' }}
-                      >
-                        <button
-                          type="button"
-                          onClick={() => setOpenHealthCategory((prev) => (prev === cat.category ? null : cat.category))}
-                          className="flex w-full items-center justify-between gap-2 px-3 py-2.5 text-left"
-                          style={{ borderBottom: isOpen ? '1px solid #F0EBE3' : 'none', background: '#FDFCFA' }}
-                          aria-expanded={isOpen}
-                          aria-controls={panelId}
+                      <div key={cat.category} className="space-y-2">
+                        <div
+                          className="rounded-2xl overflow-hidden"
+                          style={{ border: '1px solid #E8E0D5', background: '#FFFFFF' }}
                         >
-                          <div className="flex items-center gap-2 min-w-0 flex-1">
-                            <span className="text-moss font-bold text-xs w-4 shrink-0" aria-hidden>
-                              {isOpen ? '▼' : '▶'}
-                            </span>
-                            <span style={{ fontSize: 16 }} aria-hidden>
-                              {cat.icon}
-                            </span>
-                            <span className="min-w-0 font-semibold text-sm leading-tight" style={{ color: '#1C3A2E' }}>
-                              {cat.category}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-2 shrink-0">
-                            <span className="text-[10px] font-semibold whitespace-nowrap" style={{ color: '#4A7C59' }}>
-                              {isOpen ? 'Tap to close' : 'Tap to expand'}
-                            </span>
-                            {selCount > 0 && (
-                              <span
-                                className="text-xs font-bold rounded-full min-w-[1.5rem] h-6 px-1.5 flex items-center justify-center"
-                                style={{ background: '#1C3A2E', color: '#F9F6F1' }}
-                                aria-label={`${selCount} selected`}
-                              >
-                                {selCount}
+                          <button
+                            type="button"
+                            onClick={() => setOpenHealthCategory((prev) => (prev === cat.category ? null : cat.category))}
+                            className="flex w-full items-center justify-between gap-2 px-3 py-2.5 text-left"
+                            style={{ borderBottom: isOpen ? '1px solid #F0EBE3' : 'none', background: '#FDFCFA' }}
+                            aria-expanded={isOpen}
+                            aria-controls={panelId}
+                          >
+                            <div className="flex items-center gap-2 min-w-0 flex-1">
+                              <span className="text-moss font-bold text-xs w-4 shrink-0" aria-hidden>
+                                {isOpen ? '▼' : '▶'}
                               </span>
-                            )}
-                          </div>
-                        </button>
-                        {isOpen && (
-                          <div className="p-3 space-y-2" id={panelId} role="region" aria-label={`${cat.category} options`}>
-                            {cat.options.map((opt) => {
-                              const checked = (draft.healthBackground ?? []).includes(opt);
-                              return (
-                                <button
-                                  key={opt}
-                                  type="button"
-                                  onClick={() => setDraft((d) => ({ ...d, healthBackground: toggleInArray(d.healthBackground ?? [], opt) }))}
-                                  className={['quiz-option', checked ? 'selected' : ''].join(' ')}
-                                  style={{ minHeight: 44, padding: '10px 12px' }}
+                              <span style={{ fontSize: 16 }} aria-hidden>
+                                {cat.icon}
+                              </span>
+                              <span className="min-w-0 font-semibold text-sm leading-tight" style={{ color: '#1C3A2E' }}>
+                                {cat.category}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2 shrink-0">
+                              <span className="text-[10px] font-semibold whitespace-nowrap" style={{ color: '#4A7C59' }}>
+                                {isOpen ? 'Tap to close' : 'Tap to expand'}
+                              </span>
+                              {selCount > 0 && (
+                                <span
+                                  className="text-xs font-bold rounded-full min-w-[1.5rem] h-6 px-1.5 flex items-center justify-center"
+                                  style={{ background: '#1C3A2E', color: '#F9F6F1' }}
+                                  aria-label={`${selCount} selected`}
                                 >
-                                  <div
-                                    className={['quiz-check flex-shrink-0', checked ? 'checked' : ''].join(' ')}
-                                    style={{ width: 18, height: 18 }}
+                                  {selCount}
+                                </span>
+                              )}
+                            </div>
+                          </button>
+                          {isOpen && (
+                            <div className="p-3 space-y-2" id={panelId} role="region" aria-label={`${cat.category} options`}>
+                              {cat.options.map((opt) => {
+                                const checked = (draft.healthBackground ?? []).includes(opt);
+                                return (
+                                  <button
+                                    key={opt}
+                                    type="button"
+                                    onClick={() =>
+                                      setDraft((d) => ({ ...d, healthBackground: toggleInArray(d.healthBackground ?? [], opt) }))
+                                    }
+                                    className={['quiz-option', checked ? 'selected' : ''].join(' ')}
+                                    style={{ minHeight: 44, padding: '10px 12px' }}
                                   >
-                                    {checked && (
-                                      <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                                        <path
-                                          d="M1 3.5L3.8 6.5L9 1"
-                                          stroke="#F9F6F1"
-                                          strokeWidth="1.6"
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                        />
-                                      </svg>
-                                    )}
-                                  </div>
-                                  <span className="text-xs leading-snug flex-1" style={{ color: checked ? '#1C3A2E' : '#6B5B4E' }}>{opt}</span>
-                                </button>
-                              );
-                            })}
+                                    <div
+                                      className={['quiz-check flex-shrink-0', checked ? 'checked' : ''].join(' ')}
+                                      style={{ width: 18, height: 18 }}
+                                    >
+                                      {checked && (
+                                        <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                                          <path
+                                            d="M1 3.5L3.8 6.5L9 1"
+                                            stroke="#F9F6F1"
+                                            strokeWidth="1.6"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                          />
+                                        </svg>
+                                      )}
+                                    </div>
+                                    <span className="text-xs leading-snug flex-1" style={{ color: checked ? '#1C3A2E' : '#6B5B4E' }}>
+                                      {opt}
+                                    </span>
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+
+                        {showRxBlock && (
+                          <div
+                            className="rounded-2xl p-4"
+                            style={{ background: '#FDF6EE', border: '1px solid #F0D9BE' }}
+                          >
+                            <div className="quiz-label mb-2" style={{ color: '#8A5C2E' }}>
+                              Which prescription medication?
+                            </div>
+                            <p className="text-[11px] mb-2.5" style={{ color: '#A06B3B' }}>
+                              This pairs with &ldquo;Taking prescription medication (any)&rdquo; above. We use it to reduce
+                              risky combinations in your generated stack.
+                            </p>
+                            <select
+                              value={draft.prescriptionMedication ?? ''}
+                              onChange={(e) =>
+                                setDraft((d) => ({
+                                  ...d,
+                                  prescriptionMedication: e.target.value || undefined,
+                                }))
+                              }
+                              className="w-full rounded-xl px-3 py-2 text-sm"
+                              style={{
+                                background: '#FFFFFF',
+                                border: '1.5px solid #F0D9BE',
+                                color: '#78350F',
+                                fontFamily: 'Figtree, system-ui, sans-serif',
+                                outline: 'none',
+                                minHeight: 44,
+                              }}
+                              onFocus={(e) => {
+                                e.target.style.borderColor = '#D97706';
+                              }}
+                              onBlur={(e) => {
+                                e.target.style.borderColor = '#F0D9BE';
+                              }}
+                            >
+                              <option value="" disabled>
+                                Select medication type
+                              </option>
+                              {prescriptionMedicationOptions.map((opt) => (
+                                <option key={opt} value={opt}>
+                                  {opt}
+                                </option>
+                              ))}
+                            </select>
+                            {draft.prescriptionMedication === PRESCRIPTION_OTHER_OPTION && (
+                              <div className="mt-3">
+                                <div className="quiz-label mb-2" style={{ color: '#8A5C2E' }}>
+                                  Describe below
+                                </div>
+                                <textarea
+                                  className="w-full rounded-xl px-3 py-2 text-sm leading-relaxed resize-none"
+                                  style={{
+                                    minHeight: 78,
+                                    background: '#FFFFFF',
+                                    border: '1.5px solid #F0D9BE',
+                                    color: '#78350F',
+                                    fontFamily: 'Figtree, system-ui, sans-serif',
+                                    fontSize: 13,
+                                    outline: 'none',
+                                  }}
+                                  value={draft.prescriptionMedicationOther ?? ''}
+                                  maxLength={MAX_STEP4_TEXT_CHARS}
+                                  onChange={(e) =>
+                                    setDraft((d) => ({
+                                      ...d,
+                                      prescriptionMedicationOther: e.target.value.slice(0, MAX_STEP4_TEXT_CHARS),
+                                    }))
+                                  }
+                                  placeholder="Example: Levothyroxine 75mcg, Metformin 500mg, etc."
+                                  onFocus={(e) => {
+                                    e.target.style.borderColor = '#D97706';
+                                  }}
+                                  onBlur={(e) => {
+                                    e.target.style.borderColor = '#F0D9BE';
+                                  }}
+                                />
+                                <div className="flex justify-between items-center gap-2 mt-1">
+                                  <p className="text-[11px] flex-1" style={{ color: '#8A5C2E' }}>
+                                    Name and dose (if known) help flag interactions.
+                                  </p>
+                                  <p className="text-[11px] tabular-nums shrink-0 font-medium" style={{ color: '#B8956A' }}>
+                                    {(draft.prescriptionMedicationOther ?? '').length}/{MAX_STEP4_TEXT_CHARS}
+                                  </p>
+                                </div>
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
@@ -2758,97 +2973,7 @@ export default function QuizPage() {
                   </button>
                 </div>
 
-                {/* Prescription conditional */}
-                {(draft.healthBackground ?? []).includes('Taking prescription medication (any)') && (
-                  <div
-                    className="rounded-2xl p-4"
-                    style={{ background: '#FDF6EE', border: '1px solid #F0D9BE' }}
-                  >
-                    <div className="quiz-label mb-2" style={{ color: '#8A5C2E' }}>
-                      Which medication?
-                    </div>
-                    <p className="text-[11px] mb-2.5" style={{ color: '#A06B3B' }}>
-                      This dropdown is linked to your Medications & Treatments selection.
-                    </p>
-                    <select
-                      value={draft.prescriptionMedication ?? ''}
-                      onChange={(e) =>
-                        setDraft((d) => ({
-                          ...d,
-                          prescriptionMedication: e.target.value || undefined,
-                        }))
-                      }
-                      className="w-full rounded-xl px-3 py-2 text-sm"
-                      style={{
-                        background: '#FFFFFF',
-                        border: '1.5px solid #F0D9BE',
-                        color: '#78350F',
-                        fontFamily: 'Figtree, system-ui, sans-serif',
-                        outline: 'none',
-                        minHeight: 44,
-                      }}
-                      onFocus={(e) => {
-                        e.target.style.borderColor = '#D97706';
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.borderColor = '#F0D9BE';
-                      }}
-                    >
-                      <option value="" disabled>
-                        Select medication type
-                      </option>
-                      {prescriptionMedicationOptions.map((opt) => (
-                        <option key={opt} value={opt}>
-                          {opt}
-                        </option>
-                      ))}
-                    </select>
-                    {draft.prescriptionMedication === PRESCRIPTION_OTHER_OPTION && (
-                      <div className="mt-3">
-                        <div className="quiz-label mb-2" style={{ color: '#8A5C2E' }}>
-                          Describe below
-                        </div>
-                        <textarea
-                          className="w-full rounded-xl px-3 py-2 text-sm leading-relaxed resize-none"
-                          style={{
-                            minHeight: 78,
-                            background: '#FFFFFF',
-                            border: '1.5px solid #F0D9BE',
-                            color: '#78350F',
-                            fontFamily: 'Figtree, system-ui, sans-serif',
-                            fontSize: 13,
-                            outline: 'none',
-                          }}
-                          value={draft.prescriptionMedicationOther ?? ''}
-                          maxLength={MAX_STEP4_TEXT_CHARS}
-                          onChange={(e) =>
-                            setDraft((d) => ({
-                              ...d,
-                              prescriptionMedicationOther: e.target.value.slice(0, MAX_STEP4_TEXT_CHARS),
-                            }))
-                          }
-                          placeholder="Example: Levothyroxine 75mcg, Metformin 500mg, etc."
-                          onFocus={(e) => {
-                            e.target.style.borderColor = '#D97706';
-                          }}
-                          onBlur={(e) => {
-                            e.target.style.borderColor = '#F0D9BE';
-                          }}
-                        />
-                        <div className="flex justify-between items-center gap-2 mt-1">
-                          <p className="text-[11px] flex-1" style={{ color: '#8A5C2E' }}>
-                            Name and dose (if known) help flag interactions.
-                          </p>
-                          <p className="text-[11px] tabular-nums shrink-0 font-medium" style={{ color: '#B8956A' }}>
-                            {(draft.prescriptionMedicationOther ?? '').length}/{MAX_STEP4_TEXT_CHARS}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                <div className="flex justify-end pt-2">
+                <div className="flex justify-end pt-1">
                   <button
                     type="button"
                     onClick={() => setStep4SubSlide('frustrations')}
@@ -2868,7 +2993,7 @@ export default function QuizPage() {
                 {/* Frustrations (compact): improvement focus from goal-matched options */}
                 <div>
                   <div className="quiz-label mb-1">
-                    Choose up to <span className="font-bold text-forest">5 goals</span> that matter most
+                    Choose up to <span className="font-bold text-ink">5 goals</span> that matter most
                   </div>
                   <div
                     className="rounded-xl px-4 py-3.5 mb-4"
@@ -3037,43 +3162,6 @@ export default function QuizPage() {
                     </div>
                   )}
 
-                  <div className="mt-4">
-                    <div className="quiz-label mb-2">
-                      More detail?{' '}
-                      <span style={{ color: '#C4B9AC', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional)</span>
-                    </div>
-                    <textarea
-                      className="w-full rounded-2xl px-4 py-3 text-sm leading-relaxed resize-none"
-                      style={{
-                        minHeight: 72,
-                        background: '#FDFCFA',
-                        border: '1.5px solid #E8E0D5',
-                        color: '#3D2E22',
-                        fontFamily: 'Figtree, system-ui, sans-serif',
-                        fontSize: 14,
-                        outline: 'none',
-                      }}
-                      value={draft.frustrationOther ?? ''}
-                      maxLength={MAX_STEP4_IMPROVEMENT_OPTIONAL_DETAIL_CHARS}
-                      onChange={(e) =>
-                        setDraft((d) => ({
-                          ...d,
-                          frustrationOther: e.target.value.slice(0, MAX_STEP4_IMPROVEMENT_OPTIONAL_DETAIL_CHARS),
-                        }))
-                      }
-                      placeholder="If something important is missing."
-                      onFocus={(e) => {
-                        e.target.style.borderColor = '#1C3A2E';
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.borderColor = '#E8E0D5';
-                      }}
-                    />
-                    <p className="text-[11px] mt-1 text-right tabular-nums font-medium" style={{ color: '#9C8E84' }}>
-                      {(draft.frustrationOther ?? '').length}/{MAX_STEP4_IMPROVEMENT_OPTIONAL_DETAIL_CHARS}
-                    </p>
-                  </div>
-
                   <div className="flex justify-between items-center pt-3">
                     <button
                       type="button"
@@ -3096,11 +3184,8 @@ export default function QuizPage() {
               </>
             )}
 
-            <div className="mt-6 pt-6 border-t border-[#E8E0D5]">
-              <div
-                className="relative mx-auto flex w-full max-w-md items-end justify-center"
-                style={{ minHeight: 200 }}
-              >
+            <div className="mt-0 pt-2 border-t border-[#E8E0D5]">
+              <div className="relative mx-auto flex w-full max-w-md items-end justify-center">
                 <StackyCat
                   mood="think"
                   size={88}
@@ -3108,11 +3193,44 @@ export default function QuizPage() {
                   bubble={
                     step4SubSlide === 'background'
                       ? 'Take your time. This keeps your guide safe. 🐾'
-                      : 'Goals stay folded until you open one. Anything you add in the box below, I keep in mind for your plan. 🐾'
+                      : 'Tell me about yourself! I love hearing about your goals, the better I understand you, the better I can make your goals become a reality 🐾'
                   }
                   bubblePosition="top"
                 />
               </div>
+              {step4SubSlide === 'background' ? (
+                <div
+                  className="mt-5 max-w-md mx-auto rounded-2xl px-4 py-3 flex items-start gap-3"
+                  style={{ background: '#F0F5F2', border: '1px solid #D4E8DA' }}
+                >
+                  <span style={{ color: '#4A7C59', fontSize: 16, flexShrink: 0 }}>🧭</span>
+                  <div className="text-xs leading-relaxed min-w-0" style={{ color: '#4A7C59' }}>
+                    <p className="font-semibold mb-1" style={{ color: '#1C3A2E' }}>
+                      What this section is for
+                    </p>
+                    <p>
+                      This is not a full health history. It only captures factors that change how Stacky{' '}
+                      <strong style={{ color: '#1C3A2E' }}>builds your supplement stack</strong>
+                      : drug interactions, organ load, hormones, and conditions where dosing or ingredient choice matters.
+                      Your symptoms and timing from earlier steps are already included.
+                    </p>
+                    {draft.primaryGoals && draft.primaryGoals.length > 0 ? (
+                      <p className="mt-2">
+                        Goals we are stacking around:{' '}
+                        {(() => {
+                          const labels = (draft.primaryGoals ?? []).map((g) => goalLabelByValue.get(g as PrimaryGoal) ?? g);
+                          const n = labels.length;
+                          if (n === 0) return 'your goals';
+                          if (n === 1) return labels[0];
+                          if (n === 2) return `${labels[0]} & ${labels[1]}`;
+                          return `${labels.slice(0, 2).join(', ')} +${n - 2} more`;
+                        })()}
+                        .
+                      </p>
+                    ) : null}
+                  </div>
+                </div>
+              ) : null}
             </div>
           </div>
         )}
@@ -3299,6 +3417,11 @@ export default function QuizPage() {
                 type="button"
                 className="btn-primary flex-1"
                 onClick={() => {
+                  if (step === 4 && step4SubSlide === 'background') {
+                    if (!stepValidity(4)) return;
+                    setStep4SubSlide('frustrations');
+                    return;
+                  }
                   if (!stepValidity(step)) return;
                   setStep((s) => {
                     const next = Math.min(6, s + 1);
@@ -3312,7 +3435,9 @@ export default function QuizPage() {
                   ? 'Continue'
                   : step === 2 && !(draft.primaryGoals ?? []).length
                     ? 'Pick at least one goal area'
-                    : 'Select an option to continue'}
+                    : step === 4 && step4SubSlide === 'background'
+                      ? 'Complete each health topic first'
+                      : 'Select an option to continue'}
               </button>
             ) : (
               <button
@@ -3352,6 +3477,78 @@ export default function QuizPage() {
         )}
 
       </div>
+
+      {step2UpgradeGate && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center px-4"
+          style={{ background: 'rgba(28,58,46,0.55)', backdropFilter: 'blur(6px)' }}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="step2-upgrade-title"
+          onClick={() => setStep2UpgradeGate(null)}
+        >
+          <div
+            className="w-full max-w-sm rounded-3xl p-6 shadow-xl"
+            style={{ background: '#F9F6F1', border: '1px solid #E8E0D5' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2
+              id="step2-upgrade-title"
+              className="font-serif font-light text-xl mb-2"
+              style={{ color: '#1C3A2E', fontStyle: 'italic', letterSpacing: '-0.01em' }}
+            >
+              {step2UpgradeGate.reason === 'max_goals' && 'Goal limit on Free'}
+              {step2UpgradeGate.reason === 'paid_goal' && `${step2UpgradeGate.label} is a paid pick`}
+              {step2UpgradeGate.reason === 'pro_goal' && `${step2UpgradeGate.label} is Pro-only`}
+            </h2>
+            <p className="text-sm leading-relaxed mb-5" style={{ color: '#6B5B4E' }}>
+              {step2UpgradeGate.reason === 'max_goals' && (
+                <>
+                  On the free plan you can select up to {FREE_MAX_PRIMARY_GOALS} goals.{' '}
+                  <strong style={{ color: '#1C3A2E' }}>Basic</strong> or{' '}
+                  <strong style={{ color: '#1C3A2E' }}>Pro</strong> unlocks more goals so your stack can cover everything you care
+                  about. Basic also unlocks LooksMaxxing; Pro adds Peptide Optimization.
+                </>
+              )}
+              {step2UpgradeGate.reason === 'paid_goal' && (
+                <>
+                  <strong style={{ color: '#1C3A2E' }}>{step2UpgradeGate.label}</strong> is included on{' '}
+                  <strong style={{ color: '#1C3A2E' }}>Basic</strong> and <strong style={{ color: '#1C3A2E' }}>Pro</strong>, not on
+                  the free plan. Upgrade when you are ready, then come back and select it.
+                </>
+              )}
+              {step2UpgradeGate.reason === 'pro_goal' && (
+                <>
+                  <strong style={{ color: '#1C3A2E' }}>{step2UpgradeGate.label}</strong> is only available on{' '}
+                  <strong style={{ color: '#1C3A2E' }}>Pro</strong>. Basic includes LooksMaxxing and full stack features, but peptide
+                  goals and peptide guidance stay on Pro.
+                </>
+              )}
+            </p>
+            <div className="flex flex-col gap-2.5">
+              <button
+                type="button"
+                className="btn-primary w-full"
+                style={{ height: 48 }}
+                onClick={() => {
+                  setStep2UpgradeGate(null);
+                  navigate('/pricing');
+                }}
+              >
+                View plans
+              </button>
+              <button
+                type="button"
+                className="w-full text-xs font-semibold py-2 rounded-xl"
+                style={{ color: '#9C8E84' }}
+                onClick={() => setStep2UpgradeGate(null)}
+              >
+                Not now — keep my current picks
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <HealthFactPopup open={showFact} onClose={dismissFact} factIdx={factIdx} />
       <LoadingOverlay isActive={isAnalyzing} />
