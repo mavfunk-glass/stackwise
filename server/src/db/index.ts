@@ -124,6 +124,24 @@ export function createUser(): string {
   return id;
 }
 
+/**
+ * Ensure a `users` row exists for this id (JWT `sub` or Supabase user id).
+ * Legacy JWT clients can hold a valid token after DB reset / new deploy; without this,
+ * entitlement checks throw USER_NOT_FOUND.
+ */
+export function ensureUserRow(userId: string): void {
+  if (!userId) return;
+  if (getUser(userId)) return;
+  const now = Date.now();
+  try {
+    getDb()
+      .prepare('INSERT INTO users (id, created_at, stack_generations) VALUES (?, ?, 0)')
+      .run(userId, now);
+  } catch {
+    /* duplicate insert from race — row should exist */
+  }
+}
+
 export type UserRow = {
   id: string;
   created_at: number;

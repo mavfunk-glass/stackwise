@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
 import { verifySessionToken } from './jwt.js';
 import { verifySupabaseAccessToken } from './supabaseJwt.js';
-import { upsertUserFromSupabaseAuth } from '../db/index.js';
+import { ensureUserRow, upsertUserFromSupabaseAuth } from '../db/index.js';
 
 export type AuthedRequest = Request & { userId?: string };
 
@@ -44,6 +44,7 @@ export function requireAuth(req: AuthedRequest, res: Response, next: NextFunctio
     const supa = await verifySupabaseAccessToken(token);
     if (supa) {
       upsertUserFromSupabaseAuth(supa.sub, supa.email, supa.emailVerified);
+      ensureUserRow(supa.sub);
       req.userId = supa.sub;
       next();
       return;
@@ -55,6 +56,7 @@ export function requireAuth(req: AuthedRequest, res: Response, next: NextFunctio
         res.status(401).json({ error: 'Invalid or expired session. Refresh the page.' });
         return;
       }
+      ensureUserRow(v.sub);
       req.userId = v.sub;
       next();
     } catch {
