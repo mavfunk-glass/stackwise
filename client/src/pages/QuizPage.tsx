@@ -48,6 +48,9 @@ const MAX_STEP4_IMPROVEMENT_OPTIONAL_DETAIL_CHARS = 50;
 /** Super Focus: free-text beyond normal goal picks */
 const MAX_SUPER_FOCUS_CHARS = 200;
 
+/** When goal/biology changes invalidate prior picks, avoid stranding users on the budget step with an empty payload. */
+const DEFAULT_CURRENT_FEELINGS_FALLBACK: string[] = ['General wellness and symptom support'];
+
 function sanitizeSuperFocusText(raw: string): string {
   return raw
     .replace(/[\u0000-\u001F\u007F]/g, '')
@@ -784,9 +787,16 @@ export default function QuizPage() {
   useEffect(() => {
     if (step !== 5) return;
     setDraft((d) => {
-      const next = (d.currentFeelings ?? []).filter((x) => availableFeelingLabels.has(x));
-      if (next.length === (d.currentFeelings ?? []).length) return d;
-      return { ...d, currentFeelings: next };
+      const prev = d.currentFeelings ?? [];
+      const next = prev.filter((x) => availableFeelingLabels.has(x));
+      if (next.length === prev.length) return d;
+      if (next.length > 0) return { ...d, currentFeelings: next };
+      const fallbackLabel =
+        availableFeelingLabels.size > 0 ? Array.from(availableFeelingLabels)[0] : undefined;
+      return {
+        ...d,
+        currentFeelings: fallbackLabel ? [fallbackLabel] : [...DEFAULT_CURRENT_FEELINGS_FALLBACK],
+      };
     });
   }, [step, draft.primaryGoals, availableFeelingLabels]);
 
@@ -1407,7 +1417,6 @@ export default function QuizPage() {
       !payload.biologicalSex ||
       !payload.mindset ||
       !payload.primaryGoals?.length ||
-      !payload.currentFeelings?.length ||
       !payload.symptomDuration ||
       !payload.monthlyBudget
     )
@@ -1429,12 +1438,17 @@ export default function QuizPage() {
       payload.biggestFrustrations?.length
         ? payload.biggestFrustrations
         : ['General wellness and symptom support'];
+    const currentFeelings =
+      payload.currentFeelings?.length > 0
+        ? payload.currentFeelings
+        : DEFAULT_CURRENT_FEELINGS_FALLBACK;
     const nameRaw = getUserName()?.trim();
     const preferredFirstName =
       nameRaw && !/^skip$/i.test(nameRaw) ? nameRaw.split(/\s+/)[0] : undefined;
 
     return {
       ...payload,
+      currentFeelings,
       specificGoal: sanitizeSuperFocusText(payload.specificGoal ?? '').trim() || undefined,
       frustrationOther,
       preferredFirstName,
