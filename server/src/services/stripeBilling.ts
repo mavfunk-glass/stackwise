@@ -13,11 +13,16 @@ export function getStripe(): Stripe | null {
 
 /** Secret key + recurring price IDs (create Checkout Session). Webhook secret is separate. */
 export function stripeCheckoutReady(): boolean {
-  return Boolean(
-    process.env.STRIPE_SECRET_KEY?.trim() &&
-      process.env.STRIPE_PRICE_BASIC?.trim() &&
-      process.env.STRIPE_PRICE_PRO?.trim(),
-  );
+  return stripeCheckoutMissingEnv().length === 0;
+}
+
+/** Env var names missing for Stripe Checkout (for 503 diagnostics). */
+export function stripeCheckoutMissingEnv(): string[] {
+  const m: string[] = [];
+  if (!process.env.STRIPE_SECRET_KEY?.trim()) m.push('STRIPE_SECRET_KEY');
+  if (!process.env.STRIPE_PRICE_BASIC?.trim()) m.push('STRIPE_PRICE_BASIC');
+  if (!process.env.STRIPE_PRICE_PRO?.trim()) m.push('STRIPE_PRICE_PRO');
+  return m;
 }
 
 export function priceIdForTier(tier: 'basic' | 'pro'): string | null {

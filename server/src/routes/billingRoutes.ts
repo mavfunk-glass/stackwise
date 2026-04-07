@@ -4,7 +4,12 @@ import type Stripe from 'stripe';
 import { getActiveSubscription, getActiveTierForUser, getUser, upsertSubscription } from '../db/index.js';
 import { requireAuth, requireApiAuth, type AuthedRequest } from '../auth/middleware.js';
 import { fetchSubscription, planIdMatchesTier } from '../services/paypal.js';
-import { getStripe, priceIdForTier, stripeCheckoutReady } from '../services/stripeBilling.js';
+import {
+  getStripe,
+  priceIdForTier,
+  stripeCheckoutMissingEnv,
+  stripeCheckoutReady,
+} from '../services/stripeBilling.js';
 
 const router = Router();
 
@@ -81,11 +86,17 @@ router.post('/stripe/checkout-session', requireAuth, async (req: AuthedRequest, 
       return res.status(400).json({ error: 'Server entitlements are disabled.' });
     }
     if (!stripeCheckoutReady()) {
-      return res.status(503).json({ error: 'Stripe checkout is not configured on the server.' });
+      return res.status(503).json({
+        error: 'Stripe checkout is not configured on the server.',
+        missingEnv: stripeCheckoutMissingEnv(),
+      });
     }
     const stripe = getStripe();
     if (!stripe) {
-      return res.status(503).json({ error: 'Stripe is not configured.' });
+      return res.status(503).json({
+        error: 'Stripe is not configured.',
+        missingEnv: stripeCheckoutMissingEnv(),
+      });
     }
 
     const tier = req.body?.tier === 'pro' ? 'pro' : req.body?.tier === 'basic' ? 'basic' : null;
@@ -134,7 +145,10 @@ router.post('/stripe/confirm', requireAuth, async (req: AuthedRequest, res: Resp
     }
     const stripe = getStripe();
     if (!stripe || !stripeCheckoutReady()) {
-      return res.status(503).json({ error: 'Stripe is not configured.' });
+      return res.status(503).json({
+        error: 'Stripe is not configured.',
+        missingEnv: stripeCheckoutMissingEnv(),
+      });
     }
 
     const sessionId = typeof req.body?.sessionId === 'string' ? req.body.sessionId.trim() : '';
