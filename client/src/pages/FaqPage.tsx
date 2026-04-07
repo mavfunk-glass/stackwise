@@ -16,7 +16,7 @@ export default function FaqPage() {
     },
     {
       q: 'Can I cancel anytime?',
-      a: 'Yes. Cancel directly from your PayPal account: Settings > Payments > Manage pre-approved payments > StackWise > Cancel. You keep access until the end of your current billing period. No fees, no penalties.',
+      a: 'Yes. If you subscribed with PayPal: Settings → Payments → Manage pre-approved payments → StackWise → Cancel. If you subscribed with Stripe, use the manage/cancel link in your Stripe receipt email or the Stripe Customer Portal from that email. You keep access until the end of your current billing period. No fees, no penalties.',
     },
     {
       q: 'What is the 7-day fit guarantee?',

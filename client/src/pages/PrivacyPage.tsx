@@ -100,7 +100,7 @@ export default function PrivacyPage() {
                 'Send daily reminder emails - if you set a reminder, we use your email and timezone to email your supplement schedule.',
                 'Send magic link sign-in emails - if you save your stack, we email you a one-click sign-in link.',
                 'Maintain your account - email, display name, and saved stack stored so you can access your plan across devices.',
-                'Verify subscription entitlements - we record your subscription status, verified through PayPal.',
+                'Verify subscription entitlements - we record your subscription status, verified through PayPal or Stripe.',
                 'Protect the service - session tokens and rate limiting prevent abuse.',
                 'Understand how the product is used - anonymous product analytics (see section below). No health data is used for this purpose.',
               ].map((item) => (
@@ -120,6 +120,7 @@ export default function PrivacyPage() {
               {[
                 { name: 'Google Gemini API', use: 'AI processing for stack generation and chat. Your quiz inputs and messages are sent to Google.', url: 'https://policies.google.com/privacy' },
                 { name: 'PayPal', use: 'Subscription billing. PayPal handles all payment data - we never see your card or bank details. PayPal may set cookies.', url: 'https://www.paypal.com/us/legalhub/privacy-full' },
+                { name: 'Stripe', use: 'Optional card checkout on pricing. Stripe processes payment details; we receive subscription status and ids only.', url: 'https://stripe.com/privacy' },
                 { name: 'Resend', use: 'Email delivery for sign-in links and daily reminders.', url: 'https://resend.com/privacy' },
                 { name: 'Amazon / iHerb', use: "Affiliate buy links in your results. Clicking these may set affiliate cookies on those retailers' sites.", url: 'https://affiliate-program.amazon.com' },
               ].map((tp) => (

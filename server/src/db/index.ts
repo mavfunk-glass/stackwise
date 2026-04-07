@@ -40,6 +40,15 @@ function migrateUsersTable(database: Database.Database): void {
   }
 }
 
+function migrateSubscriptionsTable(database: Database.Database): void {
+  const cols = new Set(
+    (database.prepare('PRAGMA table_info(subscriptions)').all() as { name: string }[]).map((c) => c.name),
+  );
+  if (!cols.has('provider')) {
+    database.exec(`ALTER TABLE subscriptions ADD COLUMN provider TEXT NOT NULL DEFAULT 'paypal'`);
+  }
+}
+
 function migrateCheckinTokensTable(database: Database.Database): void {
   database.exec(`
     CREATE TABLE IF NOT EXISTS checkin_tokens (
@@ -113,6 +122,7 @@ export function getDb(): Database.Database {
     );
   `);
   migrateUsersTable(db);
+  migrateSubscriptionsTable(db);
   migrateCheckinTokensTable(db);
   return db;
 }
@@ -348,32 +358,45 @@ export function incrementStackGenerations(userId: string): void {
 }
 
 export type SubscriptionRow = {
+  /** External subscription id: PayPal subscription id or Stripe `sub_...` id. */
   paypal_subscription_id: string;
   user_id: string;
   tier: 'basic' | 'pro';
   status: string;
   plan_id: string | null;
   updated_at: number;
+  provider: 'paypal' | 'stripe';
 };
 
-/** PayPal statuses that grant paid entitlements */
-const ACTIVE_STATUSES = new Set(['ACTIVE', 'APPROVED']);
+const PAYPAL_ACTIVE = new Set(['ACTIVE', 'APPROVED']);
+const STRIPE_ACTIVE = new Set(['active', 'trialing']);
 
-export function upsertSubscription(row: Omit<SubscriptionRow, 'updated_at'> & { updated_at?: number }): void {
+export function subscriptionStatusIsEntitled(row: SubscriptionRow): boolean {
+  const p = row.provider ?? 'paypal';
+  if (p === 'stripe') return STRIPE_ACTIVE.has(row.status);
+  return PAYPAL_ACTIVE.has(row.status);
+}
+
+export function upsertSubscription(
+  row: Omit<SubscriptionRow, 'updated_at' | 'provider'> & { updated_at?: number; provider?: 'paypal' | 'stripe' },
+): void {
   const updated_at = row.updated_at ?? Date.now();
+  const provider = row.provider ?? 'paypal';
   getDb()
     .prepare(
-      `INSERT INTO subscriptions (paypal_subscription_id, user_id, tier, status, plan_id, updated_at)
-       VALUES (@paypal_subscription_id, @user_id, @tier, @status, @plan_id, @updated_at)
+      `INSERT INTO subscriptions (paypal_subscription_id, user_id, tier, status, plan_id, updated_at, provider)
+       VALUES (@paypal_subscription_id, @user_id, @tier, @status, @plan_id, @updated_at, @provider)
        ON CONFLICT(paypal_subscription_id) DO UPDATE SET
          user_id = excluded.user_id,
          tier = excluded.tier,
          status = excluded.status,
          plan_id = excluded.plan_id,
-         updated_at = excluded.updated_at`,
+         updated_at = excluded.updated_at,
+         provider = excluded.provider`,
     )
     .run({
       ...row,
+      provider,
       updated_at,
     });
 }
@@ -383,14 +406,22 @@ export function getActiveTierForUser(userId: string): 'free' | 'basic' | 'pro' {
   return sub ? sub.tier : 'free';
 }
 
+function normalizeSubscriptionRow(
+  row: Omit<SubscriptionRow, 'provider'> & { provider?: string },
+): SubscriptionRow {
+  const provider = (row.provider === 'stripe' ? 'stripe' : 'paypal') as 'paypal' | 'stripe';
+  return { ...row, provider };
+}
+
 export function getActiveSubscription(userId: string): SubscriptionRow | null {
   const rows = getDb()
     .prepare(`SELECT * FROM subscriptions WHERE user_id = ? ORDER BY updated_at DESC`)
-    .all(userId) as SubscriptionRow[];
+    .all(userId) as (Omit<SubscriptionRow, 'provider'> & { provider?: string })[];
 
   for (const r of rows) {
-    if (ACTIVE_STATUSES.has(r.status)) {
-      return r;
+    const row = normalizeSubscriptionRow(r);
+    if (subscriptionStatusIsEntitled(row)) {
+      return row;
     }
   }
   return null;
@@ -399,6 +430,7 @@ export function getActiveSubscription(userId: string): SubscriptionRow | null {
 export function getSubscriptionByPayPalId(id: string): SubscriptionRow | null {
   const row = getDb()
     .prepare('SELECT * FROM subscriptions WHERE paypal_subscription_id = ?')
-    .get(id) as SubscriptionRow | undefined;
-  return row ?? null;
+    .get(id) as (Omit<SubscriptionRow, 'provider'> & { provider?: string }) | undefined;
+  if (!row) return null;
+  return normalizeSubscriptionRow(row);
 }

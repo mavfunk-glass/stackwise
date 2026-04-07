@@ -4,6 +4,26 @@
  * Without RESEND_API_KEY, all sends are logged to console (dev mode).
  */
 
+/** Human-readable Resend API error for logs (domain verification, invalid from, etc.). */
+export function formatResendApiError(body: unknown): string {
+  if (body && typeof body === 'object') {
+    const o = body as Record<string, unknown>;
+    if (typeof o.message === 'string') return o.message;
+    if (Array.isArray(o.errors)) {
+      try {
+        return JSON.stringify(o.errors);
+      } catch {
+        /* fall through */
+      }
+    }
+  }
+  try {
+    return JSON.stringify(body);
+  } catch {
+    return String(body);
+  }
+}
+
 export interface EmailPayload {
   to: string;
   subject: string;
@@ -37,9 +57,10 @@ export async function sendEmail(payload: EmailPayload): Promise<{ ok: boolean; e
       }),
     });
     if (!res.ok) {
-      const err = (await res.json().catch(() => ({}))) as { message?: string };
-      console.error('[email] Resend error:', err.message ?? res.status);
-      return { ok: false, error: err.message ?? 'Send failed' };
+      const errBody = await res.json().catch(() => ({}));
+      const detail = formatResendApiError(errBody);
+      console.error('[email] Resend HTTP', res.status, detail);
+      return { ok: false, error: detail || 'Send failed' };
     }
     return { ok: true };
   } catch (err) {

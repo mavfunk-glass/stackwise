@@ -9,6 +9,8 @@ interface ImportMetaEnv {
   /** Supabase anon public key. */
   readonly VITE_SUPABASE_ANON_KEY?: string;
   readonly VITE_AMAZON_ASSOCIATE_TAG?: string;
+  /** When "true", pricing shows Stripe Checkout buttons (server must have STRIPE_SECRET_KEY + STRIPE_PRICE_*). */
+  readonly VITE_STRIPE_CHECKOUT?: string;
   /** Dev server only: set to "true" to unlock Pro features without PayPal. Ignored in production builds. */
   readonly VITE_DEV_PRO?: string;
   /** Optional shared secret; must match server ANALYZE_SECRET so /api/analyze requests are accepted. */

@@ -9,6 +9,7 @@ import {
   cleanExpiredTokens,
 } from '../db/index.js';
 import { signSessionToken, verifySessionToken } from '../auth/jwt.js';
+import { formatResendApiError } from '../services/emailService.js';
 
 const router = Router();
 
@@ -137,8 +138,9 @@ router.post('/magic-link', async (req, res) => {
 
     if (!emailRes.ok) {
       const errData = await emailRes.json().catch(() => ({}));
+      const detail = formatResendApiError(errData);
       // eslint-disable-next-line no-console
-      console.error('[magic-link] Resend error:', errData);
+      console.error('[magic-link] Resend HTTP', emailRes.status, detail);
       return res.status(500).json({ error: 'Failed to send email. Please try again.' });
     }
 

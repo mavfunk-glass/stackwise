@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
 import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { activateSubscriptionOnServer, fetchBillingStatus } from '../api/session';
+import {
+  activateSubscriptionOnServer,
+  confirmStripeCheckoutSession,
+  createStripeCheckoutSession,
+  fetchBillingStatus,
+} from '../api/session';
 import { REBUILD_SAVINGS_BODY } from '../copy/rebuildStackUpsell';
 import { NavIcon } from '../copy/navWayfinding';
 import { saveSubscription } from '../types/storage';
@@ -9,7 +14,44 @@ import { trackEvent } from '../analytics/track';
 
 const BASIC_PLAN_ID = import.meta.env.VITE_PAYPAL_BASIC_PLAN_ID as string;
 const PRO_PLAN_ID = import.meta.env.VITE_PAYPAL_PRO_PLAN_ID as string;
+/** Show “Pay with card” (Stripe Checkout). Server needs STRIPE_SECRET_KEY + STRIPE_PRICE_* . */
+const STRIPE_CHECKOUT_ENABLED =
+  import.meta.env.VITE_STRIPE_CHECKOUT === 'true' || import.meta.env.VITE_STRIPE_CHECKOUT === '1';
 type SubscriptionTier = 'basic' | 'pro';
+
+function StripeSubscribeButton({ tier }: { tier: SubscriptionTier }) {
+  const [err, setErr] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  return (
+    <div className="w-full">
+      {err && (
+        <div className="mb-3 text-xs text-center rounded-xl p-2 bg-red-50 text-red-700 dark:bg-red-950/50 dark:text-red-200">
+          {err}
+        </div>
+      )}
+      <button
+        type="button"
+        disabled={loading}
+        onClick={async () => {
+          setErr(null);
+          setLoading(true);
+          trackEvent('stripe_subscribe_click', { tier });
+          const res = await createStripeCheckoutSession(tier);
+          setLoading(false);
+          if (!res.ok || !res.url) {
+            setErr(res.error ?? 'Could not start checkout.');
+            return;
+          }
+          window.location.assign(res.url);
+        }}
+        className="w-full rounded-xl min-h-[50px] px-4 py-2.5 text-sm font-bold text-white shadow-[0_2px_8px_rgba(0,0,0,0.15)] ring-1 ring-white/15 transition-all active:scale-[0.99] disabled:opacity-60"
+        style={{ background: '#635BFF' }}
+      >
+        {loading ? 'Redirecting…' : 'Pay with card'}
+      </button>
+    </div>
+  );
+}
 
 function PayPalWrapper({ planId, tier, onSuccess }: { planId: string; tier: SubscriptionTier; onSuccess: () => void }) {
   const [{ isPending }] = usePayPalScriptReducer();
@@ -116,6 +158,38 @@ export default function PricingPage() {
   useEffect(() => {
     trackEvent('pricing_view', { rebuild_intent: rebuildIntent });
   }, [rebuildIntent]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('stripe_cancel') === '1') {
+      window.history.replaceState({}, '', location.pathname);
+      return;
+    }
+    if (params.get('stripe_success') !== '1') return;
+    const sessionId = params.get('session_id');
+    if (!sessionId) {
+      window.history.replaceState({}, '', location.pathname);
+      return;
+    }
+    void (async () => {
+      const confirmed = await confirmStripeCheckoutSession(sessionId);
+      window.history.replaceState({}, '', location.pathname);
+      if (!confirmed.ok) return;
+      const billing = await fetchBillingStatus();
+      if (
+        billing?.paypalSubscriptionId &&
+        (billing.tier === 'basic' || billing.tier === 'pro')
+      ) {
+        saveSubscription({
+          tier: billing.tier,
+          subscriptionId: billing.paypalSubscriptionId,
+          activatedAt: billing.activatedAt ?? new Date().toISOString(),
+        });
+        trackEvent('subscription_activated', { tier: billing.tier, provider: 'stripe' });
+        setSuccessTier(billing.tier);
+      }
+    })();
+  }, [location.search, location.pathname]);
 
   return (
     <div className="min-h-screen pb-16 bg-sw-bg text-warm">
@@ -247,7 +321,17 @@ export default function PricingPage() {
               ))}
             </div>
 
-            <PayPalWrapper planId={PRO_PLAN_ID} tier="pro" onSuccess={() => setSuccessTier('pro')} />
+            <div className="space-y-2">
+              {STRIPE_CHECKOUT_ENABLED ? (
+                <>
+                  <StripeSubscribeButton tier="pro" />
+                  <div className="text-center text-[10px] text-on-dark-muted pt-1">or with PayPal</div>
+                  <PayPalWrapper planId={PRO_PLAN_ID} tier="pro" onSuccess={() => setSuccessTier('pro')} />
+                </>
+              ) : (
+                <PayPalWrapper planId={PRO_PLAN_ID} tier="pro" onSuccess={() => setSuccessTier('pro')} />
+              )}
+            </div>
 
             {/* Guarantee */}
             <div className="mt-4 flex items-start gap-2.5 rounded-xl px-3 py-2.5" style={{ background: 'rgba(255,255,255,0.06)' }}>
@@ -291,7 +375,19 @@ export default function PricingPage() {
                 </div>
               ))}
             </div>
-            <PayPalWrapper planId={BASIC_PLAN_ID} tier="basic" onSuccess={() => setSuccessTier('basic')} />
+            <div className="space-y-2">
+              {STRIPE_CHECKOUT_ENABLED ? (
+                <>
+                  <StripeSubscribeButton tier="basic" />
+                  <div className="text-center text-[10px] pt-1" style={{ color: '#C4B9AC' }}>
+                    or with PayPal
+                  </div>
+                  <PayPalWrapper planId={BASIC_PLAN_ID} tier="basic" onSuccess={() => setSuccessTier('basic')} />
+                </>
+              ) : (
+                <PayPalWrapper planId={BASIC_PLAN_ID} tier="basic" onSuccess={() => setSuccessTier('basic')} />
+              )}
+            </div>
             <p className="text-xs text-center mt-2 leading-relaxed px-1" style={{ color: '#C4B9AC' }}>
               Cancel anytime. Peptide Optimization stays on Pro.
             </p>

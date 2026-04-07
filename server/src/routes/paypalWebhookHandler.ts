@@ -73,6 +73,7 @@ export default async function paypalWebhookHandler(req: Request, res: Response):
           tier: existing.tier,
           status,
           plan_id: event.resource?.plan_id ?? existing.plan_id,
+          provider: 'paypal',
         });
 
         // Fire win-back email on cancellation — fire-and-forget, never blocks webhook response

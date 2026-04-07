@@ -7,6 +7,7 @@ import billingRoutes from './routes/billingRoutes.js';
 import accountRoutes from './routes/accountRoutes.js';
 import { startReminderJob } from './services/reminderJob.js';
 import paypalWebhookHandler from './routes/paypalWebhookHandler.js';
+import stripeWebhookHandler from './routes/stripeWebhookHandler.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
 import { getDb } from './db/index.js';
 import dotenv from 'dotenv';
@@ -15,8 +16,9 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-// Load the root .env (workspace root) even when the server is started from /server.
+// Root .env (workspace) then server/.env. Dotenv does not override existing keys, so root wins on duplicates; keys only in server/.env still apply.
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 function validateProductionEnv() {
   if (process.env.NODE_ENV !== 'production') return;
@@ -53,6 +55,11 @@ function validateProductionEnv() {
   if (!process.env.CLIENT_URL?.trim()) {
     warnings.push('CLIENT_URL is not set (CORS may be broader than intended).');
   }
+  if (!process.env.RESEND_API_KEY?.trim()) {
+    warnings.push(
+      'RESEND_API_KEY is not set; magic links and reminder emails are not sent (dev mode logs links to the console only).',
+    );
+  }
 
   if (missing.length || invalid.length) {
     const parts = [
@@ -87,6 +94,7 @@ app.use(
 );
 
 app.post('/api/webhooks/paypal', express.raw({ type: 'application/json' }), paypalWebhookHandler);
+app.post('/api/webhooks/stripe', express.raw({ type: 'application/json' }), stripeWebhookHandler);
 app.use(express.json({ limit: '1mb' }));
 
 app.use('/api/analytics', analyticsRoutes);

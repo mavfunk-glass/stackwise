@@ -118,6 +118,7 @@ export async function fetchBillingStatus(): Promise<{
   subscriptionActive: boolean;
   serverEntitlements: boolean;
   paypalSubscriptionId?: string | null;
+  subscriptionProvider?: 'paypal' | 'stripe' | null;
   activatedAt?: string | null;
 } | null> {
   await ensureApiSession();
@@ -129,10 +130,48 @@ export async function fetchBillingStatus(): Promise<{
       subscriptionActive: boolean;
       serverEntitlements: boolean;
       paypalSubscriptionId?: string | null;
+      subscriptionProvider?: 'paypal' | 'stripe' | null;
       activatedAt?: string | null;
     };
   } catch {
     return null;
+  }
+}
+
+/** Stripe Checkout (hosted). Server must have STRIPE_SECRET_KEY + STRIPE_PRICE_* . */
+export async function createStripeCheckoutSession(
+  tier: 'basic' | 'pro',
+): Promise<{ ok: boolean; url?: string; error?: string }> {
+  await ensureApiSession();
+  try {
+    const res = await fetch(apiUrl('/api/billing/stripe/checkout-session'), {
+      method: 'POST',
+      headers: await apiAuthHeaders(),
+      body: JSON.stringify({ tier }),
+    });
+    const data = (await res.json()) as { url?: string; error?: string };
+    if (!res.ok) return { ok: false, error: data.error ?? res.statusText };
+    if (!data.url) return { ok: false, error: 'No checkout URL returned.' };
+    return { ok: true, url: data.url };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : 'Network error' };
+  }
+}
+
+/** After returning from Stripe Checkout success URL. */
+export async function confirmStripeCheckoutSession(sessionId: string): Promise<{ ok: boolean; error?: string }> {
+  await ensureApiSession();
+  try {
+    const res = await fetch(apiUrl('/api/billing/stripe/confirm'), {
+      method: 'POST',
+      headers: await apiAuthHeaders(),
+      body: JSON.stringify({ sessionId }),
+    });
+    const data = (await res.json()) as { ok?: boolean; error?: string };
+    if (!res.ok) return { ok: false, error: data.error ?? res.statusText };
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : 'Network error' };
   }
 }
 
