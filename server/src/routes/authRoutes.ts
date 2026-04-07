@@ -109,28 +109,31 @@ router.post('/magic-link', async (req, res) => {
       body: JSON.stringify({
         from: `Stacky at StackWise <${fromEmail}>`,
         to: [rawEmail],
-        subject: 'Your StackWise sign-in link',
+        subject: 'Your link to sign in to StackWise',
         html: `
           <div style="font-family: system-ui, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px; background: #F9F6F1;">
             <div style="text-align: center; margin-bottom: 24px;">
               <div style="font-size: 48px; margin-bottom: 8px;">🐱</div>
               <div style="font-family: Georgia, serif; font-size: 24px; font-weight: 300; color: #1C3A2E; font-style: italic;">
-                Hey${displayName ? `, ${displayName.split(' ')[0]}` : ''}! Stacky here.
+                Hi${displayName ? ` ${displayName.split(' ')[0]}` : ' there'} &mdash; it's Stacky.
               </div>
             </div>
             <p style="color: #6B5B4E; font-size: 15px; line-height: 1.6; text-align: center; margin-bottom: 28px;">
-              Click the button below to access your StackWise account and pick up where you left off. This link expires in 15 minutes.
+              Use the button below to open StackWise and sign in. For your security, this link <strong>expires in 15 minutes</strong> and works <strong>only once</strong>.
             </p>
             <div style="text-align: center; margin-bottom: 24px;">
               <a href="${magicUrl}"
                 style="display: inline-block; background: #1C3A2E; color: #F9F6F1; font-size: 16px; font-weight: 600; padding: 16px 36px; border-radius: 100px; text-decoration: none;">
-                Open my stack →
+                Sign in to StackWise
               </a>
             </div>
+            <p style="color: #9C8E84; font-size: 11px; line-height: 1.5; text-align: center; word-break: break-all; margin-bottom: 16px;">
+              If the button doesn't work, copy and paste this link into your browser:<br/>
+              <span style="color: #6B5B4E;">${magicUrl}</span>
+            </p>
             <p style="color: #C4B9AC; font-size: 12px; text-align: center; line-height: 1.5;">
-              If you didn't request this, you can safely ignore it. No account changes will be made.<br/>
-              This link can only be used once and expires in 15 minutes.<br/>
-              StackWise · 3101 Borgata Way · El Dorado Hills, CA 95762
+              Didn't ask for this? You can ignore this email &mdash; nothing will change on your account.<br/>
+              StackWise · stack-wise.org · 3101 Borgata Way, El Dorado Hills, CA 95762
             </p>
           </div>
         `,
