@@ -39,4 +39,5 @@ server/data/*.db-*
 
 # Local Railway bulk-paste (contains secrets)
 railway-paste.env
+railway-stripe-paste.env
 
