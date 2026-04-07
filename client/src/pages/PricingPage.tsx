@@ -14,9 +14,9 @@ import { trackEvent } from '../analytics/track';
 
 const BASIC_PLAN_ID = import.meta.env.VITE_PAYPAL_BASIC_PLAN_ID as string;
 const PRO_PLAN_ID = import.meta.env.VITE_PAYPAL_PRO_PLAN_ID as string;
-/** Show “Pay with card” (Stripe Checkout). Server needs STRIPE_SECRET_KEY + STRIPE_PRICE_* . */
+/** Show “Pay with card” (Stripe Checkout). On by default; set VITE_STRIPE_CHECKOUT=false to hide. Server needs STRIPE_* for checkout to succeed. */
 const STRIPE_CHECKOUT_ENABLED =
-  import.meta.env.VITE_STRIPE_CHECKOUT === 'true' || import.meta.env.VITE_STRIPE_CHECKOUT === '1';
+  import.meta.env.VITE_STRIPE_CHECKOUT !== 'false' && import.meta.env.VITE_STRIPE_CHECKOUT !== '0';
 type SubscriptionTier = 'basic' | 'pro';
 
 function StripeSubscribeButton({ tier }: { tier: SubscriptionTier }) {
