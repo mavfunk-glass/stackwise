@@ -91,25 +91,14 @@ router.post('/magic-link', async (req, res) => {
     const appUrl = appPublicOrigin();
     const magicUrl = `${appUrl}/auth/verify?token=${encodeURIComponent(token)}`;
 
-    const resendKey = process.env.RESEND_API_KEY?.trim();
-    const fromEmail = (process.env.RESEND_FROM_EMAIL ?? 'stacky@stack-wise.org').trim();
+    const resendKey = process.env.RESEND_API_KEY;
+    const fromEmail = process.env.RESEND_FROM_EMAIL ?? 'stacky@stack-wise.org';
 
     if (!resendKey) {
       // eslint-disable-next-line no-console
       console.log(`[magic-link] DEV MODE. Magic link: ${magicUrl}`);
       return res.status(200).json({ ok: true, dev_url: magicUrl, message: 'Dev mode: see server console for link.' });
     }
-
-    const textBody = [
-      `Hey${displayName ? `, ${displayName.split(' ')[0]}` : ''}! Stacky here.`,
-      '',
-      'Open this link to sign in to StackWise. It expires in 15 minutes and only works once:',
-      magicUrl,
-      '',
-      "If you didn't request this email, you can ignore it.",
-      '',
-      'StackWise · https://stack-wise.org',
-    ].join('\n');
 
     const emailRes = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -120,8 +109,7 @@ router.post('/magic-link', async (req, res) => {
       body: JSON.stringify({
         from: `Stacky at StackWise <${fromEmail}>`,
         to: [rawEmail],
-        subject: 'Your StackWise sign-in link (expires in 15 minutes)',
-        text: textBody,
+        subject: 'Your StackWise sign-in link',
         html: `
           <div style="font-family: system-ui, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px; background: #F9F6F1;">
             <div style="text-align: center; margin-bottom: 24px;">
@@ -131,21 +119,18 @@ router.post('/magic-link', async (req, res) => {
               </div>
             </div>
             <p style="color: #6B5B4E; font-size: 15px; line-height: 1.6; text-align: center; margin-bottom: 28px;">
-              Tap the button to open StackWise and sign in. This link expires in <strong>15 minutes</strong> and only works once.
+              Click the button below to access your StackWise account and pick up where you left off. This link expires in 15 minutes.
             </p>
             <div style="text-align: center; margin-bottom: 24px;">
               <a href="${magicUrl}"
                 style="display: inline-block; background: #1C3A2E; color: #F9F6F1; font-size: 16px; font-weight: 600; padding: 16px 36px; border-radius: 100px; text-decoration: none;">
-                Open StackWise →
+                Open my stack →
               </a>
             </div>
-            <p style="color: #9C8E84; font-size: 11px; line-height: 1.5; text-align: center; word-break: break-all; margin-bottom: 20px;">
-              If the button doesn’t work, paste this into your browser:<br/>
-              <span style="color: #6B5B4E;">${magicUrl}</span>
-            </p>
             <p style="color: #C4B9AC; font-size: 12px; text-align: center; line-height: 1.5;">
-              If you didn’t request this email, you can ignore it—no changes are made to your account.<br/>
-              StackWise · stack-wise.org
+              If you didn't request this, you can safely ignore it. No account changes will be made.<br/>
+              This link can only be used once and expires in 15 minutes.<br/>
+              StackWise · 3101 Borgata Way · El Dorado Hills, CA 95762
             </p>
           </div>
         `,

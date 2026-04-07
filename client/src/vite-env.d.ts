@@ -8,10 +8,6 @@ interface ImportMetaEnv {
   readonly VITE_SUPABASE_URL?: string;
   /** Supabase anon public key. */
   readonly VITE_SUPABASE_ANON_KEY?: string;
-  /** When "true", sign-in email uses Supabase OTP instead of Resend (configure Supabase Site URL for production). */
-  readonly VITE_SUPABASE_OTP_SIGNIN?: string;
-  /** Public site origin for Supabase emailRedirectTo when using OTP (no trailing slash). Defaults to window.location.origin. */
-  readonly VITE_PUBLIC_APP_URL?: string;
   readonly VITE_AMAZON_ASSOCIATE_TAG?: string;
   /** When "true", pricing shows Stripe Checkout buttons (server must have STRIPE_SECRET_KEY + STRIPE_PRICE_*). */
   readonly VITE_STRIPE_CHECKOUT?: string;
