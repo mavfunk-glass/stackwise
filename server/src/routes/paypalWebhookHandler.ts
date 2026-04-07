@@ -2,6 +2,7 @@ import type { Request, Response } from 'express';
 import { getSubscriptionByPayPalId, getUser, upsertSubscription } from '../db/index.js';
 import { verifyWebhookSignature } from '../services/paypal.js';
 import { sendEmail, buildWinBackEmail } from '../services/emailService.js';
+import { appPublicOrigin } from '../config/appPublicUrl.js';
 
 /**
  * Use with: app.post('/api/webhooks/paypal', express.raw({ type: 'application/json' }), paypalWebhookHandler)
@@ -81,7 +82,7 @@ export default async function paypalWebhookHandler(req: Request, res: Response):
         if (cancelStatuses.has(status)) {
           const user = getUser(existing.user_id);
           if (user?.email) {
-            const appUrl = process.env.APP_URL ?? 'https://stackwise.app';
+            const appUrl = appPublicOrigin();
             const html = buildWinBackEmail({
               displayName: user.display_name,
               tier: existing.tier,

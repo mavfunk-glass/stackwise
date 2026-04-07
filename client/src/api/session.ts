@@ -176,15 +176,22 @@ export async function confirmStripeCheckoutSession(sessionId: string): Promise<{
 }
 
 /**
- * Request a sign-in link. Uses Supabase Auth when `VITE_SUPABASE_*` is configured, otherwise the legacy Resend magic link.
+ * Request a sign-in link.
+ * Default: Resend via POST /api/auth/magic-link (link domain comes from server APP_URL / CLIENT_URL).
+ * Supabase email OTP runs only when VITE_SUPABASE_OTP_SIGNIN=true (then set Supabase Site URL + redirect URLs for prod).
  */
 export async function requestMagicLink(
   email: string,
   displayName?: string,
 ): Promise<{ ok: boolean; error?: string; dev_url?: string }> {
-  const sb = getSupabase();
+  const useSupabaseOtp = import.meta.env.VITE_SUPABASE_OTP_SIGNIN === 'true';
+  const sb = useSupabaseOtp ? getSupabase() : null;
   if (sb) {
-    const redirectTo = `${window.location.origin}/auth/callback`;
+    const origin = (import.meta.env.VITE_PUBLIC_APP_URL?.trim() || window.location.origin).replace(
+      /\/$/,
+      '',
+    );
+    const redirectTo = `${origin}/auth/callback`;
     const { error } = await sb.auth.signInWithOtp({
       email: email.trim().toLowerCase(),
       options: {

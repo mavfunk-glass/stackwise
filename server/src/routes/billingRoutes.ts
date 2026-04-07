@@ -10,6 +10,7 @@ import {
   stripeCheckoutMissingEnv,
   stripeCheckoutReady,
 } from '../services/stripeBilling.js';
+import { appPublicOrigin } from '../config/appPublicUrl.js';
 
 const router = Router();
 
@@ -109,7 +110,7 @@ router.post('/stripe/checkout-session', requireAuth, async (req: AuthedRequest, 
       return res.status(503).json({ error: 'Stripe price IDs are not set.' });
     }
 
-    const appUrl = (process.env.APP_URL ?? 'http://localhost:5173').replace(/\/$/, '');
+    const appUrl = appPublicOrigin();
 
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',

@@ -10,6 +10,7 @@ import paypalWebhookHandler from './routes/paypalWebhookHandler.js';
 import stripeWebhookHandler from './routes/stripeWebhookHandler.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
 import { getDb } from './db/index.js';
+import { warnIfLocalhostOriginInProduction } from './config/appPublicUrl.js';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -49,8 +50,12 @@ function validateProductionEnv() {
     warnings.push('JWT_SECRET is set but shorter than 32 chars, API auth will rely on SUPABASE_JWT_SECRET if present.');
   }
 
-  if (!process.env.APP_URL?.trim()) {
-    warnings.push('APP_URL is not set (email links may point to localhost fallback).');
+  if (!process.env.APP_URL?.trim() && !process.env.CLIENT_URL?.trim()) {
+    warnings.push(
+      'Neither APP_URL nor CLIENT_URL is set (email and checkout return links default to localhost).',
+    );
+  } else if (!process.env.APP_URL?.trim() && process.env.CLIENT_URL?.trim()) {
+    warnings.push('APP_URL is not set; using CLIENT_URL for public links in emails (set APP_URL too if they differ).');
   }
   if (!process.env.CLIENT_URL?.trim()) {
     warnings.push('CLIENT_URL is not set (CORS may be broader than intended).');
@@ -79,6 +84,7 @@ function validateProductionEnv() {
 }
 
 validateProductionEnv();
+warnIfLocalhostOriginInProduction();
 getDb();
 
 const app = express();

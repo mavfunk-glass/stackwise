@@ -7,6 +7,7 @@ import {
   cleanExpiredTokens,
 } from '../db/index.js';
 import { sendEmail, buildReminderEmail } from './emailService.js';
+import { appPublicOrigin } from '../config/appPublicUrl.js';
 
 /**
  * Gets current HH:MM in a given IANA timezone string.
@@ -74,7 +75,7 @@ async function processRemindersForTimezone(timezone: string): Promise<void> {
   const users = getUsersDueForReminder(hhmm, timezone);
   if (!users.length) return;
 
-  const appUrl = process.env.APP_URL ?? 'http://localhost:5173';
+  const appUrl = appPublicOrigin();
 
   for (const user of users) {
     if (!user.email || !user.reminder_stack_json) continue;

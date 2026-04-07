@@ -3,6 +3,7 @@ import Stripe from 'stripe';
 import { getStripe } from '../services/stripeBilling.js';
 import { getSubscriptionByPayPalId, getUser, upsertSubscription } from '../db/index.js';
 import { sendEmail, buildWinBackEmail } from '../services/emailService.js';
+import { appPublicOrigin } from '../config/appPublicUrl.js';
 
 /**
  * POST /api/webhooks/stripe — raw JSON body. Register before express.json().
@@ -87,7 +88,7 @@ export default async function stripeWebhookHandler(req: Request, res: Response):
           if (cancelStatuses.has(subObj.status)) {
             const user = getUser(existing.user_id);
             if (user?.email) {
-              const appUrl = process.env.APP_URL ?? 'https://stack-wise.org';
+              const appUrl = appPublicOrigin();
               const html = buildWinBackEmail({
                 displayName: user.display_name,
                 tier: existing.tier,

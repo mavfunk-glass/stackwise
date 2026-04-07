@@ -9,6 +9,7 @@ import {
   verifyAndConsumeCheckinToken,
 } from '../db/index.js';
 import { requireAuth, requireApiAuth, type AuthedRequest } from '../auth/middleware.js';
+import { appPublicOrigin } from '../config/appPublicUrl.js';
 
 const router = Router();
 
@@ -73,7 +74,7 @@ router.post('/reminder', requireAuth, (req: AuthedRequest, res: Response) => {
  */
 router.get('/checkin', async (req, res) => {
   const token = typeof req.query.token === 'string' ? req.query.token.trim() : '';
-  const appUrl = process.env.APP_URL ?? 'http://localhost:5173';
+  const appUrl = appPublicOrigin();
 
   if (!token) {
     return res.redirect(`${appUrl}/?checkin=invalid`);
@@ -213,7 +214,7 @@ router.post('/unsubscribe', async (req, res) => {
  */
 router.get('/unsubscribe', (req, res) => {
   const token = typeof req.query.token === 'string' ? req.query.token.trim() : '';
-  const appUrl = process.env.APP_URL ?? 'http://localhost:5173';
+  const appUrl = appPublicOrigin();
   return res.redirect(`${appUrl}/unsubscribe?token=${encodeURIComponent(token)}`);
 });
 
