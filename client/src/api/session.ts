@@ -210,8 +210,13 @@ export async function requestMagicLink(
       headers: await apiAuthHeaders(),
       body: JSON.stringify({ email: email.trim().toLowerCase(), displayName }),
     });
-    const data = (await res.json()) as { ok?: boolean; error?: string; dev_url?: string };
-    if (!res.ok) return { ok: false, error: data.error ?? 'Failed to send link.' };
+    const data = (await res.json()) as { ok?: boolean; error?: string; detail?: string; dev_url?: string };
+    if (!res.ok) {
+      const base = data.error ?? 'Failed to send link.';
+      const detail =
+        typeof data.detail === 'string' && data.detail.trim() ? ` — ${data.detail.trim()}` : '';
+      return { ok: false, error: `${base}${detail}` };
+    }
     return { ok: true, dev_url: data.dev_url };
   } catch {
     return { ok: false, error: 'Network error. Please try again.' };

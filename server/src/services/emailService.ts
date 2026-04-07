@@ -31,8 +31,8 @@ export interface EmailPayload {
 }
 
 export async function sendEmail(payload: EmailPayload): Promise<{ ok: boolean; error?: string }> {
-  const apiKey = process.env.RESEND_API_KEY;
-  const fromEmail = process.env.RESEND_FROM_EMAIL ?? 'stacky@stack-wise.org';
+  const apiKey = process.env.RESEND_API_KEY?.trim();
+  const fromEmail = (process.env.RESEND_FROM_EMAIL ?? 'stacky@stack-wise.org').trim();
 
   if (!apiKey) {
     // Dev mode: log to console instead of sending

@@ -91,8 +91,8 @@ router.post('/magic-link', async (req, res) => {
     const appUrl = appPublicOrigin();
     const magicUrl = `${appUrl}/auth/verify?token=${encodeURIComponent(token)}`;
 
-    const resendKey = process.env.RESEND_API_KEY;
-    const fromEmail = process.env.RESEND_FROM_EMAIL ?? 'stacky@stack-wise.org';
+    const resendKey = process.env.RESEND_API_KEY?.trim();
+    const fromEmail = (process.env.RESEND_FROM_EMAIL ?? 'stacky@stack-wise.org').trim();
 
     if (!resendKey) {
       // eslint-disable-next-line no-console
@@ -157,7 +157,11 @@ router.post('/magic-link', async (req, res) => {
       const detail = formatResendApiError(errData);
       // eslint-disable-next-line no-console
       console.error('[magic-link] Resend HTTP', emailRes.status, detail);
-      return res.status(500).json({ error: 'Failed to send email. Please try again.' });
+      return res.status(500).json({
+        error: 'Failed to send email. Please try again.',
+        /** Resend message (domain verification, invalid from, etc.) — shown in UI for debugging */
+        detail,
+      });
     }
 
     return res.status(200).json({ ok: true });
