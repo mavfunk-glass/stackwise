@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StackyCat from '../components/StackyCat';
+import ViewMyStackNavButton from '../components/ViewMyStackNavButton';
 import {
   getAccountabilityState,
   getTodayCheckIn,
@@ -174,14 +175,7 @@ export default function DashboardPage() {
                 {tier.toUpperCase()}
               </span>
             )}
-            <button
-              onClick={() => navigate('/results')}
-              className="inline-flex items-center gap-1 text-xs font-medium"
-              style={{ color: '#9C8E84' }}
-            >
-              <NavIcon kind="stack" size={15} className="opacity-90" />
-              <span>My stack</span>
-            </button>
+            <ViewMyStackNavButton variant="subtle" />
             <button
               onClick={() => navigate('/coach')}
               className="inline-flex items-center gap-1 text-xs font-medium"

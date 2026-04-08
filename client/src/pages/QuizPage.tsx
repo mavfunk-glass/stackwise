@@ -529,6 +529,8 @@ export default function QuizPage() {
   const [bodyUnit, setBodyUnit] = useState<'metric' | 'imperial'>('imperial');
   /** Imperial lb field must not round-trip through kg on each keystroke; that breaks typing. */
   const [weightLbsInput, setWeightLbsInput] = useState('');
+  /** Metric kg field: same idea as lbs — keep raw string while typing. */
+  const [weightKgInput, setWeightKgInput] = useState('');
   const [openHealthCategory, setOpenHealthCategory] = useState<string | null>(null);
   /** Step 3: personalize goal detail vs optional Super Focus (same UX pattern as step 4). */
   const [step3SubSlide, setStep3SubSlide] = useState<'personalize' | 'superFocus'>('personalize');
@@ -576,6 +578,15 @@ export default function QuizPage() {
   }, [step, bodyUnit]);
 
   useEffect(() => {
+    if (step !== 1 || bodyUnit !== 'metric') return;
+    if (draft.weightKg != null && Number.isFinite(draft.weightKg)) {
+      setWeightKgInput(String(draft.weightKg));
+    } else {
+      setWeightKgInput('');
+    }
+  }, [step, bodyUnit]);
+
+  useEffect(() => {
     if (step !== 4) setStep4SubSlide('background');
   }, [step]);
 
@@ -604,6 +615,7 @@ export default function QuizPage() {
     setUserNameLocal(nm);
     if (saved.weightKg != null && Number.isFinite(saved.weightKg)) {
       setWeightLbsInput(String(Math.round(kgToLbs(saved.weightKg))));
+      setWeightKgInput(String(saved.weightKg));
     }
     setStep(2);
     navigate('.', { replace: true, state: {} });
@@ -2049,16 +2061,22 @@ export default function QuizPage() {
                   {bodyUnit === 'imperial' ? (
                     <div className="flex gap-2 items-end">
                       <div className="flex-1">
-                        <select
-                          value={weightLbsInput || (typeof draft.weightKg === 'number' && Number.isFinite(draft.weightKg) ? String(Math.round(kgToLbs(draft.weightKg))) : '')}
+                        <input
+                          type="text"
+                          inputMode="decimal"
+                          autoComplete="off"
+                          placeholder="e.g. 165"
+                          value={weightLbsInput}
                           onChange={(e) => {
-                            if (!e.target.value) {
-                              setWeightLbsInput('');
+                            const raw = e.target.value;
+                            setWeightLbsInput(raw);
+                            const t = raw.trim();
+                            if (t === '' || t === '.') {
                               setDraft((d) => ({ ...d, weightKg: undefined }));
                               return;
                             }
-                            const lbs = parseFloat(e.target.value);
-                            setWeightLbsInput(String(lbs));
+                            const lbs = parseFloat(t);
+                            if (!Number.isFinite(lbs) || lbs <= 0) return;
                             const kg = lbsToKg(lbs);
                             if (Number.isFinite(kg) && kg > 0) {
                               setDraft((d) => ({ ...d, weightKg: kg }));
@@ -2070,12 +2088,7 @@ export default function QuizPage() {
                             border: '1.5px solid #E8E0D5',
                             color: '#3D2E22',
                           }}
-                        >
-                          <option value="" disabled>Select weight</option>
-                          {Array.from({ length: 321 }, (_, i) => i + 80).map((v) => (
-                            <option key={v} value={v}>{v}</option>
-                          ))}
-                        </select>
+                        />
                       </div>
                       <span className="text-xs mb-2" style={{ color: '#9C8E84' }}>
                         lbs
@@ -2084,15 +2097,23 @@ export default function QuizPage() {
                   ) : (
                     <div className="flex gap-2 items-end">
                       <div className="flex-1">
-                        <select
-                          value={typeof draft.weightKg === 'number' && Number.isFinite(draft.weightKg) ? String(draft.weightKg) : ''}
+                        <input
+                          type="text"
+                          inputMode="decimal"
+                          autoComplete="off"
+                          placeholder="e.g. 75"
+                          value={weightKgInput}
                           onChange={(e) => {
-                            if (!e.target.value) {
+                            const raw = e.target.value;
+                            setWeightKgInput(raw);
+                            const t = raw.trim();
+                            if (t === '' || t === '.') {
                               setDraft((d) => ({ ...d, weightKg: undefined }));
                               return;
                             }
-                            const v = parseFloat(e.target.value);
-                            setDraft((d) => ({ ...d, weightKg: Number.isFinite(v) ? v : undefined }));
+                            const v = parseFloat(t);
+                            if (!Number.isFinite(v) || v <= 0) return;
+                            setDraft((d) => ({ ...d, weightKg: v }));
                           }}
                           className="w-full rounded-2xl px-3 py-2 text-sm"
                           style={{
@@ -2100,12 +2121,7 @@ export default function QuizPage() {
                             border: '1.5px solid #E8E0D5',
                             color: '#3D2E22',
                           }}
-                        >
-                          <option value="" disabled>Select weight</option>
-                          {Array.from({ length: 161 }, (_, i) => i + 40).map((v) => (
-                            <option key={v} value={v}>{v}</option>
-                          ))}
-                        </select>
+                        />
                       </div>
                       <span className="text-xs mb-2" style={{ color: '#9C8E84' }}>
                         kg

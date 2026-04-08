@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ExampleStackPreview from '../components/ExampleStackPreview';
 import StackyCat from '../components/StackyCat';
+import ViewMyStackNavButton from '../components/ViewMyStackNavButton';
 import {
   ensureCurrentStackFromProfile,
   getSubscriptionTier,
@@ -269,15 +270,7 @@ export default function LandingPageRebuild() {
             >
               Pricing
             </button>
-            {canSkipToStack && (
-              <button
-                onClick={goResults}
-                className="text-sm font-medium text-warm-mid hover:text-ink dark:text-warm-mid dark:hover:text-warm"
-                type="button"
-              >
-                My Stack
-              </button>
-            )}
+            <ViewMyStackNavButton variant="emphasized" />
             {tier !== 'free' && (
               <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#F0F5F2] text-[#1C3A2E] border border-[#D4E8DA] dark:bg-surface-elevated dark:text-warm dark:border-stone/80 dark:shadow-[inset_0_1px_0_rgba(120,200,160,0.12)]">
                 {tier.toUpperCase()} Active
@@ -292,7 +285,8 @@ export default function LandingPageRebuild() {
             </button>
           </div>
 
-          <div className="sm:hidden flex items-center gap-2">
+          <div className="sm:hidden flex items-center gap-2 flex-wrap justify-end">
+            <ViewMyStackNavButton variant="emphasized" className="!px-2.5" />
             {canSkipToStack && (
               <button
                 onClick={goCoachFromLanding}

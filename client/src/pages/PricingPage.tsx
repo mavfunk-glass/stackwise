@@ -8,6 +8,7 @@ import {
   fetchBillingStatus,
 } from '../api/session';
 import { REBUILD_SAVINGS_BODY } from '../copy/rebuildStackUpsell';
+import ViewMyStackNavButton from '../components/ViewMyStackNavButton';
 import { NavIcon } from '../copy/navWayfinding';
 import { saveSubscription } from '../types/storage';
 import { trackEvent } from '../analytics/track';
@@ -209,13 +210,7 @@ export default function PricingPage() {
             <NavIcon kind="home" size={17} className="text-ink opacity-90" />
             <span>STACKWISE</span>
           </button>
-          <button
-            onClick={() => navigate('/results')}
-            className="inline-flex items-center gap-1 text-xs font-medium text-warm-light"
-          >
-            <NavIcon kind="stack" size={15} className="text-warm-mid opacity-90" />
-            <span>Back to stack</span>
-          </button>
+          <ViewMyStackNavButton variant="subtle" className="!text-warm-light hover:!text-ink" />
         </div>
       </div>
 

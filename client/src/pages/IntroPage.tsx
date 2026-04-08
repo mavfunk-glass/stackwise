@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { requestMagicLink } from '../api/session';
 import ExampleStackPreview from '../components/ExampleStackPreview';
 import StackyCat from '../components/StackyCat';
+import ViewMyStackNavButton from '../components/ViewMyStackNavButton';
 import { ensureCurrentStackFromProfile, hasSavedStackAvailable } from '../types/storage';
 
 export default function IntroPage() {
@@ -42,13 +43,16 @@ export default function IntroPage() {
           >
             STACKWISE
           </button>
-          <button
-            type="button"
-            onClick={() => navigate('/landing')}
-            className="hidden md:inline-flex rounded-xl bg-forest text-on-dark-primary px-4 py-2 text-sm font-semibold hover:bg-forest-light transition-colors focus:outline-none focus:ring-2 focus:ring-moss/50"
-          >
-            Continue →
-          </button>
+          <div className="flex items-center gap-2">
+            <ViewMyStackNavButton variant="emphasized" className="!h-8 !text-xs !px-3 sm:!h-9 sm:!text-sm sm:!px-4" />
+            <button
+              type="button"
+              onClick={() => navigate('/landing')}
+              className="hidden md:inline-flex rounded-xl bg-forest text-on-dark-primary px-4 py-2 text-sm font-semibold hover:bg-forest-light transition-colors focus:outline-none focus:ring-2 focus:ring-moss/50"
+            >
+              Continue →
+            </button>
+          </div>
         </div>
       </nav>
 

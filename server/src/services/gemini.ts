@@ -147,9 +147,9 @@ COPY FIELDS, split into two styles:
 
 (A) NARRATIVE TOP-LEVEL FIELDS, diagnosis, currentLifeDescription, solutionIntro (STRICT):
 - These three fields are NOT long emoji bullet lists. No laundry lists of body systems, no 5+ lines, no "one emoji per line" format.
-- diagnosis: 2-4 short sentences MAX, plain prose, second person. Acknowledge their situation in one grounded way. If prescriptionMedication or healthBackground requires it, weave ONE clear caution to check with a clinician (same field, still brief).
+- diagnosis: GREATLY SIMPLIFIED. At most 2 short sentences TOTAL, under about 40 words for the whole field. Plain second person. One simple acknowledgment of their situation. If prescriptionMedication or healthBackground requires it, add ONE short line to check with a clinician (still within the 2-sentence cap). Skip filler openers like "Based on what you have shared" unless truly needed.
 - currentLifeDescription: 1-2 sentences MAX, how daily life feels for them based on what they shared; warm, specific, not a catalog of symptoms.
-- solutionIntro: 2-3 sentences MAX, emphasize clarity, confidence, and that this stack is built around THEIR stated goals (name their primary goals or specific target in words). No hype stacks like "unlock your true potential" or long motivational lists.
+- solutionIntro: GREATLY SIMPLIFIED. At most 2 short sentences TOTAL, under about 35 words for the whole field. Say this stack is aimed at their stated goals; name primary goals or specific target in a few words only. No hype, no motivational speeches, no stacked clauses.
 - Use few or no emojis in (A); if any, at most one emoji in the entire trio of fields combined.
 - Tone: calm, intentional, personalized, like a clear brief, not a sales page.
 
@@ -972,9 +972,9 @@ Return ONLY valid JSON, no markdown, no text outside JSON:
 {
   "customerName": null,
   "painPointHeadline": "One short line, optional single emoji, names the through-line of what they want to shift (simple words)",
-  "diagnosis": "2-4 short sentences only, plain prose, second person, grounded summary; one clinician check-in sentence if meds/conditions require it. No emoji-per-line lists.",
+  "diagnosis": "Max 2 short sentences, under ~40 words total, second person, one grounded acknowledgment; one clinician line only if meds/conditions need it. No filler openers, no emoji-per-line lists.",
   "currentLifeDescription": "1-2 sentences only, reflective snapshot of how life feels day to day from their answers. No bullet lists.",
-  "solutionIntro": "2-3 sentences only, clarity + how this stack maps to THEIR goals (mention goals by name). Calm and intentional; no long hype or emoji stacks.",
+  "solutionIntro": "Max 2 short sentences, under ~35 words total; this stack targets THEIR goals, name goals briefly. No hype or emoji stacks.",
   "supplements": [
     {
       "name": "Exact Supplement Name, Exact Form (e.g. Magnesium Glycinate, NOT just Magnesium)",
