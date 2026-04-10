@@ -4,6 +4,22 @@
  * Without RESEND_API_KEY, all sends are logged to console (dev mode).
  */
 
+/**
+ * Trimmed Resend credentials. Hosting dashboards often add spaces/newlines when pasting keys;
+ * Resend then responds with "API key is invalid".
+ */
+export function getResendConfig(): { apiKey: string | undefined; fromEmail: string } {
+  const raw = process.env.RESEND_API_KEY;
+  const apiKey =
+    typeof raw === 'string' && raw.trim().length > 0 ? raw.trim() : undefined;
+  const fromRaw = process.env.RESEND_FROM_EMAIL ?? 'stacky@stack-wise.org';
+  const trimmed =
+    typeof fromRaw === 'string' && fromRaw.trim().length > 0
+      ? fromRaw.trim()
+      : 'stacky@stack-wise.org';
+  return { apiKey, fromEmail: trimmed };
+}
+
 /** Human-readable Resend API error for logs (domain verification, invalid from, etc.). */
 export function formatResendApiError(body: unknown): string {
   if (body && typeof body === 'object') {
@@ -31,8 +47,7 @@ export interface EmailPayload {
 }
 
 export async function sendEmail(payload: EmailPayload): Promise<{ ok: boolean; error?: string }> {
-  const apiKey = process.env.RESEND_API_KEY;
-  const fromEmail = process.env.RESEND_FROM_EMAIL ?? 'stacky@stack-wise.org';
+  const { apiKey, fromEmail } = getResendConfig();
 
   if (!apiKey) {
     // Dev mode: log to console instead of sending

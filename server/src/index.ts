@@ -11,6 +11,7 @@ import stripeWebhookHandler from './routes/stripeWebhookHandler.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
 import { getDb } from './db/index.js';
 import { warnIfLocalhostOriginInProduction } from './config/appPublicUrl.js';
+import { getResendConfig } from './services/emailService.js';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -111,7 +112,7 @@ app.get('/health', (_req, res) => {
 
 /** Quick check for operators: is Resend set so magic-link emails can send? No secrets returned. */
 app.get('/health/email', (_req, res) => {
-  const resendConfigured = Boolean(process.env.RESEND_API_KEY?.trim());
+  const resendConfigured = Boolean(getResendConfig().apiKey);
   res.status(200).json({
     resendConfigured,
     message: resendConfigured

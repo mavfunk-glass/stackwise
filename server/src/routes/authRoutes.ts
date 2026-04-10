@@ -9,7 +9,7 @@ import {
   cleanExpiredTokens,
 } from '../db/index.js';
 import { signSessionToken, verifySessionToken } from '../auth/jwt.js';
-import { formatResendApiError } from '../services/emailService.js';
+import { formatResendApiError, getResendConfig } from '../services/emailService.js';
 import { appPublicOrigin } from '../config/appPublicUrl.js';
 
 const router = Router();
@@ -91,8 +91,7 @@ router.post('/magic-link', async (req, res) => {
     const appUrl = appPublicOrigin();
     const magicUrl = `${appUrl}/auth/verify?token=${encodeURIComponent(token)}`;
 
-    const resendKey = process.env.RESEND_API_KEY;
-    const fromEmail = process.env.RESEND_FROM_EMAIL ?? 'stacky@stack-wise.org';
+    const { apiKey: resendKey, fromEmail } = getResendConfig();
 
     if (!resendKey) {
       // eslint-disable-next-line no-console
