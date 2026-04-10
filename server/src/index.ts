@@ -10,7 +10,8 @@ import paypalWebhookHandler from './routes/paypalWebhookHandler.js';
 import stripeWebhookHandler from './routes/stripeWebhookHandler.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
 import { getDb } from './db/index.js';
-import { warnIfLocalhostOriginInProduction } from './config/appPublicUrl.js';
+import { appPublicOrigin, warnIfLocalhostOriginInProduction } from './config/appPublicUrl.js';
+import { corsOriginOption } from './config/corsOrigins.js';
 import { getResendConfig } from './services/emailService.js';
 import dotenv from 'dotenv';
 import path from 'path';
@@ -92,11 +93,9 @@ const app = express();
 app.set('trust proxy', 1);
 
 const port = Number(process.env.PORT ?? 3001);
-const clientUrl = process.env.CLIENT_URL;
-
 app.use(
   cors({
-    origin: clientUrl ?? true,
+    origin: corsOriginOption(),
   }),
 );
 
@@ -118,6 +117,28 @@ app.get('/health/email', (_req, res) => {
     message: resendConfigured
       ? 'RESEND_API_KEY is set — the server can send sign-in and reminder emails via Resend.'
       : 'RESEND_API_KEY is not set — sign-in links by email will not send until you add a Resend API key and redeploy (unless you use Supabase Auth in the client build instead).',
+  });
+});
+
+/**
+ * Operator diagnostics: why "works on localhost but not live" is usually wrong VITE_API_BASE_URL,
+ * CORS (CLIENT_URL / www), or missing server env. No secrets.
+ */
+app.get('/health/live', (_req, res) => {
+  const { apiKey } = getResendConfig();
+  const clientUrlRaw = process.env.CLIENT_URL?.trim() ?? '';
+  const apiBaseHint =
+    'If the browser loads the app from a different host than the API, set VITE_API_BASE_URL at client build time to your API origin (e.g. https://your-api.up.railway.app) with no trailing slash.';
+  res.status(200).json({
+    nodeEnv: process.env.NODE_ENV ?? 'development',
+    resendConfigured: Boolean(apiKey),
+    geminiConfigured: Boolean(process.env.GEMINI_API_KEY?.trim()),
+    clientUrlSet: Boolean(clientUrlRaw),
+    clientUrlOrigins: clientUrlRaw
+      ? clientUrlRaw.split(',').map((s) => s.trim().replace(/\/$/, '')).filter(Boolean)
+      : [],
+    publicAppOrigin: appPublicOrigin(),
+    splitDeployHint: apiBaseHint,
   });
 });
 

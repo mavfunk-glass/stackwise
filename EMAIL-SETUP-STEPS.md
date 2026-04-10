@@ -56,6 +56,26 @@ To **force** one path only: set **`VITE_MAGIC_LINK_VIA=resend`** or **`supabase`
 
 ---
 
+## Works on localhost but not on the live site
+
+Local dev uses Vite’s **proxy**: the browser calls `/api` on port 5173 and Vite forwards to the API. **Production does not do that automatically.**
+
+1. **Same host for app + API (one Railway service, or one domain)**  
+   Leave **`VITE_API_BASE_URL` unset** in the client build. The browser should load the app from the same origin that serves `/api`.
+
+2. **Website on Host A, API on Host B (split deploy)**  
+   When you run `npm run build` for the client, set **`VITE_API_BASE_URL=https://YOUR-API-ORIGIN`** (no trailing slash). Example: `https://stackwise-production.up.railway.app`.  
+   Rebuild the client and redeploy the static files. If this is missing, the live site tries to call `/api` on the **wrong** host and nothing works.
+
+3. **CORS / wrong domain**  
+   **`CLIENT_URL`** on the server must match the URL people type in the browser (scheme + host), or use **both** apex and www:  
+   `CLIENT_URL=https://yoursite.com,https://www.yoursite.com`
+
+4. **Check the API directly**  
+   Open **`https://YOUR-API-ORIGIN/health/live`** — you should see JSON with `nodeEnv`, `resendConfigured`, `publicAppOrigin`, etc. Use that to confirm env vars on the server.
+
+---
+
 ## Still stuck?
 
 - **Spam folder** — have the user check spam for the first email.
