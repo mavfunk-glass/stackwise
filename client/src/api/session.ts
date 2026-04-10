@@ -222,17 +222,12 @@ function supabaseOtpLooksMisconfigured(message: string): boolean {
   );
 }
 
-/** Resend / server returns raw key errors; in production show a support-oriented message instead. */
+/** Append Resend/server detail (trimmed, length-capped). Resend messages are safe to show and needed to fix domain/API issues. */
 function formatMagicLinkApiFailure(base: string, detail: string | undefined): string {
-  const d = (detail ?? '').toLowerCase();
-  const looksLikeEmailProviderAuth =
-    d.includes('api key') || d.includes('missing api') || d.includes('unauthorized') || d.includes('forbidden');
-  if (import.meta.env.PROD && looksLikeEmailProviderAuth) {
-    return 'We could not send the sign-in email right now. Please try again in a few minutes or contact support.';
-  }
-  const detailSuffix =
-    typeof detail === 'string' && detail.trim() ? ` — ${detail.trim()}` : '';
-  return `${base}${detailSuffix}`;
+  const raw = typeof detail === 'string' ? detail.trim() : '';
+  if (!raw) return base;
+  const clipped = raw.length > 400 ? `${raw.slice(0, 400)}…` : raw;
+  return `${base} — ${clipped}`;
 }
 
 async function requestMagicLinkViaExpressApi(
@@ -246,7 +241,16 @@ async function requestMagicLinkViaExpressApi(
       headers: await apiAuthHeaders(),
       body: JSON.stringify({ email: email.trim().toLowerCase(), displayName }),
     });
-    const data = (await res.json()) as { ok?: boolean; error?: string; detail?: string; dev_url?: string };
+    let data: { ok?: boolean; error?: string; detail?: string; dev_url?: string };
+    try {
+      data = (await res.json()) as { ok?: boolean; error?: string; detail?: string; dev_url?: string };
+    } catch {
+      return {
+        ok: false,
+        error:
+          'Could not read the server response. If the website and API use different hosts, set VITE_API_BASE_URL to your API origin when building the client.',
+      };
+    }
     if (!res.ok) {
       const base = data.error ?? 'Failed to send link.';
       return {
