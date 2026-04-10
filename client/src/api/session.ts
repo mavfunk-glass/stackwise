@@ -175,16 +175,115 @@ export async function confirmStripeCheckoutSession(sessionId: string): Promise<{
   }
 }
 
+function magicLinkVia(): 'auto' | 'resend' | 'supabase' {
+  const v = (import.meta.env.VITE_MAGIC_LINK_VIA as string | undefined)?.trim().toLowerCase();
+  if (v === 'resend' || v === 'supabase') return v;
+  return 'auto';
+}
+
+const RESEND_HEALTH_CACHE_KEY = 'stackwise_health_email_resend';
+const RESEND_HEALTH_CACHE_MS = 5 * 60 * 1000;
+
+/** True if GET /health/email says Resend is configured (cached briefly to avoid extra round trips). */
+async function serverReportsResendConfigured(): Promise<boolean> {
+  try {
+    const raw = sessionStorage.getItem(RESEND_HEALTH_CACHE_KEY);
+    if (raw) {
+      const o = JSON.parse(raw) as { v?: boolean; t?: number };
+      if (typeof o.v === 'boolean' && typeof o.t === 'number' && Date.now() - o.t < RESEND_HEALTH_CACHE_MS) {
+        return o.v;
+      }
+    }
+  } catch {
+    /* ignore */
+  }
+  try {
+    const res = await fetch(apiUrl('/health/email'));
+    const v = res.ok && ((await res.json()) as { resendConfigured?: boolean }).resendConfigured === true;
+    try {
+      sessionStorage.setItem(RESEND_HEALTH_CACHE_KEY, JSON.stringify({ v, t: Date.now() }));
+    } catch {
+      /* ignore */
+    }
+    return v;
+  } catch {
+    return false;
+  }
+}
+
+/** Supabase OTP failed in a way that suggests wrong project keys — safe to try Express + Resend instead. */
+function supabaseOtpLooksMisconfigured(message: string): boolean {
+  const m = message.toLowerCase();
+  return (
+    /api\s*key/.test(m) ||
+    /\bmissing\b.*\bapi\b|\bapi\b.*\bmissing\b/.test(m) ||
+    m.includes('invalid jwt') ||
+    (m.includes('jwt') && m.includes('invalid'))
+  );
+}
+
+/** Resend / server returns raw key errors; in production show a support-oriented message instead. */
+function formatMagicLinkApiFailure(base: string, detail: string | undefined): string {
+  const d = (detail ?? '').toLowerCase();
+  const looksLikeEmailProviderAuth =
+    d.includes('api key') || d.includes('missing api') || d.includes('unauthorized') || d.includes('forbidden');
+  if (import.meta.env.PROD && looksLikeEmailProviderAuth) {
+    return 'We could not send the sign-in email right now. Please try again in a few minutes or contact support.';
+  }
+  const detailSuffix =
+    typeof detail === 'string' && detail.trim() ? ` — ${detail.trim()}` : '';
+  return `${base}${detailSuffix}`;
+}
+
+async function requestMagicLinkViaExpressApi(
+  email: string,
+  displayName?: string,
+): Promise<{ ok: boolean; error?: string; dev_url?: string }> {
+  try {
+    await ensureApiSession();
+    const res = await fetch(apiUrl('/api/auth/magic-link'), {
+      method: 'POST',
+      headers: await apiAuthHeaders(),
+      body: JSON.stringify({ email: email.trim().toLowerCase(), displayName }),
+    });
+    const data = (await res.json()) as { ok?: boolean; error?: string; detail?: string; dev_url?: string };
+    if (!res.ok) {
+      const base = data.error ?? 'Failed to send link.';
+      return {
+        ok: false,
+        error: formatMagicLinkApiFailure(base, typeof data.detail === 'string' ? data.detail : undefined),
+      };
+    }
+    return { ok: true, dev_url: data.dev_url };
+  } catch {
+    return { ok: false, error: 'Network error. Please try again.' };
+  }
+}
+
 /**
- * Request a sign-in link. Uses Supabase Auth when `VITE_SUPABASE_*` is configured; otherwise Resend via the API.
+ * Request a sign-in link. In `auto` mode, if GET /health/email reports Resend is configured on the server, uses
+ * Express + Resend (even when `VITE_SUPABASE_*` is also set). Otherwise uses Supabase OTP if configured, else Resend.
+ * Set `VITE_MAGIC_LINK_VIA=resend` or `supabase` to force one path.
  * Magic-link URLs in Resend emails use server APP_URL / CLIENT_URL (see appPublicOrigin).
  */
 export async function requestMagicLink(
   email: string,
   displayName?: string,
 ): Promise<{ ok: boolean; error?: string; dev_url?: string }> {
+  const via = magicLinkVia();
   const sb = getSupabase();
-  if (sb) {
+
+  if (via === 'resend') {
+    return requestMagicLinkViaExpressApi(email, displayName);
+  }
+  if (via === 'supabase') {
+    if (!sb) {
+      return {
+        ok: false,
+        error:
+          'Sign-in email is not configured (set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY, or use VITE_MAGIC_LINK_VIA=resend with server RESEND_API_KEY).',
+      };
+    }
     const redirectTo = `${window.location.origin}/auth/callback`;
     const { error } = await sb.auth.signInWithOtp({
       email: email.trim().toLowerCase(),
@@ -197,24 +296,26 @@ export async function requestMagicLink(
     return { ok: true };
   }
 
-  try {
-    await ensureApiSession();
-    const res = await fetch(apiUrl('/api/auth/magic-link'), {
-      method: 'POST',
-      headers: await apiAuthHeaders(),
-      body: JSON.stringify({ email: email.trim().toLowerCase(), displayName }),
-    });
-    const data = (await res.json()) as { ok?: boolean; error?: string; detail?: string; dev_url?: string };
-    if (!res.ok) {
-      const base = data.error ?? 'Failed to send link.';
-      const detail =
-        typeof data.detail === 'string' && data.detail.trim() ? ` — ${data.detail.trim()}` : '';
-      return { ok: false, error: `${base}${detail}` };
-    }
-    return { ok: true, dev_url: data.dev_url };
-  } catch {
-    return { ok: false, error: 'Network error. Please try again.' };
+  // auto: if the server has Resend configured, always use Express + Resend — even when VITE_SUPABASE_* is
+  // also set. Otherwise many prod builds call Supabase OTP (and show API errors) while Resend on the server is fine.
+  const expressFirst = !sb || (await serverReportsResendConfigured());
+  if (expressFirst) {
+    return requestMagicLinkViaExpressApi(email, displayName);
   }
+
+  const redirectTo = `${window.location.origin}/auth/callback`;
+  const { error } = await sb!.auth.signInWithOtp({
+    email: email.trim().toLowerCase(),
+    options: {
+      emailRedirectTo: redirectTo,
+      data: displayName ? { display_name: displayName } : undefined,
+    },
+  });
+  if (!error) return { ok: true };
+  if (supabaseOtpLooksMisconfigured(error.message)) {
+    return requestMagicLinkViaExpressApi(email, displayName);
+  }
+  return { ok: false, error: error.message };
 }
 
 /** Verify a legacy magic link token. On success, stores the returned JWT and returns true. */

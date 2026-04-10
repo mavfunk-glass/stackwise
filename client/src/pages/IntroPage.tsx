@@ -11,12 +11,19 @@ export default function IntroPage() {
   const [showSignIn, setShowSignIn] = useState(false);
   const [signInEmail, setSignInEmail] = useState('');
   const [signInStatus, setSignInStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [signInError, setSignInError] = useState('');
 
   async function handleSignIn() {
     if (!signInEmail.includes('@')) return;
     setSignInStatus('sending');
+    setSignInError('');
     const res = await requestMagicLink(signInEmail.trim());
-    setSignInStatus(res.ok ? 'sent' : 'error');
+    if (res.ok) {
+      setSignInStatus('sent');
+    } else {
+      setSignInStatus('error');
+      setSignInError(res.error ?? 'Something went wrong. Please try again.');
+    }
   }
 
   const canSkipToStack = hasSavedStackAvailable();
@@ -203,8 +210,8 @@ export default function IntroPage() {
                     </button>
                   </div>
                   {signInStatus === 'error' && (
-                    <p className="text-xs mt-2" style={{ color: '#E05050' }}>
-                      Something went wrong. Please try again.
+                    <p className="text-xs mt-2 leading-snug" style={{ color: '#E05050' }}>
+                      {signInError || 'Something went wrong. Please try again.'}
                     </p>
                   )}
                 </>

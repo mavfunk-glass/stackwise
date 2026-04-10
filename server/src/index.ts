@@ -109,6 +109,17 @@ app.get('/health', (_req, res) => {
   res.status(200).json({ ok: true });
 });
 
+/** Quick check for operators: is Resend set so magic-link emails can send? No secrets returned. */
+app.get('/health/email', (_req, res) => {
+  const resendConfigured = Boolean(process.env.RESEND_API_KEY?.trim());
+  res.status(200).json({
+    resendConfigured,
+    message: resendConfigured
+      ? 'RESEND_API_KEY is set — the server can send sign-in and reminder emails via Resend.'
+      : 'RESEND_API_KEY is not set — sign-in links by email will not send until you add a Resend API key and redeploy (unless you use Supabase Auth in the client build instead).',
+  });
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/billing', billingRoutes);
 app.use('/api/account', accountRoutes);

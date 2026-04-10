@@ -8,6 +8,11 @@ interface ImportMetaEnv {
   readonly VITE_SUPABASE_URL?: string;
   /** Supabase anon public key. */
   readonly VITE_SUPABASE_ANON_KEY?: string;
+  /**
+   * How “email me a sign-in link” is sent: `auto` (default) prefers Supabase OTP when VITE_SUPABASE_* is set, else Express + Resend.
+   * Use `resend` to always use the API + Resend even if Supabase env is present (fixes stray VITE_SUPABASE_* in production).
+   */
+  readonly VITE_MAGIC_LINK_VIA?: 'auto' | 'resend' | 'supabase';
   readonly VITE_AMAZON_ASSOCIATE_TAG?: string;
   /** When "true", pricing shows Stripe Checkout buttons (server must have STRIPE_SECRET_KEY + STRIPE_PRICE_*). */
   readonly VITE_STRIPE_CHECKOUT?: string;
